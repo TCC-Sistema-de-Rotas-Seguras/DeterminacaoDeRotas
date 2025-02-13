@@ -13,7 +13,7 @@ G = ox.graph.graph_from_point(Fei_Location, dist=one_mile, network_type="drive")
 
 # Área a ser evitada
 avoid_location = (-23.72456530977091, -46.574473368105146)  # Coordenadas do ponto central da área a evitar
-avoid_radius = 1  # Raio da área a ser evitada, em metros
+avoid_radius = 0  # Raio da área a ser evitada, em metros
 
 # Ajustar pesos das arestas na área a ser evitada
 avoid_point = Point(avoid_location[1], avoid_location[0])
