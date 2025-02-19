@@ -32,7 +32,7 @@ arquivo_csv = "Data/teste.csv"
 df = pd.read_csv(arquivo_csv)
 
 # Remover duplicados e valores inválidos
-df = df.drop_duplicates(subset=["latitude", "longitude"])
+# df = df.drop_duplicates(subset=["latitude", "longitude"]) Não precisa remover duplicados
 latitude = df["latitude"].dropna().astype(float)
 longitude = df["longitude"].dropna().astype(float)
 

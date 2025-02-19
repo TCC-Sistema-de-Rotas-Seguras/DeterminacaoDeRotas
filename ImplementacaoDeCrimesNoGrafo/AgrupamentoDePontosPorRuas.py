@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from shapely.geometry import Point, LineString
 import math
+from tqdm import tqdm  # Importar tqdm
 
 # _____Função Haversine para calcular a distância_____
 def haversine(lat1, lon1, lat2, lon2):
@@ -31,8 +32,7 @@ arquivo_csv = "Data/teste.csv"
 
 df = pd.read_csv(arquivo_csv)
 
-# Remover duplicados e valores inválidos
-df = df.drop_duplicates(subset=["latitude", "longitude"])
+# Remover valores inválidos
 latitude = df["latitude"].dropna().astype(float)
 longitude = df["longitude"].dropna().astype(float)
 
@@ -46,15 +46,15 @@ if len(latitude) != len(longitude):
     exit()
 
 # _____Configurações iniciais_____
-Fei_Location = (-23.72403491298448, -46.579397903870166)  # Localização inicial
-map_radio = 2000  # Raio do mapa em metros
+Fei_Location = (-23.72403491298448, -46.579397903870166)
+map_radio = 2000
 
 # Gerar o grafo a partir da localização central
 Graph = ox.graph.graph_from_point(Fei_Location, dist=map_radio, network_type="drive")
 
 # _____Filtrar pontos perigosos dentro do raio_____
 dangerous_points = []
-for lat, lon in zip(latitude, longitude):
+for lat, lon in tqdm(zip(latitude, longitude), desc="Verificando pontos perigosos", total=len(latitude)):
     if is_point_within_radius(Fei_Location, map_radio, (lat, lon)):
         dangerous_points.append((lat, lon))
 
@@ -66,7 +66,7 @@ gdf_nodes, gdf_edges = ox.graph_to_gdfs(Graph)
 # _____Calcular quantos pontos perigosos estão próximos de cada rua (edge)_____
 street_weights = {}
 
-for lat, lon in dangerous_points:
+for lat, lon in tqdm(dangerous_points, desc="Avaliando ruas mais próximas"):
     point = Point(lon, lat)  # Criar o ponto perigoso
     # Encontrar a rua mais próxima
     nearest_edge = None
