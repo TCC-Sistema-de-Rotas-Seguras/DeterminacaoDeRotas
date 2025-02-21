@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 
 from FuncoesDeterminandoAreaEvitada import Remover_Pontos_Area_Evitada, AumentarPesoAreaEvitada
-from FuncoesDeterminandoRotas import RotaAStar
+from AStar import RotaAStar
 
 # _____Configurações iniciais_____
 
