@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="rota" id="rota">
+	<SimpleField name="u" type="string"></SimpleField>
+	<SimpleField name="v" type="string"></SimpleField>
+	<SimpleField name="key" type="string"></SimpleField>
+	<SimpleField name="osmid" type="string"></SimpleField>
+	<SimpleField name="highway" type="string"></SimpleField>
+	<SimpleField name="lanes" type="string"></SimpleField>
+	<SimpleField name="maxspeed" type="string"></SimpleField>
+	<SimpleField name="oneway" type="int"></SimpleField>
+	<SimpleField name="reversed" type="string"></SimpleField>
+	<SimpleField name="length" type="float"></SimpleField>
+	<SimpleField name="junction" type="string"></SimpleField>
+	<SimpleField name="ref" type="string"></SimpleField>
+	<SimpleField name="access" type="string"></SimpleField>
+	<SimpleField name="bridge" type="string"></SimpleField>
+</Schema>
+<Folder><name>rota</name>
+  <Placemark>
+	<name>1389049830</name>
+	<name>False</name>
+	<description>2531654954</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">0</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">['3', '2']</SimpleData>
+		<SimpleData name="highway">['50', '30']</SimpleData>
+		<SimpleData name="lanes">Avenida João Firmino</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5736758,-23.7247496 -46.5734938,-23.7245096 -46.5733952,-23.7244298 -46.5733154,-23.7243831 -46.5732329,-23.72435 -46.5731236,-23.7243236 -46.5729587,-23.7243082 -46.5728085,-23.7242886 -46.5725563,-23.7242481 -46.5723391,-23.7242051 -46.5720622,-23.7241353 -46.5717718,-23.7240369 -46.5716425,-23.7239896 -46.5714526,-23.7239201 -46.571281,-23.7238503 -46.5712281,-23.7238219 -46.5710704,-23.7237373 -46.5707915,-23.7235691 -46.5705246,-23.7233837 -46.5703797,-23.7232806 -46.5702349,-23.7231615 -46.5700628,-23.723015 -46.5699787,-23.7229503 -46.5698983,-23.7228865</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>1389051437</name>
+	<name>False</name>
+	<description>7074080980</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">292107652</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">3</SimpleData>
+		<SimpleData name="highway">30</SimpleData>
+		<SimpleData name="lanes">Praça Giovani Breda</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+		<SimpleData name="reversed">roundabout</SimpleData>
+		<SimpleData name="length">0</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5753669,-23.7246297 -46.5753469,-23.7246977 -46.5753201,-23.7247649 -46.5752826,-23.7248372 -46.5752484,-23.7248905 -46.5751926,-23.7249616 -46.5751288,-23.7250268 -46.5751174,-23.7250371</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>1394293827</name>
+	<name>False</name>
+	<description>1394293853</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">286364470</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">2</SimpleData>
+		<SimpleData name="highway">40</SimpleData>
+		<SimpleData name="lanes">Rua Ana Maria Martinez</SimpleData>
+		<SimpleData name="maxspeed">0</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5698643,-23.7238269 -46.5698896,-23.7239287 -46.5699058,-23.7240112 -46.5699144,-23.7240822 -46.5699163,-23.7242049 -46.5699072,-23.7244126</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>1394293853</name>
+	<name>False</name>
+	<description>1394293863</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">286364470</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">2</SimpleData>
+		<SimpleData name="highway">40</SimpleData>
+		<SimpleData name="lanes">Rua Ana Maria Martinez</SimpleData>
+		<SimpleData name="maxspeed">0</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5699072,-23.7244126 -46.5698966,-23.7247605</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>1394293863</name>
+	<name>False</name>
+	<description>1394293872</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">286364470</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">2</SimpleData>
+		<SimpleData name="highway">40</SimpleData>
+		<SimpleData name="lanes">Rua Ana Maria Martinez</SimpleData>
+		<SimpleData name="maxspeed">0</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5698966,-23.7247605 -46.5698909,-23.7249816</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>1394293872</name>
+	<name>False</name>
+	<description>1394293877</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">549443312</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">2</SimpleData>
+		<SimpleData name="highway">40</SimpleData>
+		<SimpleData name="lanes">Rua Ana Maria Martinez</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5698909,-23.7249816 -46.5698869,-23.7250504 -46.5698904,-23.7250921 -46.5698991,-23.7251242 -46.5699121,-23.7251534 -46.5699407,-23.7251893</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>1394293877</name>
+	<name>False</name>
+	<description>3713844684</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">539305968</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="highway">40</SimpleData>
+		<SimpleData name="lanes">Rua Ana Maria Martinez</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5699407,-23.7251893 -46.5699391,-23.7252326 -46.5699326,-23.7252602 -46.5699089,-23.7252938 -46.569891,-23.7253113 -46.5698714,-23.7253258 -46.5698467,-23.7253402</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>1401730475</name>
+	<name>False</name>
+	<description>2592035490</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">456267531</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">2</SimpleData>
+		<SimpleData name="highway">50</SimpleData>
+		<SimpleData name="lanes">Avenida Humberto de Alencar Castelo Branco</SimpleData>
+		<SimpleData name="maxspeed">0</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5771234,-23.7241668 -46.576988,-23.7241775 -46.5768157,-23.7241917</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>2531654954</name>
+	<name>False</name>
+	<description>2531654958</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">246908797</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">1</SimpleData>
+		<SimpleData name="lanes">Rua Ana Maria Martinez</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5698983,-23.7228865 -46.569816,-23.7229987</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>2531654958</name>
+	<name>False</name>
+	<description>1394293827</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">286364470</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">2</SimpleData>
+		<SimpleData name="highway">40</SimpleData>
+		<SimpleData name="lanes">Rua Ana Maria Martinez</SimpleData>
+		<SimpleData name="maxspeed">0</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.569816,-23.7229987 -46.5698093,-23.7230752 -46.5698039,-23.7232348 -46.5698044,-23.7234763 -46.5698128,-23.7235757 -46.5698383,-23.7237122 -46.5698643,-23.7238269</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>2588498933</name>
+	<name>False</name>
+	<description>7976291472</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">965191471</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">3</SimpleData>
+		<SimpleData name="highway">30</SimpleData>
+		<SimpleData name="lanes">Praça Giovani Breda</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+		<SimpleData name="reversed">roundabout</SimpleData>
+		<SimpleData name="length">0</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5744142,-23.7252611 -46.5743978,-23.7252594</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>2592035490</name>
+	<name>False</name>
+	<description>1389051437</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">0</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">['2', '1']</SimpleData>
+		<SimpleData name="highway">60</SimpleData>
+		<SimpleData name="lanes">Avenida Humberto de Alencar Castelo Branco</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5768157,-23.7241917 -46.5767417,-23.7242369 -46.5766653,-23.7242523 -46.5765835,-23.7242646 -46.5765211,-23.7242701 -46.5763486,-23.7242874 -46.5759462,-23.7243278 -46.5757633,-23.7243378 -46.5756581,-23.7243588 -46.5755894,-23.7243894 -46.5755235,-23.7244442 -46.5754841,-23.7244962 -46.5753669,-23.7246297</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>2594413814</name>
+	<name>False</name>
+	<description>1389049830</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">286363968</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">3</SimpleData>
+		<SimpleData name="highway">30</SimpleData>
+		<SimpleData name="lanes">Praça Giovani Breda</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+		<SimpleData name="reversed">roundabout</SimpleData>
+		<SimpleData name="length">0</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5738474,-23.7250015 -46.5737791,-23.7249242 -46.5737216,-23.7248398 -46.5736758,-23.7247496</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>2594413821</name>
+	<name>False</name>
+	<description>2588498933</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">292107957</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">3</SimpleData>
+		<SimpleData name="highway">30</SimpleData>
+		<SimpleData name="lanes">Praça Giovani Breda</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+		<SimpleData name="reversed">roundabout</SimpleData>
+		<SimpleData name="length">0</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5744535,-23.7252638 -46.5744142,-23.7252611</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>3713844684</name>
+	<name>False</name>
+	<description>3713844689</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">367464500</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="highway">40</SimpleData>
+		<SimpleData name="lanes">Praça Pedro Marçon</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5698467,-23.7253402 -46.5696548,-23.7253377</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>7074080980</name>
+	<name>False</name>
+	<description>2594413821</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">292107957</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">3</SimpleData>
+		<SimpleData name="highway">30</SimpleData>
+		<SimpleData name="lanes">Praça Giovani Breda</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+		<SimpleData name="reversed">roundabout</SimpleData>
+		<SimpleData name="length">0</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5751174,-23.7250371 -46.5750316,-23.7251039 -46.5749829,-23.7251348 -46.5749086,-23.7251743 -46.5748306,-23.725207 -46.5747495,-23.7252326 -46.5746662,-23.7252508 -46.5746196,-23.7252577 -46.57458,-23.7252618 -46.5745167,-23.7252645 -46.5744535,-23.7252638</coordinates></LineString>
+  </Placemark>
+  <Placemark>
+	<name>7976291472</name>
+	<name>False</name>
+	<description>2594413814</description>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#rota">
+		<SimpleData name="u">0</SimpleData>
+		<SimpleData name="v">291706792</SimpleData>
+		<SimpleData name="key">0</SimpleData>
+		<SimpleData name="osmid">3</SimpleData>
+		<SimpleData name="highway">30</SimpleData>
+		<SimpleData name="lanes">Praça Giovani Breda</SimpleData>
+		<SimpleData name="maxspeed">1</SimpleData>
+		<SimpleData name="oneway">1</SimpleData>
+		<SimpleData name="reversed">roundabout</SimpleData>
+		<SimpleData name="length">0</SimpleData>
+	</SchemaData></ExtendedData>
+      <LineString><coordinates>-46.5743978,-23.7252594 -46.5743268,-23.725249 -46.5742632,-23.7252352 -46.5741979,-23.725216 -46.5741344,-23.7251922 -46.5740714,-23.7251632 -46.5740144,-23.7251317 -46.5739265,-23.7250713 -46.5738474,-23.7250015</coordinates></LineString>
+  </Placemark>
+</Folder>
+</Document></kml>
