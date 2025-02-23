@@ -50,7 +50,7 @@ def CrimeAplication(Graph, CrimeLocations):
 
     # Inicializar pesos das ruas
     for u, v, k, data in Graph.edges(keys=True, data=True):
-        data['danger'] = 0
+        data['danger'] = 1
 
     # Usar osmnx para encontrar o nó mais próximo para cada ponto
     for i in tqdm(range(len(CrimeLocations[0])), desc="Determinando Pesos das Ruas"):
@@ -62,6 +62,17 @@ def CrimeAplication(Graph, CrimeLocations):
             if u == nearest_node or v == nearest_node:
                 data['danger'] += 1
                 break
+
+    for __, __, __, data in Graph.edges(keys=True, data=True):
+        if data['danger'] < 10:
+            data['danger'] = 1
+
+    # Conferindo se os pesos estao corretos
+    # for __, __, __, data in Graph.edges(keys=True, data=True):
+    #     if data['danger'] > 10:
+    #         print("MAIOR:", data['danger'])
+    #     else:
+    #         print("MENOR:", data['danger'])
 
     return Graph
 
@@ -80,11 +91,19 @@ def CrimeColorsPlot(Graph):
     for u, v, k, data in Graph.edges(keys=True, data=True):       
             length = data['danger']
 
+            # # Verifique se a chave 'geometry' existe antes de acessar
+            # if 'geometry' in data:
+            #     line = data['geometry']
+            #     # Normalizar o peso para usar com a paleta de cores
+            #     color = cmap(length / max_length)  # Cor proporcional ao peso
+            #     ax.plot(*line.xy, color=color, linewidth=2)
+
             # Verifique se a chave 'geometry' existe antes de acessar
             if 'geometry' in data:
-                line = data['geometry']
-                # Normalizar o peso para usar com a paleta de cores
-                color = cmap(length / max_length)  # Cor proporcional ao peso
-                ax.plot(*line.xy, color=color, linewidth=2)
+                if data['danger'] > 10:
+                    line = data['geometry']
+                    # Normalizar o peso para usar com a paleta de cores
+                    color = cmap(length / max_length)  # Cor proporcional ao peso
+                    ax.plot(*line.xy, color=color, linewidth=2)
 
     return fig, ax

@@ -1,6 +1,6 @@
 import Crimes
 import osmnx as ox
-from MapFunctions import get_geolocation, RoutePlot
+from MapFunctions import get_geolocation, RoutePlot, FoliumMap
 from AStar import RotaAStar
 import matplotlib.pyplot as plt
 
@@ -18,6 +18,7 @@ Destination_address = "Supermercado Coop, São Bernardo do Campo, Brasil"
 # Destination_point = get_geolocation(Destination_address)
 Origin_point = (-23.718170875738355, -46.57389482329224)
 Destination_point = (-23.72417236187511, -46.57764991589661)
+
 
 print(Origin_point)
 print(Destination_point)
@@ -42,7 +43,11 @@ Route_AStar = RotaAStar(Graph, Origin_point, Destination_point)
 fig, ax = Crimes.CrimeColorsPlot(Graph)
 
 # ____ Plotar Rota ____
-# RoutePlot(ax, Graph, Route_AStar)
+RoutePlot(ax, Graph, Route_AStar)
+
+# ____ Follium Map ____
+map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar)
+map.save("Mapa.html")
 
 plt.title("Rota com A*")
 plt.show()
