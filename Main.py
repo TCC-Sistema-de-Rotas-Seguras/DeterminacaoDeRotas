@@ -20,8 +20,6 @@ Origin_point = (-23.718170875738355, -46.57389482329224)
 Destination_point = (-23.72417236187511, -46.57764991589661)
 
 
-print(Origin_point)
-print(Destination_point)
 if Origin_point is None or Destination_point is None:
     print("Erro: Endereço Inválido")
     exit()
@@ -39,6 +37,7 @@ Graph = Crimes.CrimeAplication(Graph, FilteredLocations)
 # ____ Determinação de Rota ____
 Route_AStar = RotaAStar(Graph, Origin_point, Destination_point)
 
+
 # ____ Plotar Grafo ____
 fig, ax = Crimes.CrimeColorsPlot(Graph)
 
@@ -48,7 +47,6 @@ RoutePlot(ax, Graph, Route_AStar)
 # ____ Follium Map ____
 map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar)
 map.save("Mapa.html")
-
+    
 plt.title("Rota com A*")
 plt.show()
-

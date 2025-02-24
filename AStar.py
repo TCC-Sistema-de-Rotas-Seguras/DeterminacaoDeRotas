@@ -4,7 +4,7 @@ import networkx as nx
 # Função para calcular o peso personalizado considerando distância e perigo
 def custom_weight(graph):
     alpha = 1  # Fator para a distância
-    beta = 1   # Fator para o perigo (ajuste conforme necessário)
+    beta = 10   # Fator para o perigo (ajuste conforme necessário)
 
     for u, v, data in graph.edges(data=True):
         # Obtém a distância da aresta
