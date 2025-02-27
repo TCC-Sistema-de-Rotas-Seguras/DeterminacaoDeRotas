@@ -36,7 +36,7 @@ def RoutePlot(ax, Graph, Route_AStar):
         close=False
     )
 
-def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hotspots):
+def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route):
     """
     Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
 
@@ -52,7 +52,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
     """
     
     # Criar um mapa com Folium
-    m = folium.Map(location=Graph_Location, zoom_start=15)
+    m = folium.Map(location=Graph_Location, zoom_start=15, tiles="CartoDB Positron")
 
     # Adicionar ponto de origem (marcador verde)
     folium.Marker(
@@ -95,21 +95,6 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
     folium.PolyLine(
         route_lines, color="blue", weight=5, opacity=0.7, popup="Rota"
     ).add_to(m)
-
-    # Adiciona os hotspots ao mapa
-    for lat, lon in Hotspots:
-        folium.CircleMarker(
-            location=[lat, lon],
-            radius=20,  # Tamanho do círculo
-            color="red",
-            fill=True,
-            fill_color="red",
-            fill_opacity=0.6,
-            popup=f"Hotspot: ({lat}, {lon})",
-        ).add_to(m)
-
-    # Salva o mapa em um arquivo HTML
-    m.save("hotspots_map.html")
 
     return m
 
