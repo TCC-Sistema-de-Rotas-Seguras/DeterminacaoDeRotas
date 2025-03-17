@@ -21,7 +21,12 @@ def CrimeLocations(pasta):
         # Ler o arquivo CSV
         df = pd.read_csv(pasta + arquivo)
 
-        # Remover valores inválidos e garantir que latitude e longitude estejam alinhadas
+    # Remover valores inválidos e garantir que latitude e longitude estejam alinhadas
+        # Remove valores que não são floats
+        df["latitude"] = df["latitude"].apply(lambda x: x if isinstance(x, float) else None)
+        df["longitude"] = df["longitude"].apply(lambda x: x if isinstance(x, float) else None)
+
+        # Remover valores nulos
         df = df[["latitude", "longitude"]].dropna().astype(float)
         df = df[(df["latitude"] != 0.0) & (df["longitude"] != 0.0)]
 

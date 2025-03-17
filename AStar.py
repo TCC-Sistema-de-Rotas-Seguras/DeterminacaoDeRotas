@@ -6,11 +6,13 @@ import time
 # Função para calcular o peso personalizado considerando distância e perigo
 def custom_weight(graph):
     alpha = 1  # Fator para a distância
-    beta = 1       # Fator para o perigo (ajuste conforme necessário)
+    beta = 10   # Fator para o perigo (ajuste conforme necessário)
 
     for u, v, data in graph.edges(data=True):
         # Obtém a distância da aresta
         distance = data.get("length", 1)  # Usa 1 como fallback se a distância não estiver disponível
+
+        data["danger"] = int(data.get("danger", 0))
         danger = data.get("danger", 0)  # Assume perigo 0 caso não esteja definido
 
         data['weight'] = alpha * distance + beta * danger
