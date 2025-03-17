@@ -1,47 +1,60 @@
-from MapFunctions import haversine
 import pandas as pd
+from datetime import datetime
 import os
 import osmnx as ox
 from tqdm import tqdm
+import json
 import matplotlib.pyplot as plt
+from haversine import haversine
+# Função para extrair e classificar as ocorrências por período
+def classify_crimes_by_time(df):
+    # Função para classificar as ocorrências
+    def get_period(hour):
+        if 6 <= hour < 12:
+            return 'manha'
+        elif 12 <= hour < 18:
+            return 'tarde'
+        else:
+            return 'noite'
+
+    # Extraindo a hora corretamente do formato hh:mm:ss
+    df['hora_ocorrencia'] = pd.to_datetime(df['hora_ocorrencia_bo'], format='%H:%M:%S', errors='coerce').dt.hour
+    df['periodo'] = df['hora_ocorrencia'].apply(get_period)
+    return df
 
 
-
-# _____Extraindo Regiões Perigosas_____
 def CrimeLocations(pasta):
-
-    # Extrair arquivos na pasta
     arquivos = [f for f in os.listdir(pasta) if os.path.isfile(os.path.join(pasta, f))]
     Locations = [[],[]]
+    crimes_by_period = {}  # Dicionário para contar crimes por período
 
-    # Ler os arquivos CSV
     for arquivo in arquivos:
         if not arquivo.endswith(".csv"):
             continue
-        # Ler o arquivo CSV
         df = pd.read_csv(pasta + arquivo)
 
-    # Remover valores inválidos e garantir que latitude e longitude estejam alinhadas
-        # Remove valores que não são floats
         df["latitude"] = df["latitude"].apply(lambda x: x if isinstance(x, float) else None)
         df["longitude"] = df["longitude"].apply(lambda x: x if isinstance(x, float) else None)
 
-        # Remover valores nulos
-        df = df[["latitude", "longitude"]].dropna().astype(float)
+        df = df[["latitude", "longitude", "hora_ocorrencia_bo"]].dropna().astype(float)
         df = df[(df["latitude"] != 0.0) & (df["longitude"] != 0.0)]
 
-        # Adicionar os valores às listas correspondentes
+        # Classificar os crimes por período
+        df = classify_crimes_by_time(df)
+
+        # Contagem de crimes por período
+        for period in ['manha', 'tarde', 'noite']:
+            crimes_by_period[period] = crimes_by_period.get(period, 0) + len(df[df['periodo'] == period])
+
         Locations[0].extend(df["latitude"].tolist())
         Locations[1].extend(df["longitude"].tolist())
 
-    # Gerar erro se tamanhos diferentes 
     if len(Locations[0]) != len(Locations[1]):
         print("Erro: Quantidade de Valores Diferentes")
         exit()
 
-    return Locations
+    return Locations, crimes_by_period
 
-# _____ Filtro de Crimes dentro de um raio _____
 def FilterCrimes(Graph_Location, Graph_radio, CrimeLocations):
     FilteredLocations = [[],[]]
     for i in range(len(CrimeLocations[0])):
@@ -50,14 +63,13 @@ def FilterCrimes(Graph_Location, Graph_radio, CrimeLocations):
             FilteredLocations[1].append(CrimeLocations[1][i])
     return FilteredLocations
 
-# _____ Aplicação de Crimes ao Grafo _____
-def CrimeAplication(Graph, CrimeLocations):
-
-    # Inicializar pesos das ruas
+def CrimeAplication(Graph, CrimeLocations, crimes_by_period):
     for u, v, k, data in Graph.edges(keys=True, data=True):
-        data['danger'] = 1
+        data.setdefault('danger', 1)
+        data.setdefault('manha', 0)
+        data.setdefault('tarde', 0)
+        data.setdefault('noite', 0)
 
-    # Usar osmnx para encontrar o nó mais próximo para cada ponto
     for i in tqdm(range(len(CrimeLocations[0])), desc="Determinando Pesos das Ruas"):
         lat = CrimeLocations[0][i]
         lon = CrimeLocations[1][i]
@@ -66,49 +78,54 @@ def CrimeAplication(Graph, CrimeLocations):
         for u, v, k, data in Graph.edges(keys=True, data=True):
             if u == nearest_node or v == nearest_node:
                 data['danger'] += 1
+                crime_period = CrimeLocations[2][i]  # Obtém o período da ocorrência
+                if crime_period == 'manha':
+                    data['manha'] += 1
+                elif crime_period == 'tarde':
+                    data['tarde'] += 1
+                elif crime_period == 'noite':
+                    data['noite'] += 1
                 break
-
-    for __, __, __, data in Graph.edges(keys=True, data=True):
-        if data['danger'] < 10:
-            data['danger'] = 1
-
-    # Conferindo se os pesos estao corretos
-    # for __, __, __, data in Graph.edges(keys=True, data=True):
-    #     if data['danger'] > 10:
-    #         print("MAIOR:", data['danger'])
-    #     else:
-    #         print("MENOR:", data['danger'])
 
     return Graph
 
+
+def generate_crime_json(Graph):
+    crime_data = {}
+
+    for u, v, k, data in Graph.edges(keys=True, data=True):
+        if "geometry" in data:
+            street_id = f"{u}-{v}"
+            crime_data[street_id] = {
+                "nome_rua": f"Rua {u}-{v}",
+                "danger": data.get('danger', 1),
+                "manha": data.get('manha', 0),
+                "tarde": data.get('tarde', 0),
+                "noite": data.get('noite', 0),
+                "geometry": data["geometry"].__geo_interface__,
+                "latitude": (Graph.nodes[u]['y'] + Graph.nodes[v]['y']) / 2,
+                "longitude": (Graph.nodes[u]['x'] + Graph.nodes[v]['x']) / 2,
+            }
+
+    # Salvar no arquivo JSON
+    with open('crime_data.json', 'w') as f:
+        json.dump(crime_data, f, indent=4)
+
+
 def CrimeColorsPlot(Graph):
-    # Obter o comprimento máximo para normalização
     max_length = max([data['danger'] for u, v, k, data in Graph.edges(keys=True, data=True)])
 
-
-    # _____Atribuir cores e plotar o gráfico_____
     fig, ax = ox.plot_graph(Graph, show=False, close=False)
 
-    # Definir uma paleta de cores personalizada para o gráfico
-    cmap = plt.cm.get_cmap('RdYlGn_r')  # Vermelho para laranja/verde para azul (inverso de 'RdYlGn')
+    cmap = plt.cm.get_cmap('RdYlGn_r')
 
-    # Plotar ruas com pesos
     for u, v, k, data in Graph.edges(keys=True, data=True):       
             length = data['danger']
 
-            # # Verifique se a chave 'geometry' existe antes de acessar
-            # if 'geometry' in data:
-            #     line = data['geometry']
-            #     # Normalizar o peso para usar com a paleta de cores
-            #     color = cmap(length / max_length)  # Cor proporcional ao peso
-            #     ax.plot(*line.xy, color=color, linewidth=2)
-
-            # Verifique se a chave 'geometry' existe antes de acessar
             if 'geometry' in data:
                 if data['danger'] > 10:
                     line = data['geometry']
-                    # Normalizar o peso para usar com a paleta de cores
-                    color = cmap(length / max_length)  # Cor proporcional ao peso
+                    color = cmap(length / max_length)
                     ax.plot(*line.xy, color=color, linewidth=2)
 
     return fig, ax
