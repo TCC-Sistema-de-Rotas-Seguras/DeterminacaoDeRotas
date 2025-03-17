@@ -6,8 +6,9 @@ from MapFunctions import get_geolocation, RoutePlot, FoliumMap
 from AStar import RotaAStar
 from Djikstra import RotaDijkstra
 import matplotlib.pyplot as plt
+from Nmf import main_nmf  # Importando a função principal de NMF
 
-# ____ Variaveis Configuraveis ____ 
+# ____ Variáveis Configuráveis ____ 
 Graph_Location = (-23.724249554085418, -46.57659561047842)
 Graph_radio = 1000
 BOs_folder = r"E:/TCC/Data/Bos/"
@@ -39,6 +40,15 @@ if not os.path.exists(Graph_folder + Graph_filename):
 else:
     Graph = ox.load_graphml(Graph_folder + Graph_filename)
 
+# Chamando o NMF para extrair a matriz de crimes e aplicar NMF
+ruas, crime_matrix, W, H = main_nmf(Graph_folder + Graph_filename)
+
+# Imprimindo os resultados do NMF
+print("Matriz W (ruas x componentes):")
+print(W)
+print("Matriz H (componentes x períodos de tempo):")
+print(H)
+
 # ____ Determinação de Rota ____ 
 Route_AStar = RotaAStar(Graph, Origin_point, Destination_point)
 Route_Djikstra = RotaDijkstra(Graph, Origin_point, Destination_point)
@@ -51,9 +61,6 @@ RoutePlot(ax, Graph, Route_AStar)
 
 # _____ Determinar Hotspots _____ 
 Hotspots = Crimes.GraphConversionToHotSpots(Graph)
-
-# ____ Gerar JSON com dados de crime ____ 
-Crimes.generate_crime_json(Graph)
 
 # ____ Follium Map ____ 
 map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar, Hotspots)
