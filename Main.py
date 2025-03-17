@@ -1,4 +1,5 @@
 import Crimes
+import os
 import osmnx as ox
 from MapFunctions import get_geolocation, RoutePlot, FoliumMap
 from AStar import RotaAStar
@@ -9,6 +10,7 @@ import matplotlib.pyplot as plt
 Graph_Location = (-23.724249554085418, -46.57659561047842)
 Graph_radio = 1000
 BOs_folder = "./Data/Bos/"
+Graph_folder = "./Data/Graphs/"
 Graph_filename = "Graph.graphml"
 Origin_address = "Centro Universitário FEI, São Bernardo do Campo, Brasil"
 Destination_address = "Supermercado Coop, São Bernardo do Campo, Brasil"
@@ -26,15 +28,20 @@ if Origin_point is None or Destination_point is None:
     print("Erro: Endereço Inválido")
     exit()
 
-# ____ Localização de Crimes____
-Locations = Crimes.CrimeLocations(BOs_folder)
-FilteredLocations = Crimes.FilterCrimes(Graph_Location, Graph_radio, Locations)
+if not os.path.exists(Graph_folder + Graph_filename):
+    # ____ Localização de Crimes____
+    Locations = Crimes.CrimeLocations(BOs_folder)
+    FilteredLocations = Crimes.FilterCrimes(Graph_Location, Graph_radio, Locations)
 
-# ____ Geração do Grafo ____
-Graph = ox.graph.graph_from_point(Graph_Location, dist=Graph_radio, network_type="drive")
+    # ____ Geração do Grafo ____
+    Graph = ox.graph.graph_from_point(Graph_Location, dist=Graph_radio, network_type="drive")
 
-# Aplicando peso dos crimes no grafo 
-Graph = Crimes.CrimeAplication(Graph, FilteredLocations)
+    # Aplicando peso dos crimes no grafo 
+    Graph = Crimes.CrimeAplication(Graph, FilteredLocations)
+
+    ox.save_graphml(Graph, Graph_folder + Graph_filename)
+else:
+    Graph = ox.load_graphml(Graph_folder + Graph_filename)
 
 # ____ Determinação de Rota ____
 Route_AStar = RotaAStar(Graph, Origin_point, Destination_point)
