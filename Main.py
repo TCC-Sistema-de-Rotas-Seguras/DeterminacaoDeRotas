@@ -28,6 +28,14 @@ if Origin_point is None or Destination_point is None:
     print("Erro: Endereço Inválido")
     exit()
 
+if not os.path.exists("Data"):
+    os.makedirs("Data") 
+if not os.path.exists("Data/Graphs"):
+    os.makedirs("Data/Graphs")
+if not os.path.exists("Data/Bos"):
+    os.makedirs("Data/Bos")
+
+
 if not os.path.exists(Graph_folder + Graph_filename):
     # ____ Localização de Crimes____
     Locations = Crimes.CrimeLocations(BOs_folder)
