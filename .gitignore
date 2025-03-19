@@ -2,3 +2,4 @@ cache/
 Data/
 pycache
 /__pycache__
+ngrok.exe

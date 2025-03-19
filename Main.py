@@ -8,20 +8,14 @@ import matplotlib.pyplot as plt
 
 # ____ Variaveis Configuraveis ____
 Graph_Location = (-23.724249554085418, -46.57659561047842)
-Graph_radio = 1000
+Graph_radio = 10000
 BOs_folder = "./Data/Bos/"
 Graph_folder = "./Data/Graphs/"
 Graph_filename = "Graph.graphml"
-Origin_address = "Centro Universitário FEI, São Bernardo do Campo, Brasil"
-Destination_address = "Supermercado Coop, São Bernardo do Campo, Brasil"
-
-
 
 # ____ Localização de Origem e Destino ____
-# Origin_point = get_geolocation(Origin_address)
-# Destination_point = get_geolocation(Destination_address)
-Origin_point = (-23.7222654611315, -46.574278181904155)
-Destination_point = (-23.72442635298251, -46.5776899517496)
+Origin_point = (-23.711734280090113, -46.57677869780208)
+Destination_point = (-23.711714633868105, -46.570759821138644)
 
 
 if Origin_point is None or Destination_point is None:
@@ -66,7 +60,6 @@ Hotspots = Crimes.GraphConversionToHotSpots(Graph)
 
 # ____ Follium Map ____
 map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar, Hotspots)
-map.save("Mapa.html")
     
 plt.title("Rota com A*")
 plt.show()

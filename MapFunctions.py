@@ -36,19 +36,21 @@ def RoutePlot(ax, Graph, Route_AStar):
         close=False
     )
 
+def centro_e_raio(p1, p2):
+    # Centro do círculo (média das coordenadas)
+    centro = ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
+    
+    # Raio do círculo (metade da distância entre os pontos)
+    raio = haversine(*p1, *p2) / 2
+    
+    return centro, raio
+
 def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hotspots):
     """
     Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
 
-    Parâmetros:
-    - Graph: Grafo de ruas gerado com OSMnx.
-    - Graph_Location: Coordenadas centrais do grafo (latitude, longitude).
-    - Origin_point: Ponto de origem (latitude, longitude).
-    - Destination_point: Ponto de destino (latitude, longitude).
-    - Route: Lista de nós representando a rota calculada.
-
-    Retorno:
-    - Objeto Folium Map
+    Retorna:
+    - O HTML do mapa gerado
     """
     
     # Criar um mapa com Folium
@@ -69,15 +71,13 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
     ).add_to(m)
 
     # Desenhar todas as ruas do grafo para dar contexto ao mapa
-    for u, v, data in Graph.edges(data=True):
-        if "geometry" in data:
-            line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
-        else:
-            line_coords = [(Graph.nodes[u]["y"], Graph.nodes[u]["x"]), (Graph.nodes[v]["y"], Graph.nodes[v]["x"])]
+    # for u, v, data in Graph.edges(data=True):
+    #     if "geometry" in data:
+    #         line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
+    #     else:
+    #         line_coords = [(Graph.nodes[u]["y"], Graph.nodes[u]["x"]), (Graph.nodes[v]["y"], Graph.nodes[v]["x"])]
 
-        folium.PolyLine(
-            line_coords, color="gray", weight=1, opacity=0.5
-        ).add_to(m)
+    #     folium.PolyLine(line_coords, color="gray", weight=1, opacity=0.5).add_to(m)
 
     # Adicionar a rota calculada (seguindo as ruas corretamente)
     route_lines = []
@@ -92,24 +92,22 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
                 route_lines.append((Graph.nodes[u]["y"], Graph.nodes[u]["x"]))
                 route_lines.append((Graph.nodes[v]["y"], Graph.nodes[v]["x"]))
 
-    folium.PolyLine(
-        route_lines, color="blue", weight=5, opacity=0.7, popup="Rota"
-    ).add_to(m)
+    folium.PolyLine(route_lines, color="blue", weight=5, opacity=0.7, popup="Rota").add_to(m)
 
     # Adiciona os hotspots ao mapa
-    for lat, lon in Hotspots:
-        folium.CircleMarker(
-            location=[lat, lon],
-            radius=20,  # Tamanho do círculo
-            color="red",
-            fill=True,
-            fill_color="red",
-            fill_opacity=0.6,
-            popup=f"Hotspot: ({lat}, {lon})",
-        ).add_to(m)
+    # for lat, lon in Hotspots:
+    #     folium.CircleMarker(
+    #         location=[lat, lon],
+    #         radius=20,
+    #         color="red",
+    #         fill=True,
+    #         fill_color="red",
+    #         fill_opacity=0.6,
+    #         popup=f"Hotspot: ({lat}, {lon})",
+    #     ).add_to(m)
 
     # Salva o mapa em um arquivo HTML
-    m.save("hotspots_map.html")
+    m.save("Mapa.html")
 
-    return m
+    return m._repr_html_()  # Retorna o HTML do mapa
 
