@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request, render_template_string
 import Crimes
 import osmnx as ox
-from MapFunctions import centro_e_raio, get_geolocation, RoutePlot, FoliumMap
+from MapFunctions import centro_e_raio, RoutePlot, FoliumMap, obter_geolocalizacao_google
 from AStar import RotaAStar
-from Djikstra import RotaDijkstra
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
@@ -18,13 +19,39 @@ def show_map():
                 function loadMap() {
                     var origin = document.getElementById("origin").value;
                     var destination = document.getElementById("destination").value;
-                    
-                    fetch(`/return_map?origin=${origin}&destination=${destination}`)
+                                                
+                    // Fazer requisição para buscar a geolocalização dos endereços
+                    fetch(`/return_address?endereco=${origin}`)
                         .then(response => response.json())
                         .then(data => {
-                            document.getElementById("map-container").innerHTML = data.mapa_html;
+                            if (data.error) {
+                                alert(data.error);
+                                return;
+                            }
+
+                            var origin_coords = data.coordinates; // Coleta as coordenadas de origem
+
+                            fetch(`/return_address?endereco=${destination}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.error) {
+                                        alert(data.error);
+                                        return;
+                                    }
+
+                                    var destination_coords = data.coordinates; // Coleta as coordenadas de destino
+                                  
+                                    // Fazer requisição para gerar o mapa com as coordenadas obtidas
+                                    fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            document.getElementById("map-container").innerHTML = data.mapa_html;
+                                        })
+                                        .catch(error => console.error("Erro ao carregar o mapa:", error));
+                                })
+                                .catch(error => console.error("Erro ao buscar destino:", error));
                         })
-                        .catch(error => console.error("Erro ao carregar o mapa:", error));
+                        .catch(error => console.error("Erro ao buscar origem:", error));
                 }
             </script>
             <style>
@@ -69,11 +96,11 @@ def show_map():
         <body>
             <h1>Mapa com Rota</h1>
             <div class="form-container">
-                <label for="origin">Origem (Latitude, Longitude):</label>
-                <input type="text" id="origin" name="origin" value="-23.72401011599897, -46.5796130581241" required>
+                <label for="origin">Origem (Endereço):</label>
+                <input type="text" id="origin" name="origin" required>
                 <br>
-                <label for="destination">Destino (Latitude, Longitude):</label>
-                <input type="text" id="destination" name="destination" value="-23.714717997133853, -46.55373510564497" required>
+                <label for="destination">Destino (Endereço):</label>
+                <input type="text" id="destination" name="destination" required>
                 <br>
                 <button type="button" onclick="loadMap()">Carregar Mapa</button>
             </div>
@@ -82,11 +109,30 @@ def show_map():
         </html>
     """)
 
+@app.route('/return_address', methods=['GET'])
+def return_address():
+    load_dotenv()
+    api_key = os.getenv('GOOGLE_API_KEY')
+    address = request.args.get("endereco")
+    print(address)
+    if not address:
+        return jsonify(error="Erro: Parâmetro 'endereco' é obrigatório."), 400
+
+    # Obter geolocalização
+    coordinates = obter_geolocalizacao_google(address, api_key)
+
+    if not coordinates:
+        return jsonify(error="Erro: Não foi possível obter as coordenadas para o endereço fornecido."), 400
+
+    return jsonify(coordinates=coordinates)
+
 @app.route('/return_map', methods=['GET'])
 def return_map():
     # Pega os parâmetros da URL
     origin_str = request.args.get("origin")
     destination_str = request.args.get("destination")
+    print(origin_str)
+    print(destination_str)
 
     if not origin_str or not destination_str:
         return jsonify(error="Erro: Parâmetros 'origin' e 'destination' são obrigatórios."), 400
@@ -97,13 +143,13 @@ def return_map():
     except (ValueError, TypeError):
         return jsonify(error="Erro: Formato inválido. Use LAT,LON para origem e destino."), 400
 
-    # ____ Variáveis Configuráveis ____
+    # ____ Variáveis Configuráveis ____ 
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
     Graph_folder = "./Data/Graphs/"
     Graph_filename = "Graph.graphml"
     Graph = ox.load_graphml(Graph_folder + Graph_filename)
 
-    # ____ Determinação de Rota ____
+    # ____ Determinação de Rota ____ 
     Route_AStar = RotaAStar(Graph, Origin_point, Destination_point)
 
     # _____ Determinar Hotspots _____

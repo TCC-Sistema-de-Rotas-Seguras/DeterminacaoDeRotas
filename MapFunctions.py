@@ -2,6 +2,7 @@ from geopy.geocoders import Nominatim
 import math
 import osmnx as ox
 import folium
+import googlemaps
 
 # _____Função Haversine_____
 def haversine(lat1, lon1, lat2, lon2):
@@ -118,4 +119,31 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
 
     return m._repr_html_()  # Retorna o HTML do mapa
 
-
+def obter_geolocalizacao_google(endereco, api_key):
+    """
+    Retorna a latitude e longitude para o endereço fornecido utilizando a API do Google Maps.
+    
+    Parâmetros:
+    - endereco: Endereço a ser geocodificado (ex: "Rua XV de Novembro, São Paulo, Brasil")
+    - api_key: Sua chave de API do Google Maps
+    
+    Retorna:
+    - Tuple (latitude, longitude) ou None se não encontrar a localização.
+    """
+    # Inicializa o cliente do Google Maps
+    gmaps = googlemaps.Client(key=api_key)
+    
+    try:
+        # Realiza a geocodificação do endereço
+        geocode_result = gmaps.geocode(endereco)
+        
+        if geocode_result:
+            # Extrai a latitude e longitude do primeiro resultado
+            lat = geocode_result[0]['geometry']['location']['lat']
+            lng = geocode_result[0]['geometry']['location']['lng']
+            return lat, lng
+        else:
+            return None  # Endereço não encontrado
+    except Exception as e:
+        print(f"Erro ao geocodificar o endereço: {e}")
+        return None
