@@ -45,10 +45,13 @@ def centro_e_raio(p1, p2):
     
     return centro, raio
 
+import folium
+from shapely.geometry import MultiPoint
+
 def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hotspots):
     """
     Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
-
+    
     Retorna:
     - O HTML do mapa gerado
     """
@@ -70,17 +73,9 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
         icon=folium.Icon(color="blue", icon="flag")
     ).add_to(m)
 
-    # Desenhar todas as ruas do grafo para dar contexto ao mapa
-    # for u, v, data in Graph.edges(data=True):
-    #     if "geometry" in data:
-    #         line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
-    #     else:
-    #         line_coords = [(Graph.nodes[u]["y"], Graph.nodes[u]["x"]), (Graph.nodes[v]["y"], Graph.nodes[v]["x"])]
-
-    #     folium.PolyLine(line_coords, color="gray", weight=1, opacity=0.5).add_to(m)
-
     # Adicionar a rota calculada (seguindo as ruas corretamente)
     route_lines = []
+    route_points = []  # Para calcular o bounding box
     for i in range(len(Route) - 1):
         u, v = Route[i], Route[i + 1]
         edge_data = Graph.get_edge_data(u, v)
@@ -88,9 +83,12 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
         for data in edge_data.values():
             if "geometry" in data:
                 route_lines.extend([(lat, lon) for lon, lat in data["geometry"].coords])
+                route_points.extend([(lat, lon) for lon, lat in data["geometry"].coords])
             else:
                 route_lines.append((Graph.nodes[u]["y"], Graph.nodes[u]["x"]))
                 route_lines.append((Graph.nodes[v]["y"], Graph.nodes[v]["x"]))
+                route_points.append((Graph.nodes[u]["y"], Graph.nodes[u]["x"]))
+                route_points.append((Graph.nodes[v]["y"], Graph.nodes[v]["x"]))
 
     folium.PolyLine(route_lines, color="blue", weight=5, opacity=0.7, popup="Rota").add_to(m)
 
@@ -106,8 +104,18 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
     #         popup=f"Hotspot: ({lat}, {lon})",
     #     ).add_to(m)
 
+    # Calcular o bounding box para ajustar o zoom
+    points = MultiPoint(route_points)
+    min_lat, min_lon, max_lat, max_lon = points.bounds
+
+    # Centralizar o mapa e ajustar o zoom
+    map_center = [(min_lat + max_lat) / 2, (min_lon + max_lon) / 2]
+    m.location = map_center
+    m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
+
     # Salva o mapa em um arquivo HTML
     m.save("Mapa.html")
 
     return m._repr_html_()  # Retorna o HTML do mapa
+
 
