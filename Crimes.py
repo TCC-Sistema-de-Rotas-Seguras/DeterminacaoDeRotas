@@ -19,7 +19,7 @@ def CrimeLocations(pasta):
         if not arquivo.endswith(".csv"):
             continue
         # Ler o arquivo CSV
-        df = pd.read_csv(pasta + arquivo)
+        df = pd.read_csv(pasta + arquivo, low_memory=False)
 
     # Remover valores inválidos e garantir que latitude e longitude estejam alinhadas
         # Remove valores que não são floats
