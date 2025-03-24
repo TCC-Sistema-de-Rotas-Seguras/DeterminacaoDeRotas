@@ -15,7 +15,7 @@ def CrimeLocations(pasta):
     Locations = [[],[]]
 
     # Ler os arquivos CSV
-    for arquivo in tqdm(arquivos, desc="Lendo arquivos CSV"):
+    for arquivo in tqdm(arquivos, desc="Lendo arquivos de BOs"):
         if not arquivo.endswith(".csv"):
             continue
         # Ler o arquivo CSV

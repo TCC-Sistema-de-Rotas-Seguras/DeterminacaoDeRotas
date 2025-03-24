@@ -11,11 +11,11 @@ Graph_Location = (-23.724249554085418, -46.57659561047842)
 Graph_radio = 10000
 BOs_folder = "./Data/Bos/"
 Graph_folder = "./Data/Graphs/"
-Graph_filename = "Graph.graphml"
+Graph_filename = "Merged_Graph.graphml"
 
 # ____ Localização de Origem e Destino ____
-Origin_point = (-23.711734280090113, -46.57677869780208)
-Destination_point = (-23.711714633868105, -46.570759821138644)
+Origin_point = (-23.756913989254592, -46.60476953391852)
+Destination_point = (-23.739040899185984, -46.55052453900106)
 
 
 if Origin_point is None or Destination_point is None:

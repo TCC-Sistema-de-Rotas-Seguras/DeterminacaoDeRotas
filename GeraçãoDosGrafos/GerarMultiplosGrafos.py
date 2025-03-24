@@ -1,8 +1,9 @@
-import Crimes
 import os
 import osmnx as ox
 import matplotlib.pyplot as plt
 import numpy as np
+import Crimes
+
 
 # ____ Variáveis Configuráveis ____
 BOs_folder = "./Data/Bos/"
@@ -34,7 +35,6 @@ while lat <= lat_max:
 
 print("Quantidade de Grafos:",len(Graph_Locations))
 
-print("Processando Crimes...")
 # Localização de Crimes
 Locations = Crimes.CrimeLocations(BOs_folder)
 
