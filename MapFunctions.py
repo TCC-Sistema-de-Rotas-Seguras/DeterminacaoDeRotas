@@ -49,7 +49,7 @@ def centro_e_raio(p1, p2):
 import folium
 from shapely.geometry import MultiPoint
 
-def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hotspots):
+def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route):
     """
     Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
     
@@ -75,35 +75,23 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
     ).add_to(m)
 
     # Adicionar a rota calculada (seguindo as ruas corretamente)
-    route_lines = []
     route_points = []  # Para calcular o bounding box
     for i in range(len(Route) - 1):
         u, v = Route[i], Route[i + 1]
         edge_data = Graph.get_edge_data(u, v)
 
         for data in edge_data.values():
+            # Definir a cor da linha com base no perigo
+            color = "red" if data.get("danger", 0) > 10 else "blue"
+
             if "geometry" in data:
-                route_lines.extend([(lat, lon) for lon, lat in data["geometry"].coords])
-                route_points.extend([(lat, lon) for lon, lat in data["geometry"].coords])
+                line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
             else:
-                route_lines.append((Graph.nodes[u]["y"], Graph.nodes[u]["x"]))
-                route_lines.append((Graph.nodes[v]["y"], Graph.nodes[v]["x"]))
-                route_points.append((Graph.nodes[u]["y"], Graph.nodes[u]["x"]))
-                route_points.append((Graph.nodes[v]["y"], Graph.nodes[v]["x"]))
+                line_coords = [(Graph.nodes[u]["y"], Graph.nodes[u]["x"]),
+                               (Graph.nodes[v]["y"], Graph.nodes[v]["x"])]
 
-    folium.PolyLine(route_lines, color="blue", weight=5, opacity=0.7, popup="Rota").add_to(m)
-
-    # Adiciona os hotspots ao mapa
-    # for lat, lon in Hotspots:
-    #     folium.CircleMarker(
-    #         location=[lat, lon],
-    #         radius=20,
-    #         color="red",
-    #         fill=True,
-    #         fill_color="red",
-    #         fill_opacity=0.6,
-    #         popup=f"Hotspot: ({lat}, {lon})",
-    #     ).add_to(m)
+            route_points.extend(line_coords)
+            folium.PolyLine(line_coords, color=color, weight=5, opacity=0.7).add_to(m)
 
     # Calcular o bounding box para ajustar o zoom
     points = MultiPoint(route_points)
@@ -118,6 +106,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
     m.save("Mapa.html")
 
     return m._repr_html_()  # Retorna o HTML do mapa
+
 
 def obter_geolocalizacao_google(endereco, api_key):
     """

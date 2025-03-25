@@ -35,7 +35,7 @@ def heuristic(node, target, graph):
     return euclidean_distance + (avg_danger * euclidean_distance)
 
 # Função para encontrar a rota usando A* com heurística
-def RotaAStar(graph, origin_point, destination_point):
+def RotaAStar(graph, origin_point, destination_point, parameter):
     # Encontrar os nós mais próximos no grafo
     orig_node = ox.distance.nearest_nodes(graph, origin_point[1], origin_point[0])
     dest_node = ox.distance.nearest_nodes(graph, destination_point[1], destination_point[0])
@@ -45,7 +45,7 @@ def RotaAStar(graph, origin_point, destination_point):
 
     start_time = time.time()
     # Encontrar a rota mais curta usando A* com heurística
-    route = nx.astar_path(graph, orig_node, dest_node, weight='weight', heuristic=lambda u, v: heuristic(u, v, graph))
+    route = nx.astar_path(graph, orig_node, dest_node, weight=parameter, heuristic=lambda u, v: heuristic(u, v, graph))
     end_time = time.time()
     print("Tempo de execução do A*: ", end_time - start_time)
 

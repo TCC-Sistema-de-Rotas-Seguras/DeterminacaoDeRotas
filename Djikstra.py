@@ -10,6 +10,8 @@ def custom_weight(graph):
     for u, v, data in graph.edges(data=True):
         # Obtém a distância da aresta
         distance = data.get("length", 1)  # Usa 1 como fallback se a distância não estiver disponível
+
+        data["danger"] = int(data.get("danger", 0))
         danger = data.get("danger", 0)  # Assume perigo 0 caso não esteja definido
 
         # Peso baseado na soma da distância e do perigo
