@@ -2,7 +2,7 @@ import os
 import osmnx as ox
 import matplotlib.pyplot as plt
 import numpy as np
-import Crimes
+from Core.Crimes import CrimeLocations, FilterCrimes, CrimeAplication, GraphConversionToHotSpots
 
 
 # ____ Variáveis Configuráveis ____
@@ -36,7 +36,7 @@ while lat <= lat_max:
 print("Quantidade de Grafos:",len(Graph_Locations))
 
 # Localização de Crimes
-Locations = Crimes.CrimeLocations(BOs_folder)
+Locations = CrimeLocations(BOs_folder)
 
 # ____ Geração Incremental de Grafos ____
 for i, location in enumerate(Graph_Locations):
@@ -50,7 +50,7 @@ for i, location in enumerate(Graph_Locations):
     print(f"Gerando grafo {i}...")
 
     # Filtrando Crimes
-    FilteredLocations = Crimes.FilterCrimes(location, Graph_radio, Locations)
+    FilteredLocations = FilterCrimes(location, Graph_radio, Locations)
 
     try:
         Graph = ox.graph.graph_from_point(location, dist=Graph_radio, network_type="drive")
@@ -59,7 +59,7 @@ for i, location in enumerate(Graph_Locations):
         continue  # Pula para o próximo ponto
 
     # Aplicando peso dos crimes no grafo 
-    Graph = Crimes.CrimeAplication(Graph, FilteredLocations)
+    Graph = CrimeAplication(Graph, FilteredLocations)
 
     # Salvar Grafo
     ox.save_graphml(Graph, Graph_path)

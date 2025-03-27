@@ -1,9 +1,9 @@
-import Crimes
+from Core.Crimes import CrimeLocations, FilterCrimes, CrimeAplication, GraphConversionToHotSpots
 import os
 import osmnx as ox
-from MapFunctions import get_geolocation, RoutePlot, FoliumMap
-from AStar import RotaAStar
-from Djikstra import RotaDijkstra
+from Core.MapFunctions import get_geolocation, RoutePlot, FoliumMap
+from Core.AStar import RotaAStar
+from Core.Djikstra import RotaDijkstra
 import matplotlib.pyplot as plt
 
 # ____ Variaveis Configuraveis ____
@@ -32,14 +32,14 @@ if not os.path.exists("Data/Bos"):
 
 if not os.path.exists(Graph_folder + Graph_filename):
     # ____ Localização de Crimes____
-    Locations = Crimes.CrimeLocations(BOs_folder)
-    FilteredLocations = Crimes.FilterCrimes(Graph_Location, Graph_radio, Locations)
+    Locations = CrimeLocations(BOs_folder)
+    FilteredLocations = FilterCrimes(Graph_Location, Graph_radio, Locations)
 
     # ____ Geração do Grafo ____
     Graph = ox.graph.graph_from_point(Graph_Location, dist=Graph_radio, network_type="drive")
 
     # Aplicando peso dos crimes no grafo 
-    Graph = Crimes.CrimeAplication(Graph, FilteredLocations)
+    Graph = CrimeAplication(Graph, FilteredLocations)
 
     ox.save_graphml(Graph, Graph_folder + Graph_filename)
 else:
@@ -57,7 +57,7 @@ Route_AStar_semCrimes  = RotaAStar(Graph, Origin_point, Destination_point, "leng
 # RoutePlot(ax, Graph, Route_AStar)
 
 # _____ Determinar Hotspots _____
-Hotspots = Crimes.GraphConversionToHotSpots(Graph)
+Hotspots = GraphConversionToHotSpots(Graph)
 
 # ____ Follium Map ____
 # map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar_comCrimes, Hotspots)

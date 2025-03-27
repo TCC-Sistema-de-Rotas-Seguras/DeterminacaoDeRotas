@@ -1,210 +1,26 @@
-from flask import Flask, jsonify, request, render_template_string
-import Crimes
+from flask import Flask, jsonify, request, render_template_string, render_template
 import osmnx as ox
-from MapFunctions import centro_e_raio, RoutePlot, FoliumMap, obter_geolocalizacao_google
-from AStar import RotaAStar
+from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap, obter_geolocalizacao_google
+from Core.AStar import RotaAStar
 import os
 from dotenv import load_dotenv
 import time
+import threading
 
 app = Flask(__name__)
 
 # Carregar o grafo uma vez ao iniciar a API
 Graph_folder = "./Data/Graphs/"
 Graph_filename = "Graph.graphml"
-Graph = ox.load_graphml(Graph_folder + Graph_filename)
+# Graph = ox.load_graphml(Graph_folder + Graph_filename)
 
 @app.route('/', methods=['GET'])
 def show_map():
-    return render_template_string("""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Mapa Interativo</title>
-            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjTTCjSinrsbN-vTLKd4_ha20D1IVo1lo&libraries=places&callback=initAutocomplete" async defer></script>
-            <script>
-                let autocompleteOrigin, autocompleteDestination;
-
-                function initAutocomplete() {
-                    // Configura o autocompletar para o campo de origem
-                    autocompleteOrigin = new google.maps.places.Autocomplete(
-                        document.getElementById("origin"),
-                        {
-                            bounds: new google.maps.LatLngBounds(
-                                new google.maps.LatLng(-23.9, -46.8), // Sudoeste de SP
-                                new google.maps.LatLng(-23.3, -46.3)  // Nordeste de SP
-                            ),
-                            strictBounds: true
-                        }
-                    );
-                    
-                    // Configura o autocompletar para o campo de destino
-                    autocompleteDestination = new google.maps.places.Autocomplete(
-                        document.getElementById("destination"),
-                        {
-                            bounds: new google.maps.LatLngBounds(
-                                new google.maps.LatLng(-23.9, -46.8), // Sudoeste de SP
-                                new google.maps.LatLng(-23.3, -46.3)  // Nordeste de SP
-                            ),
-                            strictBounds: true
-                        }
-                    );
-
-                    autocompleteOrigin.addListener('place_changed', function() {
-                        var place = autocompleteOrigin.getPlace();
-                        console.log(place);
-                        if (!place.geometry) {
-                            console.log("Endereço não encontrado.");
-                            return;
-                        }
-                        document.getElementById('origin_coords').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
-                    });
-
-                    autocompleteDestination.addListener('place_changed', function() {
-                        var place = autocompleteDestination.getPlace();
-                        console.log(place);
-                        if (!place.geometry) {
-                            console.log("Endereço não encontrado.");
-                            return;
-                        }
-                        document.getElementById('destination_coords').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
-                    });
-                }
-
-                function loadMap() {
-                    var origin_coords = document.getElementById('origin_coords').value;
-                    var destination_coords = document.getElementById('destination_coords').value;
-
-                    if (!origin_coords || !destination_coords) {
-                        alert("Por favor, selecione ambos os endereços.");
-                        return;
-                    }
-
-                    fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById("map-container").innerHTML = data.mapa_html;
-                        })
-                        .catch(error => console.error("Erro ao carregar o mapa:", error));
-                }
-            </script>
-            <style>
-                /* Seu CSS aqui */
-                body {
-                    margin: 0;
-                    padding: 0;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    height: 100vh;
-                    background-color: #f4f4f4;
-                }
-                .map-container {
-                    width: 80%;
-                    height: 33vh;
-                }
-                .form-container {
-                    margin: 20px;
-                    padding: 10px;
-                    background-color: white;
-                    border: 1px solid #ccc;
-                    border-radius: 5px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
-                input[type="text"] {
-                    width: 200px;
-                    padding: 5px;
-                    margin: 10px;
-                }
-                button {
-                    padding: 10px 20px;
-                    background-color: #4CAF50;
-                    color: white;
-                    border: none;
-                    cursor: pointer;
-                }
-                button:hover {
-                    background-color: #45a049;
-                }
-
-                /* Estiliza o fundo da lista de sugestões */
-                .pac-container {
-                    background-color: white;
-                    border-radius: 10px;
-                    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-                    font-family: Arial, sans-serif;
-                    width: 400px !important; /* Aumenta a largura */
-                    max-width: 90%;
-                    font-size: 18px;
-                }
-
-                /* Itens individuais da lista */
-                .pac-item {
-                    padding: 15px; /* Aumenta o espaçamento */
-                    font-size: 14px;
-                    color: #333;
-                    display: flex;
-                    align-items: center; /* Alinha o ícone com o texto */
-                }
-
-                /* Mudar a cor do item quando passa o mouse */
-                .pac-item:hover {
-                    background-color: #f1f1f1;
-                }
-
-                /* Destacar a parte do endereço sugerido */
-                .pac-item .pac-item-query {
-                    font-weight: bold;
-                    color: #000;
-                }
-
-                /* Remove o ícone padrão do Google */
-                .pac-icon {
-                    display: none;
-                }
-
-                /* Adiciona um novo ícone ao lado do endereço */
-                .pac-item::before {
-                    content: "📍"; /* Ícone de localização personalizado */
-                    font-size: 20px;
-                    margin-right: 10px;
-                    display: inline-block;
-                }
-
-                /* Remove o "Powered by Google" */
-                .pac-container:after {
-                    display: none !important;
-                }
-                                  
-                .pac-item-query + span::before {
-                    content: "("; /* Adiciona parêntese de abertura */
-                }
-                                  
-                                  
-                .pac-item-query + span::after {
-                    content: ")"; /* Adiciona parêntese de fechamento */
-                }
-
-                                  
-            </style>
-        </head>
-        <body>
-            <h1>Mapa com Rota</h1>
-            <div>
-                <label for="origin">Origem:</label>
-                <input type="text" id="origin" name="origin" required>
-                <input type="hidden" id="origin_coords">
-                <br>
-                <label for="destination">Destino:</label>
-                <input type="text" id="destination" name="destination" required>
-                <input type="hidden" id="destination_coords">
-                <br>
-                <button type="button" onclick="loadMap()">Carregar Mapa</button>
-            </div>
-            <div id="map-container"></div>
-        </body>
-        </html>
-    """)
+    # Carregar a chave da API do Google Maps do arquivo .env
+    api_key = os.getenv('GOOGLE_API_KEY')
+    
+    # Passar a chave da API para o template
+    return render_template('PaginaMapa.html', api_key=api_key)
 
 @app.route('/return_address', methods=['GET'])
 def return_address():
@@ -249,5 +65,25 @@ def return_map():
 
     return jsonify(mapa_html=mapa_html)
 
+# Função para rodar o Streamlit em uma thread separada
+def run_streamlit():
+    os.system("streamlit run ./Templates/StreamlitPage.py --server.port 8501 --server.headless true")
+
+# Endpoint para carregar o Streamlit dentro do Flask usando um iframe
+@app.route('/streamlit')
+def streamlit_page():
+    return render_template_string("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Streamlit App</title>
+        </head>
+        <body>
+            <iframe src="http://localhost:8501" width="100%" height="800px" style="border:none;"></iframe>
+        </body>
+        </html>
+    """)
+
 if __name__ == '__main__':
+    threading.Thread(target=run_streamlit, daemon=True).start()
     app.run(debug=True)
