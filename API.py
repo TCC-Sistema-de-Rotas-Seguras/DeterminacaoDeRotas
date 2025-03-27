@@ -12,7 +12,7 @@ app = Flask(__name__)
 # Carregar o grafo uma vez ao iniciar a API
 Graph_folder = "./Data/Graphs/"
 Graph_filename = "Graph.graphml"
-# Graph = ox.load_graphml(Graph_folder + Graph_filename)
+Graph = ox.load_graphml(Graph_folder + Graph_filename)
 
 @app.route('/', methods=['GET'])
 def show_map():

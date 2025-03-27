@@ -1,4 +1,4 @@
-from Core.Crimes import CrimeLocations, FilterCrimes, CrimeAplication, GraphConversionToHotSpots
+from Core.Crimes import CrimeLocations, FilterCrimes, CrimeAplication, GraphConversionToHotSpots, CrimeColorsPlot
 import os
 import osmnx as ox
 from Core.MapFunctions import get_geolocation, RoutePlot, FoliumMap
@@ -7,15 +7,15 @@ from Core.Djikstra import RotaDijkstra
 import matplotlib.pyplot as plt
 
 # ____ Variaveis Configuraveis ____
-Graph_Location = (-23.724249554085418, -46.57659561047842)
-Graph_radio = 10000
+Graph_Location = (-23.724222542890598, -46.57762289661209)
+Graph_radio = 1000
 BOs_folder = "./Data/Bos/"
 Graph_folder = "./Data/Graphs/"
 Graph_filename = "Graph.graphml"
 
 # ____ Localização de Origem e Destino ____
-Origin_point = (-23.749804328270418, -46.60034925349959)
-Destination_point = (-23.44683326062235, -46.53649122204732)
+Origin_point = (-23.721843100582227, -46.57406092319069)
+Destination_point = (-23.72194132403423, -46.58071280114315)
 
 
 if Origin_point is None or Destination_point is None:
@@ -51,20 +51,20 @@ Route_AStar_semCrimes  = RotaAStar(Graph, Origin_point, Destination_point, "leng
 # Route_Djikstra = RotaDijkstra(Graph, Origin_point, Destination_point)
 
 # ____ Plotar Grafo ____
-# fig, ax = Crimes.CrimeColorsPlot(Graph)
+fig, ax = CrimeColorsPlot(Graph)
 
 # ____ Plotar Rota ____
-# RoutePlot(ax, Graph, Route_AStar)
+RoutePlot(ax, Graph, Route_AStar_semCrimes)
 
 # _____ Determinar Hotspots _____
 Hotspots = GraphConversionToHotSpots(Graph)
 
 # ____ Follium Map ____
 # map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar_comCrimes, Hotspots)
-map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar_semCrimes, Hotspots)
+map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar_semCrimes)
     
-# plt.title("Rota com A*")
-# plt.show()
+plt.title("Rota com A*")
+plt.show()
 
 
 # # ____ Plotar Rota com Djikstra ____

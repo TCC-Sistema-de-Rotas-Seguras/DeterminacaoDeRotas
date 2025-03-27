@@ -1,4 +1,4 @@
-from MapFunctions import haversine
+from Core.MapFunctions import haversine
 import pandas as pd
 import os
 import osmnx as ox
@@ -72,13 +72,6 @@ def CrimeAplication(Graph, CrimeLocations):
         if data['danger'] < 10:
             data['danger'] = 1
 
-    # Conferindo se os pesos estao corretos
-    # for __, __, __, data in Graph.edges(keys=True, data=True):
-    #     if data['danger'] > 10:
-    #         print("MAIOR:", data['danger'])
-    #     else:
-    #         print("MENOR:", data['danger'])
-
     return Graph
 
 def CrimeColorsPlot(Graph):
@@ -95,13 +88,6 @@ def CrimeColorsPlot(Graph):
     # Plotar ruas com pesos
     for u, v, k, data in Graph.edges(keys=True, data=True):       
             length = data['danger']
-
-            # # Verifique se a chave 'geometry' existe antes de acessar
-            # if 'geometry' in data:
-            #     line = data['geometry']
-            #     # Normalizar o peso para usar com a paleta de cores
-            #     color = cmap(length / max_length)  # Cor proporcional ao peso
-            #     ax.plot(*line.xy, color=color, linewidth=2)
 
             # Verifique se a chave 'geometry' existe antes de acessar
             if 'geometry' in data:
