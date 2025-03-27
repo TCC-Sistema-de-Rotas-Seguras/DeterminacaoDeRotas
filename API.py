@@ -7,7 +7,6 @@ import os
 from dotenv import load_dotenv
 import time
 
-
 app = Flask(__name__)
 
 # Carregar o grafo uma vez ao iniciar a API
@@ -22,46 +21,75 @@ def show_map():
         <html>
         <head>
             <title>Mapa Interativo</title>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjTTCjSinrsbN-vTLKd4_ha20D1IVo1lo&libraries=places&callback=initAutocomplete" async defer></script>
             <script>
+                let autocompleteOrigin, autocompleteDestination;
+
+                function initAutocomplete() {
+                    // Configura o autocompletar para o campo de origem
+                    autocompleteOrigin = new google.maps.places.Autocomplete(
+                        document.getElementById("origin"),
+                        {
+                            bounds: new google.maps.LatLngBounds(
+                                new google.maps.LatLng(-23.9, -46.8), // Sudoeste de SP
+                                new google.maps.LatLng(-23.3, -46.3)  // Nordeste de SP
+                            ),
+                            strictBounds: true
+                        }
+                    );
+                    
+                    // Configura o autocompletar para o campo de destino
+                    autocompleteDestination = new google.maps.places.Autocomplete(
+                        document.getElementById("destination"),
+                        {
+                            bounds: new google.maps.LatLngBounds(
+                                new google.maps.LatLng(-23.9, -46.8), // Sudoeste de SP
+                                new google.maps.LatLng(-23.3, -46.3)  // Nordeste de SP
+                            ),
+                            strictBounds: true
+                        }
+                    );
+
+                    autocompleteOrigin.addListener('place_changed', function() {
+                        var place = autocompleteOrigin.getPlace();
+                        console.log(place);
+                        if (!place.geometry) {
+                            console.log("Endereço não encontrado.");
+                            return;
+                        }
+                        document.getElementById('origin_coords').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+                    });
+
+                    autocompleteDestination.addListener('place_changed', function() {
+                        var place = autocompleteDestination.getPlace();
+                        console.log(place);
+                        if (!place.geometry) {
+                            console.log("Endereço não encontrado.");
+                            return;
+                        }
+                        document.getElementById('destination_coords').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+                    });
+                }
+
                 function loadMap() {
-                    var origin = document.getElementById("origin").value;
-                    var destination = document.getElementById("destination").value;
-                                                
-                    // Fazer requisição para buscar a geolocalização dos endereços
-                    fetch(`/return_address?endereco=${origin}`)
+                    var origin_coords = document.getElementById('origin_coords').value;
+                    var destination_coords = document.getElementById('destination_coords').value;
+
+                    if (!origin_coords || !destination_coords) {
+                        alert("Por favor, selecione ambos os endereços.");
+                        return;
+                    }
+
+                    fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
                         .then(response => response.json())
                         .then(data => {
-                            if (data.error) {
-                                alert(data.error);
-                                return;
-                            }
-
-                            var origin_coords = data.coordinates; // Coleta as coordenadas de origem
-
-                            fetch(`/return_address?endereco=${destination}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.error) {
-                                        alert(data.error);
-                                        return;
-                                    }
-
-                                    var destination_coords = data.coordinates; // Coleta as coordenadas de destino
-                                  
-                                    // Fazer requisição para gerar o mapa com as coordenadas obtidas
-                                    fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            document.getElementById("map-container").innerHTML = data.mapa_html;
-                                        })
-                                        .catch(error => console.error("Erro ao carregar o mapa:", error));
-                                })
-                                .catch(error => console.error("Erro ao buscar destino:", error));
+                            document.getElementById("map-container").innerHTML = data.mapa_html;
                         })
-                        .catch(error => console.error("Erro ao buscar origem:", error));
+                        .catch(error => console.error("Erro ao carregar o mapa:", error));
                 }
             </script>
             <style>
+                /* Seu CSS aqui */
                 body {
                     margin: 0;
                     padding: 0;
@@ -73,7 +101,7 @@ def show_map():
                 }
                 .map-container {
                     width: 80%;
-                    height: 33vh; /* 2/3 da tela */
+                    height: 33vh;
                 }
                 .form-container {
                     margin: 20px;
@@ -98,20 +126,82 @@ def show_map():
                 button:hover {
                     background-color: #45a049;
                 }
+
+                /* Estiliza o fundo da lista de sugestões */
+                .pac-container {
+                    background-color: white;
+                    border-radius: 10px;
+                    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+                    font-family: Arial, sans-serif;
+                    width: 400px !important; /* Aumenta a largura */
+                    max-width: 90%;
+                    font-size: 18px;
+                }
+
+                /* Itens individuais da lista */
+                .pac-item {
+                    padding: 15px; /* Aumenta o espaçamento */
+                    font-size: 14px;
+                    color: #333;
+                    display: flex;
+                    align-items: center; /* Alinha o ícone com o texto */
+                }
+
+                /* Mudar a cor do item quando passa o mouse */
+                .pac-item:hover {
+                    background-color: #f1f1f1;
+                }
+
+                /* Destacar a parte do endereço sugerido */
+                .pac-item .pac-item-query {
+                    font-weight: bold;
+                    color: #000;
+                }
+
+                /* Remove o ícone padrão do Google */
+                .pac-icon {
+                    display: none;
+                }
+
+                /* Adiciona um novo ícone ao lado do endereço */
+                .pac-item::before {
+                    content: "📍"; /* Ícone de localização personalizado */
+                    font-size: 20px;
+                    margin-right: 10px;
+                    display: inline-block;
+                }
+
+                /* Remove o "Powered by Google" */
+                .pac-container:after {
+                    display: none !important;
+                }
+                                  
+                .pac-item-query + span::before {
+                    content: "("; /* Adiciona parêntese de abertura */
+                }
+                                  
+                                  
+                .pac-item-query + span::after {
+                    content: ")"; /* Adiciona parêntese de fechamento */
+                }
+
+                                  
             </style>
         </head>
         <body>
             <h1>Mapa com Rota</h1>
-            <div class="form-container">
-                <label for="origin">Origem (Endereço):</label>
+            <div>
+                <label for="origin">Origem:</label>
                 <input type="text" id="origin" name="origin" required>
+                <input type="hidden" id="origin_coords">
                 <br>
-                <label for="destination">Destino (Endereço):</label>
+                <label for="destination">Destino:</label>
                 <input type="text" id="destination" name="destination" required>
+                <input type="hidden" id="destination_coords">
                 <br>
                 <button type="button" onclick="loadMap()">Carregar Mapa</button>
             </div>
-            <div id="map-container" class="map-container"></div>
+            <div id="map-container"></div>
         </body>
         </html>
     """)
@@ -121,13 +211,10 @@ def return_address():
     load_dotenv()
     api_key = os.getenv('GOOGLE_API_KEY')
     address = request.args.get("endereco")
-    print(address)
     if not address:
         return jsonify(error="Erro: Parâmetro 'endereco' é obrigatório."), 400
 
-    # Obter geolocalização
     coordinates = obter_geolocalizacao_google(address, api_key)
-
     if not coordinates:
         return jsonify(error="Erro: Não foi possível obter as coordenadas para o endereço fornecido."), 400
 
@@ -137,7 +224,6 @@ def return_address():
 def return_map():
     start_fulltime = time.time()
 
-    # Pega os parâmetros da URL
     origin_str = request.args.get("origin")
     destination_str = request.args.get("destination")
 
@@ -150,26 +236,16 @@ def return_map():
     except (ValueError, TypeError):
         return jsonify(error="Erro: Formato inválido. Use LAT,LON para origem e destino."), 400
 
-    # ____ Variáveis Configuráveis ____ 
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
-
-    # ____ Determinação de Rota ____ 
     Route_AStar = RotaAStar(Graph, Origin_point, Destination_point, "lenght")
 
-    # _____ Determinar Hotspots _____
-    # start_time = time.time()
-    # Hotspots = Crimes.GraphConversionToHotSpots(Graph)
-    # end_time = time.time()
-    # print("Tempo de Carregar gerar os hotspots: ", end_time - start_time)
-
     start_time = time.time()
-    # Gerar mapa HTML
     mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar)
     end_time = time.time()
-    print("Tempo de execução FoliumMap: ", end_time - start_time)
+    print("Tempo de execução FoliumMap:", end_time - start_time)
 
     end_fulltime = time.time()
-    print("Tempo de execução Total: ", end_fulltime - start_fulltime)
+    print("Tempo de execução Total:", end_fulltime - start_fulltime)
 
     return jsonify(mapa_html=mapa_html)
 
