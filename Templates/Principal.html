@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout com Flexbox</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initAutocomplete" async defer></script>
+    <script>
+        let autocompleteOrigin, autocompleteDestination;
+
+        function initAutocomplete() {
+            console.log("Chave da API do Google Maps:", "{{ api_key }}");
+
+            // Configura o autocompletar para o campo de origem
+            autocompleteOrigin = new google.maps.places.Autocomplete(
+                document.getElementById("origin"),
+                {
+                    bounds: new google.maps.LatLngBounds(
+                        new google.maps.LatLng(-23.9, -46.8), // Sudoeste de SP
+                        new google.maps.LatLng(-23.3, -46.3)  // Nordeste de SP
+                    ),
+                    strictBounds: true
+                }
+            );
+            
+            // Configura o autocompletar para o campo de destino
+            autocompleteDestination = new google.maps.places.Autocomplete(
+                document.getElementById("destination"),
+                {
+                    bounds: new google.maps.LatLngBounds(
+                        new google.maps.LatLng(-23.9, -46.8), // Sudoeste de SP
+                        new google.maps.LatLng(-23.3, -46.3)  // Nordeste de SP
+                    ),
+                    strictBounds: true
+                }
+            );
+
+            autocompleteOrigin.addListener('place_changed', function() {
+                var place = autocompleteOrigin.getPlace();
+                console.log(place);
+                if (!place.geometry) {
+                    console.log("Endereço não encontrado.");
+                    return;
+                }
+                document.getElementById('origin_coords').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+            });
+
+            autocompleteDestination.addListener('place_changed', function() {
+                var place = autocompleteDestination.getPlace();
+                console.log(place);
+                if (!place.geometry) {
+                    console.log("Endereço não encontrado.");
+                    return;
+                }
+                document.getElementById('destination_coords').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
+            });
+        }
+
+        function loadMap() {
+            var origin_coords = document.getElementById('origin_coords').value;
+            var destination_coords = document.getElementById('destination_coords').value;
+
+            if (!origin_coords || !destination_coords) {
+                alert("Por favor, selecione ambos os endereços.");
+                return;
+            }
+
+            fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("map-container").innerHTML = data.mapa_html;
+                })
+                .catch(error => console.error("Erro ao carregar o mapa:", error));
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            height: 100%;
+        }
+
+        .top-left, .top-right, .bottom-left, .bottom-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid black;
+        }
+
+        .top-left, .top-right {
+            height: 33%;
+        }
+
+        .bottom-left, .bottom-right {
+            height: 67%;
+        }
+
+        .top-left {
+            width: 33%;
+            background-color: lightblue;
+        }
+
+        .top-right {
+            width: 67%;
+            background-color: lightgreen;
+        }
+
+        .bottom-left {
+            width: 33%;
+            background-color: lightcoral;
+        }
+
+        .bottom-right {
+            width: 67%;
+            background-color: lightyellow;
+        }
+
+        /* _________ Autocomplete API Google _________ */
+        /* Estiliza o fundo da lista de sugestões */
+        .pac-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            font-family: Arial, sans-serif;
+            width: 400px !important; /* Aumenta a largura */
+            max-width: 90%;
+            font-size: 18px;
+        }
+
+        /* Itens individuais da lista */
+        .pac-item {
+            padding: 15px; /* Aumenta o espaçamento */
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center; /* Alinha o ícone com o texto */
+        }
+
+        /* Mudar a cor do item quando passa o mouse */
+        .pac-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Destacar a parte do endereço sugerido */
+        .pac-item .pac-item-query {
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Adiciona um novo ícone ao lado do endereço */
+        .pac-item::before {
+            content: ""; /* Ícone de localização personalizado */
+            font-size: 20px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        /* Remove o ícone padrão do Google */
+        .pac-icon {
+            display: none;
+        }
+
+        /* Remove o "Powered by Google" */
+        .pac-container:after {
+            display: none !important;
+        }
+                          
+        .pac-item-query + span::before {
+            content: "("; /* Adiciona parêntese de abertura */
+        }
+                          
+                          
+        .pac-item-query + span::after {
+            content: ")"; /* Adiciona parêntese de fechamento */
+        }
+
+        /*________ Inputs _________*/
+        .input-field {
+            position: absolute;
+            top: 34%;
+            left: 55%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 30px;
+            border: none;
+            font-size: 16px;
+            text-align: left;
+            padding-left: 10px; /* Espaço interno para não colar no canto */
+            line-height: 30px;
+            outline: none;
+            border-radius: 5px;
+            background: transparent;
+        }
+
+        .input-container {
+            position: relative;
+            width: 285px;
+            height: 50px;
+        }
+
+        .custom-input {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border: none;
+            border-radius: 16px;
+            padding-left: 60px;
+            font-size: 16px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        .outer-circle {
+            width: 28px;
+            height: 28px;
+            background-color: #E0ECFF;
+            border-radius: 50%;
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .inner-circle {
+            width: 16px;
+            height: 16px;
+            background-color: #3B82F6;
+            border-radius: 50%;
+            position: absolute;
+            left: 26px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .icon-container {
+            position: absolute;
+            left: 26px;
+            top: 53%;
+            transform: translateY(-50%);
+            width: 17px;
+            height: 21px;
+        }
+
+        /*________ Mapa _________*/
+        #map-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+
+        
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-left">
+            <div style="border-radius: 20px; fill: #fff;">
+                <div class="input-container">
+                    <div class="outer-circle"></div>
+                    <div class="inner-circle"></div>
+                    <input type="text" class="custom-input" id="origin" name="origin" placeholder="Digite a origem" required>
+                    <input id="origin_coords" style="display: none;"></input>
+                </div>
+
+                <br>
+
+                <div class="input-container">
+                    <div class="icon-container">
+                        <svg width="17" height="21" viewBox="0 0 17 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M2.46061 2.46043C4.03599 0.885043 6.17267 0 8.40061 0C10.6285 0 12.7652 0.885043 14.3406 2.46043C15.916 4.03582 16.801 6.1725 16.801 8.40043C16.801 10.6284 15.916 12.765 14.3406 14.3404L8.40061 20.2804L2.46061 14.3404C1.6805 13.5604 1.06169 12.6344 0.639494 11.6152C0.217301 10.596 0 9.50361 0 8.40043C0 7.29725 0.217301 6.20488 0.639494 5.18569C1.06169 4.1665 1.6805 3.24045 2.46061 2.46043ZM8.40061 10.8004C9.03713 10.8004 9.64758 10.5476 10.0977 10.0975C10.5478 9.6474 10.8006 9.03695 10.8006 8.40043C10.8006 7.76391 10.5478 7.15346 10.0977 6.70337C9.64758 6.25329 9.03713 6.00043 8.40061 6.00043C7.76409 6.00043 7.15364 6.25329 6.70355 6.70337C6.25346 7.15346 6.00061 7.76391 6.00061 8.40043C6.00061 9.03695 6.25346 9.6474 6.70355 10.0975C7.15364 10.5476 7.76409 10.8004 8.40061 10.8004Z" fill="#DC2626" />
+                        </svg>
+                    </div>
+                    <input type="text" class="custom-input" id="destination" name="destination" placeholder="Digite o destino" required>
+                    <input id="destination_coords" style="display: none;"></input>
+
+                </div>
+
+                <br>
+                <button type="button" onclick="loadMap()">Carregar Mapa</button>
+            </div>
+
+            
+        </div>
+        <div class="top-right">Top Right</div>
+        <div class="bottom-left">Bottom Left</div>
+        <div class="bottom-right"><div id="map-container"></div></div>
+    </div>
+</body>
+</html>

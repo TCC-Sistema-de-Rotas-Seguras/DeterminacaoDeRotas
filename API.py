@@ -20,7 +20,7 @@ def show_map():
     api_key = os.getenv('GOOGLE_API_KEY')
     
     # Passar a chave da API para o template
-    return render_template('PaginaMapa.html', api_key=api_key)
+    return render_template('Principal.html', api_key=api_key)
 
 @app.route('/return_address', methods=['GET'])
 def return_address():
@@ -63,6 +63,7 @@ def return_map():
     end_fulltime = time.time()
     print("Tempo de execução Total:", end_fulltime - start_fulltime)
 
+    print(mapa_html)
     return jsonify(mapa_html=mapa_html)
 
 # Função para rodar o Streamlit em uma thread separada

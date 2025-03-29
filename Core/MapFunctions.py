@@ -93,14 +93,20 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route):
             route_points.extend(line_coords)
             folium.PolyLine(line_coords, color=color, weight=5, opacity=0.7).add_to(m)
 
-    # Calcular o bounding box para ajustar o zoom
-    points = MultiPoint(route_points)
-    min_lat, min_lon, max_lat, max_lon = points.bounds
+        # Calcular o bounding box para ajustar o zoom
+        points = MultiPoint(route_points)
+        min_lat, min_lon, max_lat, max_lon = points.bounds
 
-    # Centralizar o mapa e ajustar o zoom
-    map_center = [(min_lat + max_lat) / 2, (min_lon + max_lon) / 2]
-    m.location = map_center
-    m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
+        buffer = 0.002  # Ajuste esse valor conforme necessário
+        min_lat -= buffer
+        max_lat += buffer
+        min_lon -= buffer
+        max_lon += buffer
+
+        # Centralizar o mapa e ajustar o zoom
+        map_center = [(min_lat + max_lat) / 2, (min_lon + max_lon) / 2]
+        m.location = map_center
+        m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
     # Salva o mapa em um arquivo HTML
     m.save("Mapa.html")

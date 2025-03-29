@@ -1,3 +1,5 @@
 ngrok.exe
 .env
 /Data/Bos
+/Core/__pycache__
+/cache
