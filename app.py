@@ -1,11 +1,9 @@
-from flask import Flask, jsonify, request, render_template_string, render_template
+from flask import Flask, jsonify, request, render_template
 import osmnx as ox
-from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap, obter_geolocalizacao_google
+from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap
 from Core.AStar import RotaAStar
 import os
-from dotenv import load_dotenv
 import time
-import threading
 
 app = Flask(__name__)
 
@@ -21,20 +19,6 @@ def show_map():
     
     # Passar a chave da API para o template
     return render_template('Principal.html', api_key=api_key)
-
-@app.route('/return_address', methods=['GET'])
-def return_address():
-    load_dotenv()
-    api_key = os.getenv('GOOGLE_API_KEY')
-    address = request.args.get("endereco")
-    if not address:
-        return jsonify(error="Erro: Parâmetro 'endereco' é obrigatório."), 400
-
-    coordinates = obter_geolocalizacao_google(address, api_key)
-    if not coordinates:
-        return jsonify(error="Erro: Não foi possível obter as coordenadas para o endereço fornecido."), 400
-
-    return jsonify(coordinates=coordinates)
 
 @app.route('/return_map', methods=['GET'])
 def return_map():
@@ -65,26 +49,3 @@ def return_map():
 
     print(mapa_html)
     return jsonify(mapa_html=mapa_html)
-
-# Função para rodar o Streamlit em uma thread separada
-def run_streamlit():
-    os.system("streamlit run ./Templates/StreamlitPage.py --server.port 8501 --server.headless true")
-
-# Endpoint para carregar o Streamlit dentro do Flask usando um iframe
-@app.route('/streamlit')
-def streamlit_page():
-    return render_template_string("""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Streamlit App</title>
-        </head>
-        <body>
-            <iframe src="http://localhost:8501" width="100%" height="800px" style="border:none;"></iframe>
-        </body>
-        </html>
-    """)
-
-if __name__ == '__main__':
-    threading.Thread(target=run_streamlit, daemon=True).start()
-    app.run(debug=True)

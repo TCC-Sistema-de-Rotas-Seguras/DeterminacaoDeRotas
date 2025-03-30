@@ -1,0 +1,184 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+}
+
+.top-left, .top-right, .bottom-left, .bottom-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+}
+
+.top-left, .top-right {
+    height: 33%;
+}
+
+.bottom-left, .bottom-right {
+    height: 67%;
+}
+
+.top-left {
+    width: 33%;
+    background-color: lightblue;
+}
+
+.top-right {
+    width: 67%;
+    background-color: lightgreen;
+}
+
+.bottom-left {
+    width: 33%;
+    background-color: lightcoral;
+}
+
+.bottom-right {
+    width: 67%;
+    background-color: lightyellow;
+}
+
+/* _________ Autocomplete API Google _________ */
+/* Estiliza o fundo da lista de sugestões */
+.pac-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    width: 400px !important; /* Aumenta a largura */
+    max-width: 90%;
+    font-size: 18px;
+}
+
+/* Itens individuais da lista */
+.pac-item {
+    padding: 15px; /* Aumenta o espaçamento */
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center; /* Alinha o ícone com o texto */
+}
+
+/* Mudar a cor do item quando passa o mouse */
+.pac-item:hover {
+    background-color: #f1f1f1;
+}
+
+/* Destacar a parte do endereço sugerido */
+.pac-item .pac-item-query {
+    font-weight: bold;
+    color: #000;
+}
+
+/* Adiciona um novo ícone ao lado do endereço */
+.pac-item::before {
+    content: ""; /* Ícone de localização personalizado */
+    font-size: 20px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+/* Remove o ícone padrão do Google */
+.pac-icon {
+    display: none;
+}
+
+/* Remove o "Powered by Google" */
+.pac-container:after {
+    display: none !important;
+}
+                  
+.pac-item-query + span::before {
+    content: "("; /* Adiciona parêntese de abertura */
+}
+                  
+                  
+.pac-item-query + span::after {
+    content: ")"; /* Adiciona parêntese de fechamento */
+}
+
+/*________ Inputs _________*/
+.input-field {
+    position: absolute;
+    top: 34%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    width: 180px;
+    height: 30px;
+    border: none;
+    font-size: 16px;
+    text-align: left;
+    padding-left: 10px; /* Espaço interno para não colar no canto */
+    line-height: 30px;
+    outline: none;
+    border-radius: 5px;
+    background: transparent;
+}
+
+.input-container {
+    position: relative;
+    width: 285px;
+    height: 50px;
+}
+
+.custom-input {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border: none;
+    border-radius: 16px;
+    padding-left: 60px;
+    font-size: 16px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    outline: none;
+}
+
+.outer-circle {
+    width: 28px;
+    height: 28px;
+    background-color: #E0ECFF;
+    border-radius: 50%;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.inner-circle {
+    width: 16px;
+    height: 16px;
+    background-color: #3B82F6;
+    border-radius: 50%;
+    position: absolute;
+    left: 26px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.icon-container {
+    position: absolute;
+    left: 26px;
+    top: 53%;
+    transform: translateY(-50%);
+    width: 17px;
+    height: 21px;
+}
+
+/*________ Mapa _________*/
+#map-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+}
