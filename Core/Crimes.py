@@ -110,19 +110,27 @@ def CrimeAplication(Graph, Locations, crimes_by_period):
 
     return Graph
 
-
-
 def CrimeColorsPlot(Graph):
-    max_length = max([data['danger'] for u, v, k, data in Graph.edges(keys=True, data=True)])
+    # Garantir que 'danger' é numérico antes de calcular o máximo
+    max_length = max([float(data['danger']) if isinstance(data['danger'], (int, float)) else 0
+                      for u, v, k, data in Graph.edges(keys=True, data=True)])
 
     fig, ax = ox.plot_graph(Graph, show=False, close=False)
     cmap = plt.cm.get_cmap('RdYlGn_r')
 
     for u, v, k, data in Graph.edges(keys=True, data=True):
-        length = data['danger']
-        if 'geometry' in data and data['danger'] > 10:
+        # Garantir que 'danger' seja um número antes da comparação
+        try:
+            length = float(data['danger'])  # Tenta converter para float
+        except ValueError:
+            length = 0  # Caso não seja possível, define como 0
+
+        if 'geometry' in data and length > 10:  # Compara o valor convertido
             line = data['geometry']
-            color = cmap(length / max_length)
+            if max_length > 0:  # Previne divisão por zero
+                color = cmap(length / max_length)
+            else:
+                color = cmap(0)  # Caso max_length seja zero, atribui a cor mínima
             ax.plot(*line.xy, color=color, linewidth=2)
 
     return fig, ax
@@ -131,8 +139,15 @@ def CrimeColorsPlot(Graph):
 def GraphConversionToHotSpots(Graph):
     HotSpots = []
     for u, v, k, data in Graph.edges(keys=True, data=True):
-        if data['danger'] > 10:
+        try:
+            danger_value = float(data['danger'])  # Tenta converter para float
+        except ValueError:
+            danger_value = 0  # Caso não seja possível, define como 0
+
+        if danger_value > 10:  # Compara o valor convertido
             mid_lat = (Graph.nodes[u]['y'] + Graph.nodes[v]['y']) / 2
             mid_lon = (Graph.nodes[u]['x'] + Graph.nodes[v]['x']) / 2
             HotSpots.append((mid_lat, mid_lon))
+    
     return HotSpots
+

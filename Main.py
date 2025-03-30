@@ -2,7 +2,7 @@ from Core.Crimes import CrimeLocations, FilterCrimes, CrimeAplication, GraphConv
 from Core.MapFunctions import get_geolocation, RoutePlot, FoliumMap
 from Core.AStar import RotaAStar
 from Core.Djikstra import RotaDijkstra
-from Core.Nmf import main_nmf
+#from Core.Nmf import main_nmf
 import matplotlib.pyplot as plt
 import os
 import osmnx as ox
@@ -15,8 +15,8 @@ Graph_folder = "./Data/Graphs/"
 Graph_filename = "Graph_with_NMF.graphml"
 
 # ____ Localização de Origem e Destino ____
-Origin_point = (-23.721843100582227, -46.57406092319069)
-Destination_point = (-23.72194132403423, -46.58071280114315)
+Origin_point = (-23.72405007639595, -46.57949541445861)
+Destination_point = (-23.720464709225926, -46.5699004643136)
 
 
 if Origin_point is None or Destination_point is None:
@@ -47,10 +47,10 @@ else:
     Graph = ox.load_graphml(Graph_folder + Graph_filename)
 
 # Chamando o NMF para extrair a matriz de crimes e aplicar NMF
-Graph, ruas, crime_matrix, W, H = main_nmf(Graph_folder + Graph_filename)
+#Graph, ruas, crime_matrix, W, H = main_nmf(Graph_folder + Graph_filename)
 
 # ____ Determinação de Rota ____
-Route_AStar_comCrimes = RotaAStar(Graph, Origin_point, Destination_point, "weight")
+Route_AStar_comCrimes = RotaAStar(Graph, Origin_point, Destination_point, 2, "weight")
 # Route_AStar_semCrimes  = RotaAStar(Graph, Origin_point, Destination_point, "lenght")
 # Route_Djikstra = RotaDijkstra(Graph, Origin_point, Destination_point)
 
