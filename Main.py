@@ -1,28 +1,33 @@
-from Core.Crimes import CrimeLocations, FilterCrimes, CrimeAplication, GraphConversionToHotSpots, CrimeColorsPlot
-from Core.MapFunctions import get_geolocation, RoutePlot, FoliumMap
-from Core.AStar import RotaAStar
-from Core.Djikstra import RotaDijkstra
-#from Core.Nmf import main_nmf
+
+# ____ Bibliotecas Internas ____
 import matplotlib.pyplot as plt
 import os
 import osmnx as ox
+import networkx as nx
+
+# ____ Bibliotecas Internas ____
+from Core.Crimes import CrimeLocations, FilterCrimes, CrimeAplication, GraphConversionToHotSpots, CrimeColorsPlot
+from Core.MapFunctions import RoutePlot, FoliumMap
+from Core.AStar import RotaAStar
+from Core.Djikstra import RotaDijkstra
+#from Core.Nmf import main_nmf
+
+# ___ Bibliotecas AWS ____
+import io
+import boto3
+import tempfile
+from botocore.exceptions import NoCredentialsError
 
 # ____ Variaveis Configuraveis ____
-Graph_Location = (-23.724222542890598, -46.57762289661209)
-Graph_radio = 1000
 BOs_folder = "./Data/Bos/"
 Graph_folder = "./Data/Graphs/"
-Graph_filename = "Graph_with_NMF.graphml"
+Graph_filename = "Merged_Graph.graphml"
 
 # ____ Localização de Origem e Destino ____
 Origin_point = (-23.72405007639595, -46.57949541445861)
 Destination_point = (-23.720464709225926, -46.5699004643136)
 
-
-if Origin_point is None or Destination_point is None:
-    print("Erro: Endereço Inválido")
-    exit()
-
+# ____ Geração de Repositórios ____
 if not os.path.exists("Data"):
     os.makedirs("Data") 
 if not os.path.exists("Data/Graphs"):
@@ -30,7 +35,35 @@ if not os.path.exists("Data/Graphs"):
 if not os.path.exists("Data/Bos"):
     os.makedirs("Data/Bos")
 
+# _____________ Baixar Merged Graph da AWS ___________________
+if (not os.path.exists(Graph_folder + "/Merged_Graph.graphml")) and Graph_filename == "Merged_Graph.graphml":
 
+    # Configuração do cliente S3
+    if os.path.exists(".env"):
+        s3 = boto3.client('s3')
+    else:
+        raise FileNotFoundError("Erro: O arquivo .env não foi encontrado. Configure o .env para baixar o Merged_Graph da AWS.")
+
+    try:
+        # Baixar o arquivo do S3 e salvar localmente
+        with open("./Data/Graphs/Merged_Graph.graphml", "wb") as local_file:
+            s3.download_fileobj('tcc-grafocriminal', "Merged_Graph.graphml", local_file)
+
+        print("Grafo baixado com sucesso!")
+
+    except NoCredentialsError:
+        print("Erro: Credenciais AWS não encontradas.")
+    except Exception as e:
+        print(f'Ocorreu um erro ao carregar o arquivo: {e}')
+        raise
+
+# ____ Gerar Grafo caso não exita ____
+
+# Configuração
+Graph_Location = (-23.724222542890598, -46.57762289661209)
+Graph_radio = 1000
+
+# Geração
 if not os.path.exists(Graph_folder + Graph_filename):
     # ____ Localização de Crimes____
     Locations, crimes_by_period = CrimeLocations(BOs_folder)

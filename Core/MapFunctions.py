@@ -1,8 +1,7 @@
-from geopy.geocoders import Nominatim
 import math
 import osmnx as ox
 import folium
-import googlemaps
+from shapely.geometry import MultiPoint
 
 # _____Função Haversine_____
 def haversine(lat1, lon1, lat2, lon2):
@@ -16,14 +15,6 @@ def haversine(lat1, lon1, lat2, lon2):
     a = math.sin(delta_phi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2) ** 2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
-
-# _____Função para obter a geolocalização de um endereço_____
-def get_geolocation(address):
-    # Inicializar o geolocalizador
-    geolocator = Nominatim(user_agent="geoapi")
-
-    location = geolocator.geocode(address)
-    return (location.latitude, location.longitude) if location else None
 
 def RoutePlot(ax, Graph, Route_AStar):
     # Adiciona a rota ao gráfico já existente
@@ -46,8 +37,6 @@ def centro_e_raio(p1, p2):
     
     return centro, raio
 
-import folium
-from shapely.geometry import MultiPoint
 
 def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route):
     """
@@ -113,32 +102,33 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route):
 
     return m._repr_html_()  # Retorna o HTML do mapa
 
+# _____ Descontinuado devido implementação direto em JS ______
 
-def obter_geolocalizacao_google(endereco, api_key):
-    """
-    Retorna a latitude e longitude para o endereço fornecido utilizando a API do Google Maps.
+# def obter_geolocalizacao_google(endereco, api_key):
+#     """
+#     Retorna a latitude e longitude para o endereço fornecido utilizando a API do Google Maps.
     
-    Parâmetros:
-    - endereco: Endereço a ser geocodificado (ex: "Rua XV de Novembro, São Paulo, Brasil")
-    - api_key: Sua chave de API do Google Maps
+#     Parâmetros:
+#     - endereco: Endereço a ser geocodificado (ex: "Rua XV de Novembro, São Paulo, Brasil")
+#     - api_key: Sua chave de API do Google Maps
     
-    Retorna:
-    - Tuple (latitude, longitude) ou None se não encontrar a localização.
-    """
-    # Inicializa o cliente do Google Maps
-    gmaps = googlemaps.Client(key=api_key)
+#     Retorna:
+#     - Tuple (latitude, longitude) ou None se não encontrar a localização.
+#     """
+#     # Inicializa o cliente do Google Maps
+#     gmaps = googlemaps.Client(key=api_key)
     
-    try:
-        # Realiza a geocodificação do endereço
-        geocode_result = gmaps.geocode(endereco)
+#     try:
+#         # Realiza a geocodificação do endereço
+#         geocode_result = gmaps.geocode(endereco)
         
-        if geocode_result:
-            # Extrai a latitude e longitude do primeiro resultado
-            lat = geocode_result[0]['geometry']['location']['lat']
-            lng = geocode_result[0]['geometry']['location']['lng']
-            return lat, lng
-        else:
-            return None  # Endereço não encontrado
-    except Exception as e:
-        print(f"Erro ao geocodificar o endereço: {e}")
-        return None
+#         if geocode_result:
+#             # Extrai a latitude e longitude do primeiro resultado
+#             lat = geocode_result[0]['geometry']['location']['lat']
+#             lng = geocode_result[0]['geometry']['location']['lng']
+#             return lat, lng
+#         else:
+#             return None  # Endereço não encontrado
+#     except Exception as e:
+#         print(f"Erro ao geocodificar o endereço: {e}")
+#         return None
