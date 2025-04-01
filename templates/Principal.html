@@ -176,6 +176,7 @@
             width: 100vw;
             height: 100vh;
             display: flex;
+            z-index: -1;
         }
 
         /*________ Inputs _________*/
@@ -241,7 +242,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 0;
         }
 
 
@@ -264,7 +265,7 @@
                 width: 100%;
                 height: 254px;
                 padding: 0px 7px;
-                z-index: 0;
+                z-index: 1;
             }
 
             /*________ Popup _________*/
@@ -329,7 +330,7 @@
             .popup-section {
                 display: none;
                 position: absolute;
-                z-index: 1;
+                z-index: 2;
 
                 top: 1%;
                 bottom: 70px;
