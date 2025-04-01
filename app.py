@@ -11,13 +11,13 @@ import tempfile
 from botocore.exceptions import NoCredentialsError
 
 # Verificar se o diretório existe
-if os.path.exists('Templates'):
+if os.path.exists('templates'):
     # Listar todos os arquivos e subdiretórios dentro do diretório templates
-    for root, dirs, files in os.walk('Templates'):
+    for root, dirs, files in os.walk('templates'):
         for file in files:
             print(os.path.join(root, file))
 else:
-    print(f'O diretório "{'Templates'}" não existe.')
+    print(f'O diretório "{'templates'}" não existe.')
 
 
 app = Flask(__name__)
