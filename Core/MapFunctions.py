@@ -46,9 +46,22 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route):
     - O HTML do mapa gerado
     """
     
-    # Criar um mapa com Folium
-    m = folium.Map(location=Graph_Location, zoom_start=15)
+    # Criar um mapa sem os controles de zoom e sem atribuição de copyright
+    m = folium.Map(
+        location=Graph_Location, 
+        zoom_start=15, 
+        zoom_control=False, 
+        control_scale=False,
+        tiles=None  # Remove o mapa padrão que contém a atribuição
+    )
 
+    # Adicionar um TileLayer sem a mensagem de atribuição
+    folium.TileLayer(
+        tiles="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attr="",  # Remove o copyright
+        name="Mapa Limpo"
+    ).add_to(m)
+    
     # Adicionar ponto de origem (marcador verde)
     folium.Marker(
         location=Origin_point,
