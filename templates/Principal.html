@@ -244,27 +244,12 @@
             z-index: -1;
         }
 
-        /*________ Popup _________*/
-        .popup-section {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 400px;
-            height: 100%;
-            background-color: white;
-            box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
-            
-            transform: translateX(100%); /* Começa fora da tela */
-            transition: transform 0.3s ease-in-out; /* Animação suave */
-        }
 
-        .popup-section.active {
-            transform: translateX(0); /* Move para dentro da tela */
-        }
 
+        /*________ PC _________*/
         @media(min-width: 450px) {
 
-        /*________ Menu _________*/
+            /*________ Menu _________*/
             .menu-section {
                 box-shadow: 0 0 0 1px black;
                 border-width: 2px;
@@ -281,12 +266,30 @@
                 padding: 0px 7px;
                 z-index: 0;
             }
+
+            /*________ Popup _________*/
+            .popup-section {
+                position: fixed;
+                right: 0;
+                top: 0;
+                width: 400px;
+                height: 100%;
+                background-color: white;
+                box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+                
+                transform: translateX(100%); /* Começa fora da tela */
+                transition: transform 0.3s ease-in-out; /* Animação suave */
+            }
+
+            .popup-section.active {
+                transform: translateX(0); /* Move para dentro da tela */
+            }
         }
 
 
 
 
-
+        /*________ Celular _________*/
         @media(max-width: 450px) {
 
             .base {
@@ -295,7 +298,7 @@
                 align-items: flex-start; /* Posiciona os inputs no topo */
             }
 
-        /*________ Input _________*/
+            /*________ Input _________*/
             .input-section {
                 margin-top: 20px;
                 margin-right: 0px;
@@ -303,26 +306,48 @@
                 padding-top: 0px;
             }
 
-        /*________ Menu _________*/
+            /*________ Menu _________*/
             .menu-container {
                 display: flex;
                 align-items: center;
                 justify-content: space-around;
 
-
-
-                width: 100%;  /* Faz o menu ocupar toda a largura */
-                max-width: 330px; /* Limita a largura máxima */
+                width: 100%;
+                max-width: 330px;
                 height: 47px;
                 position: absolute;
-                bottom: 10px; /* Fixa o menu no fundo da tela */
+                bottom: 10px;
                 left: 50%;
-                transform: translateX(-50%); /* Centraliza horizontalmente */
+                transform: translateX(-50%);
                 background: white;
                 border-radius: 20px;
                 border: 1px solid black;
                 padding: 0 20px;
             }
+
+            /*________ Popup _________*/
+            .popup-section {
+                display: none;
+                position: absolute;
+                z-index: 1;
+
+                top: 1%;
+                bottom: 70px;
+                width: 95%;
+                background: white; 
+                border-radius: 20px; 
+                border: 2px black solid;
+            }
+
+            .popup-section.active {
+                display: block;
+            }
+
+
+
+
+
+            
 
 
 
@@ -387,9 +412,7 @@
             </div>
         </section>
 
-        <section class="popup-section">
-
-        </section>
+        <section class="popup-section"></section>
 
         
 
