@@ -78,11 +78,11 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log("Mapa carregado com sucesso:", data.mapa_html);
-                    document.getElementById("map-section").innerHTML = data.mapa_html;
+                    document.getElementById("map-container").innerHTML = data.mapa_html;
 
                     // Aguarde um curto tempo para garantir que o HTML seja inserido
                     setTimeout(() => {
-                        let mapDiv = document.querySelector("#map-section > div > div");
+                        let mapDiv = document.querySelector("#map-container > div > div");
                         if (mapDiv) {
                             mapDiv.style.position = ""; // Ou simplesmente remova a propriedade
                             mapDiv.style.paddingBottom = ""; // Se quiser remover a altura baseada em padding
@@ -103,7 +103,7 @@
 
                 if (window.innerWidth <= 450) {
                     anticlick = document.querySelector("#map-anti-click");
-                    anticlick.style.zIndex = "0";
+                    anticlick.style.zIndex = "-1";
 
                 }
 
@@ -112,7 +112,7 @@
 
                 if (window.innerWidth <= 450) {
                     anticlick = document.querySelector("#map-anti-click");
-                    anticlick.style.zIndex = "1";
+                    anticlick.style.zIndex = "0";
 
                 }
             }
@@ -258,11 +258,17 @@
             height: 100%;
         }
 
+        #map-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
         #map-anti-click {
             position: absolute;
             width: 100%;
             height: 100%;
-            z-index: 0;
+            z-index: -1;
         }
 
         .leaflet-control-zoom {
@@ -387,6 +393,7 @@
     <section class="base">
 
         <section id="map-section">
+            <div id="map-container"></div>
             <div id="map-anti-click"></div>
         </section>
 
