@@ -94,7 +94,7 @@ fig, ax = CrimeColorsPlot(Graph)
 RoutePlot(ax, Graph, Route_AStar_comCrimes)
 
 # _____ Determinar Hotspots _____
-Hotspots = GraphConversionToHotSpots(Graph)
+# Hotspots = GraphConversionToHotSpots(Graph)
 
 # ____ Follium Map ____
 map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar_comCrimes)
