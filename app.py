@@ -10,6 +10,16 @@ import boto3
 import tempfile
 from botocore.exceptions import NoCredentialsError
 
+# Verificar se o diretório existe
+if os.path.exists('templates'):
+    # Listar todos os arquivos e subdiretórios dentro do diretório templates
+    for root, dirs, files in os.walk('templates'):
+        for file in files:
+            print(os.path.join(root, file))
+else:
+    print(f'O diretório "{'templates'}" não existe.')
+
+
 app = Flask(__name__)
 
 # Configuração do cliente S3
@@ -77,3 +87,4 @@ def return_map():
     print("Tempo de execução Total:", end_fulltime - start_fulltime)
 
     return jsonify(mapa_html=mapa_html)
+
