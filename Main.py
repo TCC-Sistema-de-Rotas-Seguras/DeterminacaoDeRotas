@@ -1,5 +1,5 @@
 
-# ____ Bibliotecas Internas ____
+# ____ Bibliotecas Externas ____
 import matplotlib.pyplot as plt
 import os
 import osmnx as ox

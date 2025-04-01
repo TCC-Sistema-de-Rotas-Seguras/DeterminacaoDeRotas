@@ -1,36 +1,34 @@
+# ____ Bibliotecas Externas ____
 from flask import Flask, jsonify, request, render_template
 import osmnx as ox
+import os
+import time
+
+# ____ Bibliotecas Internas ____
 from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap
 from Core.AStar import RotaAStar
 from Core.Djikstra import RotaDijkstra
-import os
-import time
+
+# ___ Bibliotecas AWS ____
 import io
 import boto3
 import tempfile
 from botocore.exceptions import NoCredentialsError
 
-# Verificar se o diretório existe
-if os.path.exists('templates'):
-    # Listar todos os arquivos e subdiretórios dentro do diretório templates
-    for root, dirs, files in os.walk('templates'):
-        for file in files:
-            print(os.path.join(root, file))
-else:
-    print(f'O diretório "{'templates'}" não existe.')
-
-
 app = Flask(__name__)
+
+# ____ Configuração do download AWS ____
 
 # Configuração do cliente S3
 s3 = boto3.client('s3')
 
-# Nome do bucket e do arquivo que você quer ler
-bucket_name = 'tcc-grafocriminal'  # Substitua pelo seu bucket
-file_name = 'Merged_Graph.graphml'  # Substitua pelo nome do seu arquivo
+# Substitua pelo seu bucket
+bucket_name = 'tcc-grafocriminal'  
+# Substitua pelo nome do seu arquivo
+file_name = 'Merged_Graph.graphml'  
 
+# Carrega o arquivo do S3 para um objeto em memória e loada o grafo
 try:
-    # Tente carregar o grafo a partir do S3
     file_obj = io.BytesIO()
     s3.download_fileobj(bucket_name, file_name, file_obj)
     file_obj.seek(0)
