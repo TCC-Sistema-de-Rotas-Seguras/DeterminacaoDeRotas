@@ -18,13 +18,10 @@ from botocore.exceptions import NoCredentialsError
 app = Flask(__name__)
 
 # ____ Configuração do download AWS ____
-
-# Configuração do cliente S3
 s3 = boto3.client('s3')
 
-# Substitua pelo seu bucket
+# Arquivo e Bucket da AWS
 bucket_name = 'tcc-grafocriminal'  
-# Substitua pelo nome do seu arquivo
 file_name = 'Merged_Graph.graphml'  
 
 # Carrega o arquivo do S3 para um objeto em memória e loada o grafo
@@ -33,8 +30,9 @@ try:
     s3.download_fileobj(bucket_name, file_name, file_obj)
     file_obj.seek(0)
     
+    # Carrega o grafo a partir do objeto em memória
     with tempfile.NamedTemporaryFile(delete=False, suffix='.graphml') as temp_file:
-        temp_file.write(file_obj.read())  # Escrever o conteúdo do arquivo no arquivo temporário
+        temp_file.write(file_obj.read())
         temp_file.close()
         Graph = ox.load_graphml(temp_file.name)
 
@@ -49,35 +47,43 @@ except Exception as e:
 
 @app.route('/', methods=['GET'])
 def principal():
-    # Carregar a chave da API do Google Maps do arquivo .env
     api_key = os.getenv('GOOGLE_API_KEY')
     
-    # Passar a chave da API para o template
     return render_template('Principal.html', api_key=api_key)
 
 @app.route('/return_map', methods=['GET'])
 def return_map():
     start_fulltime = time.time()
 
-    origin_str = request.args.get("origin")
-    destination_str = request.args.get("destination")
+    origin = request.args.get("origin")
+    destination = request.args.get("destination")
+    # parameter = request.args.get("route_parameter")
+    # algorithm = request.args.get("algorithm")
 
-    if not origin_str or not destination_str:
+    if not origin or not destination:
         return jsonify(error="Erro: Parâmetros 'origin' e 'destination' são obrigatórios."), 400
+    
 
     try:
-        Origin_point = tuple(map(float, origin_str.split(',')))
-        Destination_point = tuple(map(float, destination_str.split(',')))
+        Origin_point = tuple(map(float, origin.split(',')))
+        Destination_point = tuple(map(float, destination.split(',')))
     except (ValueError, TypeError):
         return jsonify(error="Erro: Formato inválido. Use LAT,LON para origem e destino."), 400
 
+        
+    # if algorithm == "Dijkstra":
+    #     Route = RotaDijkstra(Graph, Origin_point, Destination_point)
+    # elif algorithm == "AStar":
+    #     Route = RotaAStar(Graph, Origin_point, Destination_point, parameter)
+    # else:
+    #     return jsonify(error="Erro: Algoritmo inválido. Use 'Dijkstra' ou 'AStar'."), 400
+    Rota_Dijkstra = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
+    Rota_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
+
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
-    Route_Djiktra = RotaDijkstra(Graph, Origin_point, Destination_point)
-    # Route_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
 
     start_time = time.time()
-    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_Djiktra)
-    # mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar)
+    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_AStar, Rota_Dijkstra)
     end_time = time.time()
     print("Tempo de execução FoliumMap:", end_time - start_time)
 
