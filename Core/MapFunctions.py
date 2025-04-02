@@ -2,6 +2,7 @@ import math
 import osmnx as ox
 import folium
 from shapely.geometry import MultiPoint
+from branca.element import Figure
 
 # _____Função Haversine_____
 def haversine(lat1, lon1, lat2, lon2):
@@ -46,8 +47,21 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route):
     - O HTML do mapa gerado
     """
     
-    # Criar um mapa com Folium
-    m = folium.Map(location=Graph_Location, zoom_start=15)
+    # Criar um mapa sem os controles de zoom e sem atribuição de copyright
+    m = folium.Map(
+        location=Graph_Location, 
+        zoom_start=15, 
+        zoom_control=False, 
+        control_scale=False,
+        tiles=None  # Remove o mapa padrão que contém a atribuição
+    )
+
+    # Remover o logo @foliummap
+    folium.TileLayer(
+        tiles="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attr=" ",  # Define um espaço em branco para evitar o erro
+        name="Mapa Limpo"
+    ).add_to(m)
 
     # Adicionar ponto de origem (marcador verde)
     folium.Marker(
@@ -97,8 +111,11 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route):
         m.location = map_center
         m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
-    # Salva o mapa em um arquivo HTML
-    m.save("Mapa.html")
+    # Remover o logo @foliummap
+    m.get_root().header.render()
+    figure = Figure()
+    figure.add_child(m)
+    figure.html.add_child(folium.Element("<style>.leaflet-control-attribution { display: none !important; }</style>"))
 
     return m._repr_html_()  # Retorna o HTML do mapa
 
