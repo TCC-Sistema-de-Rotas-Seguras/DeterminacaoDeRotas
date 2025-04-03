@@ -13,7 +13,7 @@ def heuristic(node, target, graph):
     euclidean_distance = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
     # Perigo médio estimado
-    avg_danger = sum(data.get("danger", 0) for _, _, data in graph.edges(node, data=True)) / max(1, len(graph.edges(node)))
+    avg_danger = sum(float(data.get("danger", 0)) for _, _, data in graph.edges(node, data=True)) / max(1, len(graph.edges(node)))
 
     # Combinação de distância e perigo na heurística
     return euclidean_distance + (avg_danger * euclidean_distance)

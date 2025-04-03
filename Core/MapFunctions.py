@@ -39,7 +39,7 @@ def centro_e_raio(p1, p2):
     return centro, raio
 
 
-def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, HotspotRoute = None):
+def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, HotspotRoute = None, rotaapagar  = None):
     """
     Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
     
@@ -120,7 +120,42 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
 
             for data in edge_data.values():
                 # Definir a cor da linha com base no perigo
-                color = "red" if float(data.get("danger", 0)) > 10 else "purple"
+                color = "red" if float(data.get("danger", 0)) > 10 else "green"
+
+                if "geometry" in data:
+                    line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
+                else:
+                    line_coords = [(Graph.nodes[u]["y"], Graph.nodes[u]["x"]),
+                                (Graph.nodes[v]["y"], Graph.nodes[v]["x"])]
+
+                route_points.extend(line_coords)
+                folium.PolyLine(line_coords, color=color, weight=5, opacity=0.7).add_to(m)
+
+            # Calcular o bounding box para ajustar o zoom
+            points = MultiPoint(route_points)
+            min_lat, min_lon, max_lat, max_lon = points.bounds
+
+            buffer = 0.002  # Ajuste esse valor conforme necessário
+            min_lat -= buffer
+            max_lat += buffer
+            min_lon -= buffer
+            max_lon += buffer
+
+            # Centralizar o mapa e ajustar o zoom
+            map_center = [(min_lat + max_lat) / 2, (min_lon + max_lon) / 2]
+            m.location = map_center
+            m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
+
+    if rotaapagar is not None:
+        # Adicionar a rota calculada (seguindo as ruas corretamente)
+        route_points = []  # Para calcular o bounding box
+        for i in range(len(HotspotRoute) - 1):
+            u, v = HotspotRoute[i], HotspotRoute[i + 1]
+            edge_data = Graph.get_edge_data(u, v)
+
+            for data in edge_data.values():
+                # Definir a cor da linha com base no perigo
+                color = "red" if float(data.get("danger", 0)) > 10 else "red"
 
                 if "geometry" in data:
                     line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]

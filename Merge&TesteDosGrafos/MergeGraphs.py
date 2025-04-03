@@ -9,7 +9,7 @@ Merged_Graph_filename = "Merged_Graph.graphml"
 
 # Listar todos os arquivos de grafos gerados
 graph_files = [f for f in os.listdir(Graph_folder) if f.endswith(".graphml")]
-print(graph_files)
+
 # Carregar o primeiro grafo
 merged_graph = ox.load_graphml(os.path.join(Graph_folder, graph_files[0]))
 
@@ -26,4 +26,4 @@ for graph_file in tqdm(graph_files[1:], desc="Mesclando Grafos"):
 ox.save_graphml(merged_graph, os.path.join(Graph_folder, Merged_Graph_filename))
 
 # Opcional: visualizar o grafo combinado
-ox.plot_graph(merged_graph)
+# ox.plot_graph(merged_graph)

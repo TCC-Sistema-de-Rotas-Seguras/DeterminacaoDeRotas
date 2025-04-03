@@ -46,7 +46,7 @@ def custom_weight_NMF(graph, periodo):
 
 # ____ Diretório dos Grafos ____ 
 Graph_folder = "./Data/Graphs/"
-Merged_Graph_filename = "Parcial_Merged_Graph"
+Merged_Graph_filename = "Merged_Graph"
 
 print("Carregando o grafo...")
 Graph = ox.load_graphml(os.path.join(Graph_folder, Merged_Graph_filename + ".graphml"))
