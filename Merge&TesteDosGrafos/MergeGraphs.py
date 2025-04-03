@@ -1,6 +1,7 @@
 import os
 import osmnx as ox
 import networkx as nx
+from tqdm import tqdm
 
 # ____ Diretório dos Grafos ____ 
 Graph_folder = "./Data/GraphParts/"
@@ -13,9 +14,8 @@ print(graph_files)
 merged_graph = ox.load_graphml(os.path.join(Graph_folder, graph_files[0]))
 
 # Iterar sobre os arquivos de grafos restantes e juntar com o grafo já carregado
-for graph_file in graph_files[1:]:
+for graph_file in tqdm(graph_files[1:], desc="Mesclando Grafos"):
     if graph_file != "Merged_Graph.graphml":
-        print(os.path.join(Graph_folder, graph_file))
         # Carregar o grafo do arquivo
         current_graph = ox.load_graphml(os.path.join(Graph_folder, graph_file))
         

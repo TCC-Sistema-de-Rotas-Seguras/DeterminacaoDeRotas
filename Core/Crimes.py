@@ -67,7 +67,7 @@ def CrimeLocations(pasta):
         print("Erro: Quantidade de Valores Diferentes nas listas.")
         exit()
 
-    return Locations, crimes_by_period
+    return Locations
 
 # _____ Filtro de Crimes dentro de um raio _____
 def FilterCrimes(Graph_Location, Graph_radio, CrimeLocations):
@@ -80,22 +80,21 @@ def FilterCrimes(Graph_Location, Graph_radio, CrimeLocations):
     return FilteredLocations
 
 # _____ Aplicação de Crimes ao Grafo _____
-# _____ Aplicação de Crimes ao Grafo _____
-def CrimeAplication(Graph, Locations, crimes_by_period):
+def CrimeAplication(Graph, Locations):
 
     # Inicializar pesos das ruas
     for u, v, k, data in Graph.edges(keys=True, data=True):
         data['danger'] = 1
-        data.setdefault('manha', 0)
-        data.setdefault('tarde', 0)
-        data.setdefault('noite', 0)
+        data.setdefault('danger_manha', 0)
+        data.setdefault('danger_tarde', 0)
+        data.setdefault('danger_noite', 0)
         data['street_name'] = data.get('name', f"Rua {u}-{v}")
 
     # Usar osmnx para encontrar o nó mais próximo para cada ponto
     for i in tqdm(range(len(Locations[0])), desc="Determining Street Weights"):
         lat = Locations[0][i]  # Latitude
         lon = Locations[1][i]  # Longitude
-        crime_period = Locations[2][i]  # Período (manha, tarde, noite)
+        crime_period = 'danger_' + Locations[2][i]  # Período (manha, tarde, noite)
 
         nearest_node = ox.distance.nearest_nodes(Graph, lon, lat)
         for u, v, k, data in Graph.edges(keys=True, data=True):
