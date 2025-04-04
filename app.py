@@ -90,7 +90,7 @@ def return_map():
     Rota_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
     # Rota_AStar_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
 
-    Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
+    Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_0")
     # Rota_AStar_tarde = RotaAStar_NMF(Graph, Origin_point, Destination_point,1, "weight_tarde")
     # Rota_AStar_noite = RotaAStar_NMF(Graph, Origin_point, Destination_point,2, "weight_noite")
 
