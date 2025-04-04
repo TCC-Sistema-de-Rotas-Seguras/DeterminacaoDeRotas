@@ -39,7 +39,7 @@ def centro_e_raio(p1, p2):
     return centro, raio
 
 
-def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, HotspotRoute = None):
+def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Route2 = None, Route3  = None):
     """
     Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
     
@@ -77,6 +77,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
         icon=folium.Icon(color="blue", icon="flag")
     ).add_to(m)
 
+    # ____ Rota 1 ____
     # Adicionar a rota calculada (seguindo as ruas corretamente)
     route_points = []  # Para calcular o bounding box
     for i in range(len(Route) - 1):
@@ -111,16 +112,53 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
         m.location = map_center
         m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
-    if HotspotRoute is not None:
+    # ____ Rota 2 ____
+    if Route2 is not None:
         # Adicionar a rota calculada (seguindo as ruas corretamente)
         route_points = []  # Para calcular o bounding box
-        for i in range(len(HotspotRoute) - 1):
-            u, v = HotspotRoute[i], HotspotRoute[i + 1]
+        for i in range(len(Route2) - 1):
+            u, v = Route2[i], Route2[i + 1]
             edge_data = Graph.get_edge_data(u, v)
 
             for data in edge_data.values():
                 # Definir a cor da linha com base no perigo
-                color = "red" if float(data.get("danger", 0)) > 10 else "purple"
+                color = "red" if float(data.get("danger", 0)) > 10 else "green"
+
+                if "geometry" in data:
+                    line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
+                else:
+                    line_coords = [(Graph.nodes[u]["y"], Graph.nodes[u]["x"]),
+                                (Graph.nodes[v]["y"], Graph.nodes[v]["x"])]
+
+                route_points.extend(line_coords)
+                folium.PolyLine(line_coords, color=color, weight=5, opacity=0.7).add_to(m)
+
+            # Calcular o bounding box para ajustar o zoom
+            points = MultiPoint(route_points)
+            min_lat, min_lon, max_lat, max_lon = points.bounds
+
+            buffer = 0.002  # Ajuste esse valor conforme necessário
+            min_lat -= buffer
+            max_lat += buffer
+            min_lon -= buffer
+            max_lon += buffer
+
+            # Centralizar o mapa e ajustar o zoom
+            map_center = [(min_lat + max_lat) / 2, (min_lon + max_lon) / 2]
+            m.location = map_center
+            m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
+
+    # ____ Rota 3 ____
+    if Route3 is not None:
+        # Adicionar a rota calculada (seguindo as ruas corretamente)
+        route_points = []  # Para calcular o bounding box
+        for i in range(len(Route3) - 1):
+            u, v = Route3[i], Route3[i + 1]
+            edge_data = Graph.get_edge_data(u, v)
+
+            for data in edge_data.values():
+                # Definir a cor da linha com base no perigo
+                color = "red" if float(data.get("danger", 0)) > 10 else "red"
 
                 if "geometry" in data:
                     line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
@@ -155,7 +193,6 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
     return m._repr_html_()  # Retorna o HTML do mapa
 
 # _____ Descontinuado devido implementação direto em JS ______
-
 # def obter_geolocalizacao_google(endereco, api_key):
 #     """
 #     Retorna a latitude e longitude para o endereço fornecido utilizando a API do Google Maps.

@@ -10,9 +10,9 @@ def extract_crime_matrix(Graph):
 
     for u, v, k, data in Graph.edges(keys=True, data=True):
         # Pegando os dados de crime por período
-        crimes_manha = int(data.get("manha", 0))
-        crimes_tarde = int(data.get("tarde", 0))
-        crimes_noite = int(data.get("noite", 0))
+        crimes_manha = int(data.get("danger_manha", 0))
+        crimes_tarde = int(data.get("danger_tarde", 0))
+        crimes_noite = int(data.get("danger_noite", 0))
         
         # Verificando se o valor de "danger" é maior que 1
         danger = int(data.get("danger", 0))  # Pegando o valor de 'danger'
@@ -87,30 +87,25 @@ def write_nmf_output_to_file(edge_ids, W, H, output_filename="aresta_nmf_output.
 
 
 # Função principal
-def main_nmf(graphml_path, n_components=3):
-    Graph = ox.load_graphml(graphml_path)
+def main_nmf(Graph, n_components=3):
+    # Graph = ox.load_graphml(graphml_path)
     edge_ids, crime_matrix = extract_crime_matrix(Graph)
 
     W, H = apply_nmf(crime_matrix, n_components=n_components)
     Graph = assign_nmf_features_to_graph(Graph, edge_ids, W, print_process=False)  # Desativar o print após NMF
 
-    # Salvar as arestas e componentes NMF em um arquivo de texto
-    write_nmf_output_to_file(edge_ids, W, H)
+    # # Salvar as arestas e componentes NMF em um arquivo de texto
+    # write_nmf_output_to_file(edge_ids, W, H)
 
-    # Imprimir a matriz de crimes para depuração
-    print("Matriz de crimes antes de NMF:")
-    print(crime_matrix)
+    # # Imprimir a matriz de crimes para depuração
+    # print("Matriz de crimes antes de NMF:")
+    # print(crime_matrix)
     
-    # Exibir a matriz W e H para verificar a decomposição
-    print("Matriz W (arestas x componentes):")
-    print(W)
-    print("Matriz H (componentes x períodos de tempo):")
-    print(H)
+    # # Exibir a matriz W e H para verificar a decomposição
+    # print("Matriz W (arestas x componentes):")
+    # print(W)
+    # print("Matriz H (componentes x períodos de tempo):")
+    # print(H)
 
-    ox.save_graphml(Graph, "Data/Graphs/Graph_with_NMF.graphml")
-    return Graph, edge_ids, crime_matrix, W, H
-
-
-# Caminho do grafo e execução do NMF
-graph_path = "./Data/Graphs/Graph.graphml"
-graph, edge_ids, crime_matrix, W, H = main_nmf(graph_path)
+    # ox.save_graphml(Graph, "Data/Graphs/Graph_with_NMF.graphml")
+    return Graph

@@ -7,6 +7,7 @@ import time
 # ____ Bibliotecas Internas ____
 from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap
 from Core.AStar import RotaAStar
+from Core.AStar_NMF import RotaAStar_NMF
 from Core.Djikstra import RotaDijkstra
 
 # ___ Bibliotecas AWS ____
@@ -22,7 +23,7 @@ s3 = boto3.client('s3')
 
 # Arquivo e Bucket da AWS
 bucket_name = 'tcc-grafocriminal'  
-file_name = 'Merged_Graph.graphml'  
+file_name = 'Merged_Graph_Aplicado.graphml'  
 
 # Carrega o arquivo do S3 para um objeto em memória e loada o grafo
 try:
@@ -44,6 +45,10 @@ except Exception as e:
     print(f'Ocorreu um erro ao carregar o arquivo: {e}')
     raise
 
+# Erro gerado ainda nao compreendido, mas nao funciona sem isso
+for u, v, data in Graph.edges(data=True):
+    if "weight" in data:
+        data["weight"] = float(data["weight"])
 
 @app.route('/', methods=['GET'])
 def principal():
@@ -53,6 +58,7 @@ def principal():
 
 @app.route('/return_map', methods=['GET'])
 def return_map():
+    print("Iniciando a execução do endpoint /return_map")
     start_fulltime = time.time()
 
     origin = request.args.get("origin")
@@ -77,13 +83,21 @@ def return_map():
     #     Route = RotaAStar(Graph, Origin_point, Destination_point, parameter)
     # else:
     #     return jsonify(error="Erro: Algoritmo inválido. Use 'Dijkstra' ou 'AStar'."), 400
+
+
     Rota_Dijkstra = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
+
     Rota_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
+    Rota_AStar_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
+
+    Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point,0, "weight_manha")
+    # Rota_AStar_tarde = RotaAStar_NMF(Graph, Origin_point, Destination_point,1, "weight_tarde")
+    # Rota_AStar_noite = RotaAStar(Graph, Origin_point, Destination_point,2, "weight_noite")
 
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
 
     start_time = time.time()
-    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_AStar, Rota_Dijkstra)
+    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_AStar, Rota_AStar_length, Rota_AStar_manha)
     end_time = time.time()
     print("Tempo de execução FoliumMap:", end_time - start_time)
 
