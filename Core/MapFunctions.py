@@ -122,7 +122,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Rou
 
             for data in edge_data.values():
                 # Definir a cor da linha com base no perigo
-                color = "red" if float(data.get("danger_0", 0)) > 10 else "black"
+                color = "red" if float(data.get("danger", 0)) > 10 else "green"
 
                 if "geometry" in data:
                     line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
@@ -158,7 +158,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Rou
 
             for data in edge_data.values():
                 # Definir a cor da linha com base no perigo
-                color = "red" if float(data.get("danger_manha", 0)) > 10 else "black"
+                color = "red" if float(data.get("danger", 0)) > 10 else "black"
 
                 if "geometry" in data:
                     line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]

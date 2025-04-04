@@ -91,7 +91,7 @@ def return_map():
     # Rota_Dijkstra = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
 
     Rota_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
-    # Rota_AStar_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
+    Rota_AStar_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
 
     Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_0")
     # Rota_AStar_tarde = RotaAStar_NMF(Graph, Origin_point, Destination_point,1, "weight_tarde")
@@ -100,7 +100,7 @@ def return_map():
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
 
     start_time = time.time()
-    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_AStar, Rota_AStar_manha)
+    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_AStar, Rota_AStar_manha, Rota_AStar_length)
     end_time = time.time()
     print("Tempo de execução FoliumMap:", end_time - start_time)
 
