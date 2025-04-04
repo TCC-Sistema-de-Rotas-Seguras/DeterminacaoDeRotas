@@ -49,6 +49,9 @@ except Exception as e:
 for u, v, data in Graph.edges(data=True):
     if "weight" in data:
         data["weight"] = float(data["weight"])
+for u, v, data in Graph.edges(data=True):
+    if "weight_0" in data:
+        data["weight_0"] = float(data["weight_0"])
 
 @app.route('/', methods=['GET'])
 def principal():
