@@ -34,10 +34,7 @@ def custom_weight_NMF(graph, periodo):
         distance = data.get("length")
 
         # Ajusta os valores de perigo com base nos componentes NMF para o período específico
-        crime = float(data.get(f"nmf_component_{periodo_idx + 1}", 0))  # Garantir que seja numérico
-        
-        # Calcula o perigo total como o componente NMF específico para o período
-        penalty = crime
+        penalty = float(data.get(f"nmf_component_{periodo_idx + 1}", 0))  # Garantir que seja numérico
         
         # Calcula o peso da aresta, combinando distância e perigo
         data[weight_key] = alpha * distance + beta * penalty
