@@ -133,20 +133,3 @@ def CrimeColorsPlot(Graph):
             ax.plot(*line.xy, color=color, linewidth=2)
 
     return fig, ax
-
-
-def GraphConversionToHotSpots(Graph):
-    HotSpots = []
-    for u, v, k, data in Graph.edges(keys=True, data=True):
-        try:
-            danger_value = float(data['danger'])  # Tenta converter para float
-        except ValueError:
-            danger_value = 0  # Caso não seja possível, define como 0
-
-        if danger_value > 10:  # Compara o valor convertido
-            mid_lat = (Graph.nodes[u]['y'] + Graph.nodes[v]['y']) / 2
-            mid_lon = (Graph.nodes[u]['x'] + Graph.nodes[v]['x']) / 2
-            HotSpots.append((mid_lat, mid_lon))
-    
-    return HotSpots
-

@@ -23,7 +23,7 @@ s3 = boto3.client('s3')
 
 # Arquivo e Bucket da AWS
 bucket_name = 'tcc-grafocriminal'  
-file_name = 'Merged_Graph.graphml'  
+file_name = 'Merged_Graph_Aplicado.graphml'  
 
 # Carrega o arquivo do S3 para um objeto em memória e loada o grafo
 try:
@@ -44,8 +44,6 @@ except NoCredentialsError:
 except Exception as e:
     print(f'Ocorreu um erro ao carregar o arquivo: {e}')
     raise
-
-# Graph = ox.load_graphml("Data/Graphs/Merged_Graph_Aplicado.graphml")
 
 # Erro gerado ainda nao compreendido, mas nao funciona sem isso
 for u, v, data in Graph.edges(data=True):
