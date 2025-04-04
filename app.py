@@ -23,7 +23,7 @@ s3 = boto3.client('s3')
 
 # Arquivo e Bucket da AWS
 bucket_name = 'tcc-grafocriminal'  
-file_name = 'Merged_Graph_Aplicado.graphml'  
+file_name = 'Merged_Graph_NMF.graphml'  
 
 # Carrega o arquivo do S3 para um objeto em memória e loada o grafo
 try:
@@ -90,7 +90,7 @@ def return_map():
     Rota_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
     Rota_AStar_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
 
-    Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point,0, "weight_manha")
+    Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
     # Rota_AStar_tarde = RotaAStar_NMF(Graph, Origin_point, Destination_point,1, "weight_tarde")
     # Rota_AStar_noite = RotaAStar(Graph, Origin_point, Destination_point,2, "weight_noite")
 
