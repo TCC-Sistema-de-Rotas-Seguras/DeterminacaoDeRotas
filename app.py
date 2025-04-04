@@ -18,34 +18,34 @@ from botocore.exceptions import NoCredentialsError
 
 app = Flask(__name__)
 
-# # ____ Configuração do download AWS ____
-# s3 = boto3.client('s3')
+# ____ Configuração do download AWS ____
+s3 = boto3.client('s3')
 
-# # Arquivo e Bucket da AWS
-# bucket_name = 'tcc-grafocriminal'  
-# file_name = 'Merged_Graph.graphml'  
+# Arquivo e Bucket da AWS
+bucket_name = 'tcc-grafocriminal'  
+file_name = 'Merged_Graph.graphml'  
 
-# # Carrega o arquivo do S3 para um objeto em memória e loada o grafo
-# try:
-#     file_obj = io.BytesIO()
-#     s3.download_fileobj(bucket_name, file_name, file_obj)
-#     file_obj.seek(0)
+# Carrega o arquivo do S3 para um objeto em memória e loada o grafo
+try:
+    file_obj = io.BytesIO()
+    s3.download_fileobj(bucket_name, file_name, file_obj)
+    file_obj.seek(0)
     
-#     # Carrega o grafo a partir do objeto em memória
-#     with tempfile.NamedTemporaryFile(delete=False, suffix='.graphml') as temp_file:
-#         temp_file.write(file_obj.read())
-#         temp_file.close()
-#         Graph = ox.load_graphml(temp_file.name)
+    # Carrega o grafo a partir do objeto em memória
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.graphml') as temp_file:
+        temp_file.write(file_obj.read())
+        temp_file.close()
+        Graph = ox.load_graphml(temp_file.name)
 
-#     print("Grafo carregado com sucesso!")
+    print("Grafo carregado com sucesso!")
 
-# except NoCredentialsError:
-#     print("Erro: Credenciais AWS não encontradas.")
-# except Exception as e:
-#     print(f'Ocorreu um erro ao carregar o arquivo: {e}')
-#     raise
+except NoCredentialsError:
+    print("Erro: Credenciais AWS não encontradas.")
+except Exception as e:
+    print(f'Ocorreu um erro ao carregar o arquivo: {e}')
+    raise
 
-Graph = ox.load_graphml("Data/Graphs/Merged_Graph_Aplicado.graphml")
+# Graph = ox.load_graphml("Data/Graphs/Merged_Graph_Aplicado.graphml")
 
 # Erro gerado ainda nao compreendido, mas nao funciona sem isso
 for u, v, data in Graph.edges(data=True):
