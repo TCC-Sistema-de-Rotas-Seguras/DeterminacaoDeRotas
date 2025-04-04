@@ -39,7 +39,7 @@ def centro_e_raio(p1, p2):
     return centro, raio
 
 
-def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, HotspotRoute = None, rotaapagar  = None):
+def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Route2 = None, Route3  = None):
     """
     Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
     
@@ -77,6 +77,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
         icon=folium.Icon(color="blue", icon="flag")
     ).add_to(m)
 
+    # ____ Rota 1 ____
     # Adicionar a rota calculada (seguindo as ruas corretamente)
     route_points = []  # Para calcular o bounding box
     for i in range(len(Route) - 1):
@@ -111,11 +112,12 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
         m.location = map_center
         m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
-    if HotspotRoute is not None:
+    # ____ Rota 2 ____
+    if Route2 is not None:
         # Adicionar a rota calculada (seguindo as ruas corretamente)
         route_points = []  # Para calcular o bounding box
-        for i in range(len(HotspotRoute) - 1):
-            u, v = HotspotRoute[i], HotspotRoute[i + 1]
+        for i in range(len(Route2) - 1):
+            u, v = Route2[i], Route2[i + 1]
             edge_data = Graph.get_edge_data(u, v)
 
             for data in edge_data.values():
@@ -146,11 +148,12 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
             m.location = map_center
             m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
-    if rotaapagar is not None:
+    # ____ Rota 3 ____
+    if Route3 is not None:
         # Adicionar a rota calculada (seguindo as ruas corretamente)
         route_points = []  # Para calcular o bounding box
-        for i in range(len(HotspotRoute) - 1):
-            u, v = HotspotRoute[i], HotspotRoute[i + 1]
+        for i in range(len(Route3) - 1):
+            u, v = Route3[i], Route3[i + 1]
             edge_data = Graph.get_edge_data(u, v)
 
             for data in edge_data.values():
@@ -190,7 +193,6 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route, Hot
     return m._repr_html_()  # Retorna o HTML do mapa
 
 # _____ Descontinuado devido implementação direto em JS ______
-
 # def obter_geolocalizacao_google(endereco, api_key):
 #     """
 #     Retorna a latitude e longitude para o endereço fornecido utilizando a API do Google Maps.
