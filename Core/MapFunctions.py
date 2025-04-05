@@ -38,6 +38,35 @@ def centro_e_raio(p1, p2):
     
     return centro, raio
 
+def PlotPontoDePerigo(mapa,data, Graph, u, v):
+    QntdCrimes = int(data.get("danger", 0))
+
+    if 5 <= QntdCrimes <= 12:
+        cor = "orange"
+    elif 13 <= QntdCrimes <= 20:
+        cor = "red"
+    else:
+        cor = "black"
+
+    if QntdCrimes > 5: 
+        print(f"Ponto{u,v} Perigo: {QntdCrimes} Cor: {cor}")
+    
+    # Adicionar ponto de perigo (marcador preto)
+    if QntdCrimes > 5:
+        if "geometry" in data:
+            # Pega o primeiro ponto da linha
+            lon, lat = list(data["geometry"].coords)[0]
+        else:
+            # Usa o ponto inicial da aresta (nó u)
+            lat = Graph.nodes[u]["y"]
+            lon = Graph.nodes[u]["x"]
+
+        folium.Marker(
+            location=(lat, lon),
+            popup=f"Perigo: {data.get('danger')}",
+            icon=folium.Icon(color=cor, icon="info-sign")
+        ).add_to(mapa)
+
 
 def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime, RouteLenght=None):
     """
@@ -86,24 +115,9 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
 
         for data in edge_data.values():
 
-            # Definir a cor
+            # Definir a cor da rota
             color = "blue"
-
-            # Adicionar ponto de perigo (marcador preto)
-            if float(data.get("danger", 0)) > 5:
-                if "geometry" in data:
-                    # Pega o primeiro ponto da linha
-                    lon, lat = list(data["geometry"].coords)[0]
-                else:
-                    # Usa o ponto inicial da aresta (nó u)
-                    lat = Graph.nodes[u]["y"]
-                    lon = Graph.nodes[u]["x"]
-
-                folium.Marker(
-                    location=(lat, lon),
-                    popup=f"Perigo: {data.get('danger')}",
-                    icon=folium.Icon(color="black", icon="info-sign")
-                ).add_to(m)
+            PlotPontoDePerigo(m, data, Graph, u, v)
 
             if "geometry" in data:
                 line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
@@ -123,24 +137,10 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
             edge_data = Graph.get_edge_data(u, v)
 
             for data in edge_data.values():
-                # Definir a cor da linha com base no perigo
+
+                # Definir a cor da rota
                 color = "green"
-
-                # Adicionar ponto de perigo (marcador preto)
-                if float(data.get("danger", 0)) > 5:
-                    if "geometry" in data:
-                        # Pega o primeiro ponto da linha
-                        lon, lat = list(data["geometry"].coords)[0]
-                    else:
-                        # Usa o ponto inicial da aresta (nó u)
-                        lat = Graph.nodes[u]["y"]
-                        lon = Graph.nodes[u]["x"]
-
-                    folium.Marker(
-                        location=(lat, lon),
-                        popup=f"Perigo: {data.get('danger')}",
-                        icon=folium.Icon(color="black", icon="info-sign")
-                    ).add_to(m)
+                PlotPontoDePerigo(m, data, Graph, u, v)
 
                 
                 if "geometry" in data:
