@@ -25,25 +25,29 @@ s3 = boto3.client('s3')
 bucket_name = 'tcc-grafocriminal'  
 file_name = 'Merged_Graph_NMF.graphml'  
 
-# Carrega o arquivo do S3 para um objeto em memória e loada o grafo
-try:
-    file_obj = io.BytesIO()
-    s3.download_fileobj(bucket_name, file_name, file_obj)
-    file_obj.seek(0)
+if not os.path.exists("./Data/Graphs/" + file_name):
+    # Carrega o arquivo do S3 para um objeto em memória e loada o grafo
+    try:
+        file_obj = io.BytesIO()
+        s3.download_fileobj(bucket_name, file_name, file_obj)
+        file_obj.seek(0)
+        
+        # Carrega o grafo a partir do objeto em memória
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.graphml') as temp_file:
+            temp_file.write(file_obj.read())
+            temp_file.close()
+            Graph = ox.load_graphml(temp_file.name)
+
+        print("Grafo carregado com sucesso!")
+    except NoCredentialsError:
+        print("Erro: Credenciais AWS não encontradas.")
+    except Exception as e:
+        print(f'Ocorreu um erro ao carregar o arquivo: {e}')
+        raise
+else:
+    # Se o arquivo já existe, carrega o grafo diretamente do disco
+    Graph = ox.load_graphml("./Data/Graphs/" + file_name)
     
-    # Carrega o grafo a partir do objeto em memória
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.graphml') as temp_file:
-        temp_file.write(file_obj.read())
-        temp_file.close()
-        Graph = ox.load_graphml(temp_file.name)
-
-    print("Grafo carregado com sucesso!")
-
-except NoCredentialsError:
-    print("Erro: Credenciais AWS não encontradas.")
-except Exception as e:
-    print(f'Ocorreu um erro ao carregar o arquivo: {e}')
-    raise
 
 # Erro gerado ainda nao compreendido, mas nao funciona sem isso
 for u, v, data in Graph.edges(data=True):
@@ -94,19 +98,15 @@ def return_map():
     #     return jsonify(error="Erro: Algoritmo inválido. Use 'Dijkstra' ou 'AStar'."), 400
 
 
-    # Rota_Dijkstra = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
+    Rota_Crime = RotaAStar(Graph, Origin_point, Destination_point, "weight")
+    Rota_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
 
-    Rota_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
-    Rota_AStar_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
-
-    Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
-    # Rota_AStar_tarde = RotaAStar_NMF(Graph, Origin_point, Destination_point,1, "weight_tarde")
-    # Rota_AStar_noite = RotaAStar_NMF(Graph, Origin_point, Destination_point,2, "weight_noite")
+    # Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
 
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
 
     start_time = time.time()
-    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_AStar, Rota_AStar_manha, Rota_AStar_length)
+    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
     end_time = time.time()
     print("Tempo de execução FoliumMap:", end_time - start_time)
 
