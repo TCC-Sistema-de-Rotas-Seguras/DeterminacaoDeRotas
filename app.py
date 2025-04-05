@@ -50,8 +50,14 @@ for u, v, data in Graph.edges(data=True):
     if "weight" in data:
         data["weight"] = float(data["weight"])
 for u, v, data in Graph.edges(data=True):
-    if "weight_0" in data:
-        data["weight_0"] = float(data["weight_0"])
+    if "weight_manha" in data:
+        data["weight_manha"] = float(data["weight_manha"])
+for u, v, data in Graph.edges(data=True):
+    if "weight_manha" in data:
+        data["weight_tarde"] = float(data["weight_manha"])
+for u, v, data in Graph.edges(data=True):
+    if "weight_manha" in data:
+        data["weight_noite"] = float(data["weight_manha"])
 
 @app.route('/', methods=['GET'])
 def principal():
@@ -93,9 +99,9 @@ def return_map():
     Rota_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
     Rota_AStar_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
 
-    Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_0")
-    # Rota_AStar_tarde = RotaAStar_NMF(Graph, Origin_point, Destination_point,1, "weight_1")
-    # Rota_AStar_noite = RotaAStar_NMF(Graph, Origin_point, Destination_point,2, "weight_2")
+    Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
+    # Rota_AStar_tarde = RotaAStar_NMF(Graph, Origin_point, Destination_point,1, "weight_tarde")
+    # Rota_AStar_noite = RotaAStar_NMF(Graph, Origin_point, Destination_point,2, "weight_noite")
 
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
 

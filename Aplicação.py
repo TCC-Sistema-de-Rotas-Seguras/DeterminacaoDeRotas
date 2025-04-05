@@ -20,24 +20,29 @@ def custom_weight(graph):
     return graph
 
 # Função para calcular o peso personalizado considerando distância, perigo e componentes NMF por período
-def custom_weight_NMF(graph, periodo):
+def custom_weight_NMF(graph):
     alpha = 1  # Fator para a distância
     beta = 10   # Fator para o perigo (ajuste conforme necessário)
 
     # Ajuste do índice de período
     periodo_index = {"manha": 0, "tarde": 1, "noite": 2}
-    periodo_idx = periodo_index.get(periodo, 0)  # Default é manhã
-    weight_key = f"weight_{periodo}"  # Define a chave dinamicamente
-    
-    for u, v, data in graph.edges(data=True):
-        # Obtém a distância da aresta
-        distance = data.get("length")
 
-        # Ajusta os valores de perigo com base nos componentes NMF para o período específico
-        penalty = float(data.get(f"nmf_component_{periodo_idx + 1}", 0))  # Garantir que seja numérico
+    for i in range(3):
+        index_periodo = {v: k for k, v in periodo_index.items()} # Cria um dicionário reverso
+        nome_periodo = index_periodo.get(i) # Obtém o nome do período correspondente ao índice
+
+        weight_key = f"weight_{nome_periodo}"  # Define a chave dinamicamente
+        print(f"Calculando pesos: {weight_key}")
         
-        # Calcula o peso da aresta, combinando distância e perigo
-        data[weight_key] = alpha * distance + beta * penalty
+        for u, v, data in graph.edges(data=True):
+            # Obtém a distância da aresta
+            distance = data.get("length")
+
+            # Ajusta os valores de perigo com base nos componentes NMF para o período específico
+            penalty = float(data.get(f"nmf_component_{i + 1}", 0))  # Garantir que seja numérico
+            
+            # Calcula o peso da aresta, combinando distância e perigo
+            data[weight_key] = alpha * distance + beta * penalty
 
     return graph
 
@@ -54,13 +59,8 @@ Graph = main_nmf(Graph)
 print("Aplicando o Weight padrão (Atributo 'weight')...")
 Graph = custom_weight(Graph)
 
-print("Aplicando o Weight para o período da manhã (Atributo 'weight_manha')...")
-Graph = custom_weight_NMF(Graph, 0)
+print("Aplicando o Weight para os períodos do dia...")
+Graph = custom_weight_NMF(Graph)
 
-print("Aplicando o Weight para o período da tarde (Atributo 'weight_tarde')...")
-Graph = custom_weight_NMF(Graph, 1)
-
-print("Aplicando o Weight para o período da noite (Atributo 'weight_noite')...")
-Graph = custom_weight_NMF(Graph, 2)
-
-ox.save_graphml(Graph, os.path.join(Graph_folder, Merged_Graph_filename + "_Aplicado.graphml"))
+print("Salvando o grafo...")
+ox.save_graphml(Graph, os.path.join(Graph_folder, Merged_Graph_filename + "_NMF.graphml"))
