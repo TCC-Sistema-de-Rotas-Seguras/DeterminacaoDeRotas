@@ -131,6 +131,10 @@
         
 
     </section>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initAutocomplete" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initAutocomplete" async defer>
+        window.onload = function() {
+            carregarMapa();
+        };
+    </script>
 </body>
 </html>
