@@ -11,9 +11,9 @@ var tempo_secundario = null;
 
 function carregarMapa() {
     fetch(`/mapa`)
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
-        document.getElementById("map-container").innerHTML = data;
+        document.getElementById("map-container").innerHTML = data.mapa;
     })
     .catch(error => console.error("Erro ao carregar o mapa:", error));
 

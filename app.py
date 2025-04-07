@@ -71,7 +71,7 @@ def principal():
 
 @app.route('/mapa', methods=['GET'])
 def mapa():
-    return gerarMapaPadrao((-23.724025035844765, -46.579387193595984))
+    return jsonify(mapa=gerarMapaPadrao((-23.724025035844765, -46.579387193595984)))
 
 @app.route('/return_map', methods=['GET'])
 def return_map():
