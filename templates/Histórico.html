@@ -8,91 +8,48 @@
 </head>
 <body>
     <section class="base">
-
-        <section id="map-section">
-            <div id="map-container"></div>
-            <div id="map-anti-click"></div>
-        </section>
-
-        <section class="menu-section">
-            <div class="menu-container">
-
-                <button id="home-btn" style="background: none; border: none; cursor: pointer;">
-                    <svg id="home" width="26" height="29" viewBox="0 0 26 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M1.23031 9.7208C0.75 10.7651 0.75 11.9531 0.75 14.3292V21.7499C0.75 25.0497 0.75 26.6996 1.77513 27.7248C2.78723 28.7369 4.40834 28.7497 7.625 28.7499V20C7.625 18.4812 8.85622 17.25 10.375 17.25H15.625C17.1438 17.25 18.375 18.4812 18.375 20V28.7499C21.5917 28.7497 23.2128 28.7369 24.2249 27.7248C25.25 26.6996 25.25 25.0497 25.25 21.7499V14.3292C25.25 11.9531 25.25 10.7651 24.7697 9.7208C24.2894 8.67651 23.3874 7.90334 21.5833 6.35702L19.8333 4.85701C16.5725 2.06204 14.9421 0.664551 13 0.664551C11.0579 0.664551 9.4275 2.06204 6.16669 4.85701L4.41669 6.35701C2.61264 7.90334 1.71061 8.67651 1.23031 9.7208ZM16.375 28.7499V20C16.375 19.5858 16.0392 19.25 15.625 19.25H10.375C9.96079 19.25 9.625 19.5858 9.625 20V28.7499H16.375Z" fill="#222222" />
-                    </svg>
-                </button>
-
-                <button id="favoritos-btn" style="background: none; border: none; cursor: pointer;">
-                    <svg id="favoritos" width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12.3262 6.53731C13.5301 3.53602 14.132 2.03537 15.11 1.82739C15.3671 1.77271 15.6329 1.77271 15.89 1.82739C16.868 2.03537 17.4699 3.53602 18.6738 6.5373C19.3585 8.24408 19.7008 9.09747 20.3413 9.67791C20.521 9.84071 20.716 9.98571 20.9236 10.1109C21.6639 10.5571 22.5881 10.6398 24.4365 10.8054C27.5654 11.0856 29.1299 11.2257 29.6076 12.1177C29.7066 12.3025 29.7738 12.5025 29.8066 12.7095C29.965 13.7089 28.8149 14.7553 26.5147 16.848L25.8759 17.4291C24.8005 18.4075 24.2628 18.8967 23.9518 19.5072C23.7652 19.8734 23.6402 20.2678 23.5815 20.6746C23.4838 21.3528 23.6413 22.0625 23.9562 23.4818L24.0687 23.9889C24.6335 26.5343 24.9158 27.807 24.5633 28.4326C24.2467 28.9945 23.6635 29.3542 23.0193 29.385C22.302 29.4193 21.2914 28.5958 19.2702 26.9488C17.9386 25.8637 17.2728 25.3211 16.5336 25.1092C15.8582 24.9155 15.1419 24.9155 14.4664 25.1092C13.7272 25.3211 13.0614 25.8637 11.7298 26.9488C9.70858 28.5958 8.69798 29.4193 7.98075 29.385C7.3365 29.3542 6.75329 28.9945 6.43667 28.4326C6.08418 27.807 6.36655 26.5343 6.93129 23.989L7.04381 23.4818C7.35872 22.0625 7.51618 21.3528 7.41846 20.6746C7.35985 20.2678 7.23476 19.8734 7.04819 19.5072C6.73718 18.8967 6.19948 18.4075 5.12409 17.4291L4.48533 16.848C2.1851 14.7553 1.03498 13.7089 1.19337 12.7095C1.22617 12.5025 1.29345 12.3025 1.39239 12.1177C1.87014 11.2257 3.43461 11.0856 6.56353 10.8054C8.41188 10.6398 9.33605 10.5571 10.0764 10.1109C10.284 9.98571 10.4791 9.84071 10.6587 9.67791C11.2992 9.09747 11.6415 8.24408 12.3262 6.53731Z" fill="#222222" stroke="#222222" stroke-width="2" />
-                    </svg>
-                </button>
-
-                <button id="historico-btn" onclick="togglePopup()" style="background: none; border: none; cursor: pointer;">
-                    <svg id="historico" width="26" height="30" viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M1.33579 0.585786C0.75 1.17157 0.75 2.11438 0.75 4V25.75C0.75 27.6356 0.75 28.5784 1.33579 29.1642C1.92157 29.75 2.86438 29.75 4.75 29.75H21.25C23.1356 29.75 24.0784 29.75 24.6642 29.1642C25.25 28.5784 25.25 27.6356 25.25 25.75V4C25.25 2.11438 25.25 1.17157 24.6642 0.585786C24.0784 0 23.1356 0 21.25 0H4.75C2.86438 0 1.92157 0 1.33579 0.585786ZM7.75 7.75C7.19772 7.75 6.75 8.19771 6.75 8.75C6.75 9.30229 7.19772 9.75 7.75 9.75H18.25C18.8023 9.75 19.25 9.30229 19.25 8.75C19.25 8.19771 18.8023 7.75 18.25 7.75H7.75ZM7.75 14.75C7.19772 14.75 6.75 15.1977 6.75 15.75C6.75 16.3023 7.19772 16.75 7.75 16.75H18.25C18.8023 16.75 19.25 16.3023 19.25 15.75C19.25 15.1977 18.8023 14.75 18.25 14.75H7.75ZM7.75 21.75C7.19772 21.75 6.75 22.1977 6.75 22.75C6.75 23.3023 7.19772 23.75 7.75 23.75H14.75C15.3023 23.75 15.75 23.3023 15.75 22.75C15.75 22.1977 15.3023 21.75 14.75 21.75H7.75Z" fill="#222222" />
-                    </svg>
-                </button>
-
-                <button id="perfil-btn" style="background: none; border: none; cursor: pointer;">
-                    <svg id="perfil" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.5 18C0.5 8.33502 8.33502 0.5 18 0.5C27.665 0.5 35.5 8.33502 35.5 18C35.5 23.5613 32.9059 28.5166 28.8618 31.7221C28.1262 29.6073 26.7868 27.7469 25.0008 26.3764C22.9924 24.8353 20.5315 24 18 24C15.4685 24 13.0077 24.8353 10.9992 26.3764C9.21325 27.7469 7.87376 29.6073 7.13824 31.7221C3.09409 28.5166 0.5 23.5613 0.5 18ZM23.7832 27.9631C25.4102 29.2115 26.5886 30.9521 27.1441 32.9239C24.483 34.5578 21.3515 35.5 18 35.5C14.6485 35.5 11.517 34.5578 8.85594 32.9239C9.41142 30.9521 10.5898 29.2115 12.2168 27.9631C13.8759 26.6901 15.9087 26 18 26C20.0913 26 22.1241 26.6901 23.7832 27.9631ZM13.75 12.75C13.75 10.4028 15.6528 8.5 18 8.5C20.3472 8.5 22.25 10.4028 22.25 12.75C22.25 15.0972 20.3472 17 18 17C15.6528 17 13.75 15.0972 13.75 12.75ZM18 6.5C14.5482 6.5 11.75 9.29822 11.75 12.75C11.75 16.2018 14.5482 19 18 19C21.4518 19 24.25 16.2018 24.25 12.75C24.25 9.29822 21.4518 6.5 18 6.5Z" fill="#222222" />
-                    </svg>
-                </button>
-
-            </div>
-        </section>
-
-        <section class="input-section">
-            <div class="input-container">
-                <div class="icon-container">
-                    <div class="outer-circle"></div>
-                    <div class="inner-circle"></div>
-                </div>
-                <input type="text" class="input-address" id="origin" name="origin" placeholder="Digite a origem" required>
-                <input id="origin_coords" style="display: none;"></input>
-            </div>
-
-            <br>
-
-            <div class="input-container">
-                <div class="icon-container">
-                    <svg width="17" height="21" viewBox="0 0 17 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.46061 2.46043C4.03599 0.885043 6.17267 0 8.40061 0C10.6285 0 12.7652 0.885043 14.3406 2.46043C15.916 4.03582 16.801 6.1725 16.801 8.40043C16.801 10.6284 15.916 12.765 14.3406 14.3404L8.40061 20.2804L2.46061 14.3404C1.6805 13.5604 1.06169 12.6344 0.639494 11.6152C0.217301 10.596 0 9.50361 0 8.40043C0 7.29725 0.217301 6.20488 0.639494 5.18569C1.06169 4.1665 1.6805 3.24045 2.46061 2.46043ZM8.40061 10.8004C9.03713 10.8004 9.64758 10.5476 10.0977 10.0975C10.5478 9.6474 10.8006 9.03695 10.8006 8.40043C10.8006 7.76391 10.5478 7.15346 10.0977 6.70337C9.64758 6.25329 9.03713 6.00043 8.40061 6.00043C7.76409 6.00043 7.15364 6.25329 6.70355 6.70337C6.25346 7.15346 6.00061 7.76391 6.00061 8.40043C6.00061 9.03695 6.25346 9.6474 6.70355 10.0975C7.15364 10.5476 7.76409 10.8004 8.40061 10.8004Z" fill="#DC2626" />
-                    </svg>
-                </div>
-                <input type="text" class="input-address" id="destination" name="destination" placeholder="Digite o destino" required>
-                <input id="destination_coords" style="display: none;"></input>
-            </div>
-        </section>
-
-        <section class="popup-section">
+        <section class="popup-section active">
             <div id="trajeto-popup" class="popup hidden">
-              <div class="trajeto-info">
+              <section class="trajeto-info">
                 <h2 class="trajeto-titulo">Informações do Trajeto</h2>
+              </section> 
+              
+              <section class="Section-Visualizar-Rota">
                 <p class="trajeto-data">30/03/2024 18:30</p>
-              </div> 
-          
-              <div class="mapa-container">
-                <img src="sua-imagem-do-mapa.png" alt="Mapa do trajeto" style="width: 100%; border-radius: 8px;">
+
                 <button class="visualizar-rota-btn">
-                  Visualizar rota <i class="fa fa-external-link-alt"></i>
+                    <span>
+                        Visualizar rota
+                    </span>
+                    <img width="15" height="15" src="../static/images/link.png" alt="">
                 </button>
-              </div>
-          
-              <ul class="enderecos">
-                <li>Av. Humberto de Alencar Castelo Branco, 3972-B - Assunção, São Bernardo do Campo - SP, 09850-901</li>
-                <li>Av. João Firmino - Assunção, São Bernardo do Campo - SP, 09812-450</li>
-              </ul>
-          
-              <button class="areas-evitadas-btn">12 ÁREAS DE RISCO EVITADAS</button>
-          
-              <div class="legenda-riscos">
-                <div><span class="bolinha red">2</span> Áreas de alto risco</div>
-                <div><span class="bolinha yellow">6</span> Áreas de médio risco</div>
-                <div><span class="bolinha green">4</span> Áreas de baixo risco</div>
-              </div>
+                
+              </section>
+              
+
+              <section class="Section-Mapa">
+                <div class="Container-Mapa-Resumo">
+                    
+                </div>
+              </section>
+
+            <section class="Section-Enderecos">
+                <ul class="enderecos">
+                    <li>Av. Humberto de Alencar Castelo Branco, 3972-B - Assunção, São Bernardo do Campo - SP, 09850-901</li>
+                    <li>Av. João Firmino - Assunção, São Bernardo do Campo - SP, 09812-450</li>
+                </ul>
+            </section>
+              
+            <section class="Section-Areas-Evitadas">
+                <button class="areas-evitadas-btn">12 ÁREAS DE RISCO EVITADAS</button>
+            
+                <div class="legenda-riscos">
+                    <div><span class="bolinha red">2</span> Áreas de alto risco</div>
+                    <div><span class="bolinha yellow">6</span> Áreas de médio risco</div>
+                    <div><span class="bolinha green">4</span> Áreas de baixo risco</div>
+                </div>
+            </section>
+              
           
               <div class="comparativo-box">
                 <p>Comparativo tempo e km - maps</p>
