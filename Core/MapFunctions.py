@@ -196,7 +196,7 @@ def gerarMapaPadrao(location):
     figure.html.add_child(folium.Element("<style>.leaflet-control-attribution { display: none !important; }</style>"))
 
     # Escreve o html em um arquivo txt
-    return(m._repr_html_())
+    return m._repr_html_()
 
 # _____ Descontinuado devido implementação direto em JS ______
 # def obter_geolocalizacao_google(endereco, api_key):

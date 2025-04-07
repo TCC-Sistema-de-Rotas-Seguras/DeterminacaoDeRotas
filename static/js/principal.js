@@ -13,18 +13,19 @@ function carregarMapa() {
     fetch(`/mapa`)
     .then(response => response.json())
     .then(data => {
-        document.getElementById("map-container").innerHTML = data.mapa;
+        // document.getElementById("map-container").innerHTML = data.mapa;
+        loadMap(data.mapa_html_principal, "0 Km", "0 min");
     })
     .catch(error => console.error("Erro ao carregar o mapa:", error));
 
-    // Aguarde um curto tempo para garantir que o HTML seja inserido
-    setTimeout(() => {
-        let mapDiv = document.querySelector("#map-container > div > div");
-        if (mapDiv) {
-            mapDiv.style.position = ""; // Ou simplesmente remova a propriedade
-            mapDiv.style.paddingBottom = ""; // Se quiser remover a altura baseada em padding
-        }
-    }, 100);
+    // // Aguarde um curto tempo para garantir que o HTML seja inserido
+    // setTimeout(() => {
+    //     let mapDiv = document.querySelector("#map-container > div > div");
+    //     if (mapDiv) {
+    //         mapDiv.style.position = ""; // Ou simplesmente remova a propriedade
+    //         mapDiv.style.paddingBottom = ""; // Se quiser remover a altura baseada em padding
+    //     }
+    // }, 100);
 }
 
 function initAutocomplete() {
