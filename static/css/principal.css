@@ -65,7 +65,7 @@
 }
 
 .base {
-    background-color: #00ff51;
+    background-color: #000000;
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -88,12 +88,13 @@
 .input-container {
     height: 50px;
     border-radius: 16px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     background-color: white;
     display: flex;
     align-items: center;
     padding-left: 20px;
     margin: 0 20px 0 20px;
+    border: 2px #000000 solid;
+    margin-bottom: 10px;
 }
 
 input.input-address {
@@ -172,12 +173,27 @@ input.input-address {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: space-around;
+        justify-content: space-between;
         width: 100%;
-        height: 254px;
+        height: 100vh;
         padding: 0px 7px;
         z-index: 1;
     }
+
+    .menu-container-top{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 254px;
+    }
+
+    .menu-container-switch{
+        display: flex;
+        align-items: center;
+        margin-bottom: 13px;
+
+    }
+
 
     /*________ Popup _________*/
     .popup-section {
@@ -196,6 +212,89 @@ input.input-address {
     .popup-section.active {
         transform: translateX(0); /* Move para dentro da tela */
     }
+
+    /*________ Route Details _________*/
+    .route-details-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        justify-content: center;
+
+        position: fixed;
+        left: 70px;
+        bottom: 10px;
+        background-color: rgb(255, 255, 255);
+        width: fit-content;
+        height: fit-content;
+        border-radius: 20px;
+        border: 1px black solid;
+        padding: 10px;
+
+    }
+
+    .route-details-seguranca {
+        width: 333px; 
+        height: 50px; 
+        padding-top: 8px; 
+        padding-bottom: 8px; 
+        background: white; 
+        border-radius: 17.60px; 
+        border: 2.20px black solid;
+    }
+
+    .route-details-section-bottom{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        height: fit-content;
+        width: fit-content;
+    }
+
+    .route-details-distance {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 20px;
+        
+        width: fit-content;
+        height: fit-content;
+        padding: 10px;
+        background: white;
+        border-radius: 17.60px;
+        border: 2.20px black solid
+    }
+    .route-details-distance span{
+        margin-left: 10px;
+        
+        color: #141414;
+        font-family: 'Roboto Mono';
+        font-size: 22px;
+        font-weight: medium;
+    }
+
+    .route-details-time {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        width: fit-content;
+        height: fit-content;
+        background: white;
+        border-radius: 17.60px;
+        border: 2.20px black solid;
+        padding: 0px 10px 0px 10px;
+    }
+
+    .route-details-time span{
+        margin-left: 10px;
+        color: #141414;
+        font-family: 'Roboto Mono';
+        font-size: 22px;
+        font-weight: medium;
+    }
+
 }
 
 
@@ -222,7 +321,6 @@ input.input-address {
     .menu-container {
         display: flex;
         align-items: center;
-        justify-content: space-around;
 
         width: 100%;
         max-width: 330px;
@@ -234,10 +332,40 @@ input.input-address {
         background: white;
         border-radius: 20px;
         border: 1px solid black;
-        padding: 0 20px;
         z-index: 2;
 
     }
+
+    .menu-container-top {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .menu-container-switch{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        position: absolute;
+        bottom: 150px;
+        right: 10px;
+        width: fit-content;
+        padding: 5px;
+        background-color: white;
+        border: 1px solid black;
+        border-radius: 35px;
+        
+    }
+
+    #Secondary-route-svg-off{
+        position: relative;
+        top: 0px;
+        left: 57%;
+        transform: translateX(-50%);
+    }
+
+
 
     /*________ Popup _________*/
     .popup-section {
@@ -255,6 +383,93 @@ input.input-address {
 
     .popup-section.active {
         display: block;
+    }
+
+    /*________ Route Details _________*/
+    .route-details-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        justify-content: center;
+
+        position: fixed;
+        bottom: 73px;
+        background-color: rgb(255, 255, 255);
+        width: fit-content;
+        height: fit-content;
+        border-radius: 20px;
+        border: 1px black solid;
+        padding: 5px;
+
+    }
+
+    /*________ Segurança _________*/
+    /* .route-details-seguranca {
+        width: 333px; 
+        height: 50px; 
+        padding-top: 8px; 
+        padding-bottom: 8px; 
+        background: white; 
+        border-radius: 17.60px; 
+        border: 2.20px black solid;
+    } */
+
+    .route-details-section-bottom{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        height: fit-content;
+        width: fit-content;
+    }
+    /*________ Distância _________*/
+
+    .route-details-distance {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+        
+        width: fit-content;
+        height: fit-content;
+        padding: 8px;
+        background: white;
+        border-radius: 17.60px;
+        border: 2.20px black solid
+    }
+
+    /* Texto Distancia */
+    .route-details-distance span{
+        margin-left: 10px;
+        
+        color: #141414;
+        font-family: 'Roboto Mono';
+        font-size: 22px;
+        font-weight: medium;
+    }
+
+    /*________ Tempo _________*/
+    .route-details-time {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        width: fit-content;
+        height: fit-content;
+        background: white;
+        border-radius: 17.60px;
+        border: 2.20px black solid;
+        padding: 0px 10px 0px 10px;
+    }
+
+    /* Texto Tempo */
+    .route-details-time span{
+        margin-left: 10px;
+        color: #141414;
+        font-family: 'Roboto Mono';
+        font-size: 22px;
+        font-weight: medium;
     }
 
 

@@ -39,7 +39,8 @@ def centro_e_raio(p1, p2):
     return centro, raio
 
 def PlotPontoDePerigo(mapa,data, Graph, u, v):
-    QntdCrimes = int(data.get("danger", 0))
+    parametro = "danger_manha"
+    QntdCrimes = int(data.get(parametro, 0))
 
     if 5 <= QntdCrimes <= 12:
         cor = "orange"
@@ -47,9 +48,6 @@ def PlotPontoDePerigo(mapa,data, Graph, u, v):
         cor = "red"
     else:
         cor = "black"
-
-    if QntdCrimes > 5: 
-        print(f"Ponto{u,v} Perigo: {QntdCrimes} Cor: {cor}")
     
     # Adicionar ponto de perigo (marcador preto)
     if QntdCrimes > 5:
@@ -63,7 +61,7 @@ def PlotPontoDePerigo(mapa,data, Graph, u, v):
 
         folium.Marker(
             location=(lat, lon),
-            popup=f"Perigo: {data.get('danger')}",
+            popup=f"Perigo: {data.get(parametro)}",
             icon=folium.Icon(color=cor, icon="info-sign")
         ).add_to(mapa)
 
@@ -139,10 +137,9 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
             for data in edge_data.values():
 
                 # Definir a cor da rota
-                color = "green"
+                color = "red"
                 PlotPontoDePerigo(m, data, Graph, u, v)
 
-                
                 if "geometry" in data:
                     line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
                 else:
@@ -174,6 +171,32 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
     figure.html.add_child(folium.Element("<style>.leaflet-control-attribution { display: none !important; }</style>"))
 
     return m._repr_html_()  # Retorna o HTML do mapa
+
+def gerarMapaPadrao(location):
+    # Criar um mapa sem os controles de zoom e sem atribuição de copyright
+    m = folium.Map(
+        location=location, 
+        zoom_start=15, 
+        zoom_control=False, 
+        control_scale=False,
+        tiles=None  # Remove o mapa padrão que contém a atribuição
+    )
+
+    # Remover o logo @foliummap
+    folium.TileLayer(
+        tiles="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attr=" ",  # Define um espaço em branco para evitar o erro
+        name="Mapa Limpo"
+    ).add_to(m)
+
+    # Remover o logo @foliummap
+    m.get_root().header.render()
+    figure = Figure()
+    figure.add_child(m)
+    figure.html.add_child(folium.Element("<style>.leaflet-control-attribution { display: none !important; }</style>"))
+
+    # Escreve o html em um arquivo txt
+    return m._repr_html_()
 
 # _____ Descontinuado devido implementação direto em JS ______
 # def obter_geolocalizacao_google(endereco, api_key):

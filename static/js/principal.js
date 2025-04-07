@@ -1,5 +1,15 @@
 let autocompleteOrigin, autocompleteDestination;
 
+var mapa_html_principal = null;
+var distancia_principal = null;
+var tempo_principal = null;
+
+var mapa_html_secundario = null;
+var distancia_secundario = null;
+var tempo_secundario = null;
+
+
+
 function initAutocomplete() {
     // Configura o autocompletar para o campo de origem
     autocompleteOrigin = new google.maps.places.Autocomplete(
@@ -35,7 +45,7 @@ function initAutocomplete() {
         document.getElementById('origin_coords').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
     
         if(document.getElementById('destination_coords').value != "") {
-            loadMap();
+            requestMap();
         }
 
     });
@@ -50,37 +60,45 @@ function initAutocomplete() {
         document.getElementById('destination_coords').value = place.geometry.location.lat() + ',' + place.geometry.location.lng();
     
         if(document.getElementById('origin_coords').value != "") {
-            loadMap();
+            requestMap();
         }
     });
 }
 
-function loadMap() {
+function requestMap() {
     var origin_coords = document.getElementById('origin_coords').value;
     var destination_coords = document.getElementById('destination_coords').value;
-
-    if (!origin_coords || !destination_coords) {
-        alert("Por favor, selecione ambos os endereços.");
-        return;
-    }
 
     fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
         .then(response => response.json())
         .then(data => {
-            console.log("Mapa carregado com sucesso:", data.mapa_html);
-            document.getElementById("map-container").innerHTML = data.mapa_html;
+            mapa_html_principal = data.mapa_html_principal;
+            distancia_principal = data.distancia_principal;
+            tempo_principal = data.tempo_estimado_principal;
 
-            // Aguarde um curto tempo para garantir que o HTML seja inserido
-            setTimeout(() => {
-                let mapDiv = document.querySelector("#map-container > div > div");
-                if (mapDiv) {
-                    mapDiv.style.position = ""; // Ou simplesmente remova a propriedade
-                    mapDiv.style.paddingBottom = ""; // Se quiser remover a altura baseada em padding
-                }
-            }, 100);
+            mapa_html_secundario = data.mapa_html_secundario;
+            distancia_secundario = data.distancia_secundario;
+            tempo_secundario = data.tempo_estimado_secundario;
 
+            loadMap(data.mapa_html_principal, distancia_principal, tempo_principal);
         })
         .catch(error => console.error("Erro ao carregar o mapa:", error));
+
+}
+
+function loadMap(mapa, distancia, tempo) {
+    document.getElementById("map-container").innerHTML = mapa;
+    document.getElementById("span-distancia").innerHTML = distancia;
+    document.getElementById("span-tempo").innerHTML = tempo;
+
+    // Aguarde um curto tempo para garantir que o HTML seja inserido
+    setTimeout(() => {
+        let mapDiv = document.querySelector("#map-container > div > div");
+        if (mapDiv) {
+            mapDiv.style.position = ""; // Ou simplesmente remova a propriedade
+            mapDiv.style.paddingBottom = ""; // Se quiser remover a altura baseada em padding
+        }
+    }, 100);
 }
 
 function togglePopup() {
@@ -107,3 +125,56 @@ function togglePopup() {
         }
     }
 }
+
+function toggleSecondaryRoute() {
+    const btnOn = document.getElementById("Secondary-route-btn-on");
+    const svgOn = document.getElementById("Secondary-route-svg-on");
+    const btnOff = document.getElementById("Secondary-route-btn-off");
+    const svgOff = document.getElementById("Secondary-route-svg-off");
+  
+    const isOnVisible = btnOn.style.display !== "none";
+  
+    // OFF
+    if (isOnVisible) {
+        // Esconde o ON, mostra o OFF
+        btnOn.style.display = "none";
+        svgOn.style.display = "none";
+        btnOff.style.display = "";
+        svgOff.style.display = "";
+        
+        loadMap(mapa_html_principal, distancia_principal, tempo_principal); // Carrega o mapa principal
+    // ON
+    } else {
+        // Esconde o OFF, mostra o ON
+        btnOff.style.display = "none";
+        svgOff.style.display = "none";
+        btnOn.style.display = "";
+        svgOn.style.display = "";
+
+        loadMap(mapa_html_secundario, distancia_secundario, tempo_secundario); // Carrega o mapa secundário
+    }
+  }
+
+window.onload = function() {
+    carregarMapa();
+};
+
+function carregarMapa() {
+fetch(`/mapa`)
+.then(response => response.json())
+.then(data => {
+    // document.getElementById("map-container").innerHTML = data.mapa;
+    loadMap(data.mapa, "0 Km", "0 min");
+})
+.catch(error => console.error("Erro ao carregar o mapa:", error));
+
+// // Aguarde um curto tempo para garantir que o HTML seja inserido
+// setTimeout(() => {
+//     let mapDiv = document.querySelector("#map-container > div > div");
+//     if (mapDiv) {
+//         mapDiv.style.position = ""; // Ou simplesmente remova a propriedade
+//         mapDiv.style.paddingBottom = ""; // Se quiser remover a altura baseada em padding
+//     }
+// }, 100);
+}
+
