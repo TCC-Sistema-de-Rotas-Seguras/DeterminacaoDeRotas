@@ -8,6 +8,9 @@ var mapa_html_secundario = null;
 var distancia_secundario = null;
 var tempo_secundario = null;
 
+window.onload = function() {
+    carregarMapa();
+};
 
 function carregarMapa() {
     fetch(`/mapa`)
