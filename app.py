@@ -5,10 +5,11 @@ import os
 import time
 
 # ____ Bibliotecas Internas ____
-from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap
+from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap, gerarMapaPadrao
 from Core.AStar import RotaAStar
 from Core.AStar_NMF import RotaAStar_NMF
 from Core.Djikstra import RotaDijkstra
+from Core.Route import calcular_distancia_total, calcular_tempo_estimado
 
 # ___ Bibliotecas AWS ____
 import io
@@ -66,8 +67,11 @@ for u, v, data in Graph.edges(data=True):
 @app.route('/', methods=['GET'])
 def principal():
     api_key = os.getenv('GOOGLE_API_KEY')
-    
     return render_template('Principal.html', api_key=api_key)
+
+@app.route('/mapa', methods=['GET'])
+def mapa():
+    return gerarMapaPadrao((-23.724025035844765, -46.579387193595984))
 
 @app.route('/return_map', methods=['GET'])
 def return_map():
@@ -98,20 +102,47 @@ def return_map():
     #     return jsonify(error="Erro: Algoritmo inválido. Use 'Dijkstra' ou 'AStar'."), 400
 
 
-    Rota_Crime = RotaAStar(Graph, Origin_point, Destination_point, "weight")
+    # Rota_Crime = RotaAStar(Graph, Origin_point, Destination_point, "weight")
+    Rota_Crime = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
+    
+    Rota_Crime_Tempo = calcular_tempo_estimado(Graph, Rota_Crime)
+    print("Rota_Crime_Tempo:", Rota_Crime_Tempo)
+
+    Rota_Crime_Distancia = calcular_distancia_total(Graph, Rota_Crime)
+    print("Rota_Crime_Distancia:", Rota_Crime_Distancia)
+
     Rota_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
+
+    Rota_length_tempo = calcular_tempo_estimado(Graph, Rota_length)
+    print("Rota_length_tempo:", Rota_length_tempo)
+
+    Rota_length_distancia = calcular_distancia_total(Graph, Rota_length)
+    print("Rota_length_distancia:", Rota_length_distancia)
 
     # Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
 
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
 
     start_time = time.time()
-    mapa_html = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
+
+    mapa_html_principal = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime)
+    mapa_html_secundario = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
+
     end_time = time.time()
     print("Tempo de execução FoliumMap:", end_time - start_time)
 
     end_fulltime = time.time()
     print("Tempo de execução Total:", end_fulltime - start_fulltime)
 
-    return jsonify(mapa_html=mapa_html)
+    return jsonify(
+
+        mapa_html_principal=mapa_html_principal,
+        distancia_principal=Rota_Crime_Distancia,
+        tempo_estimado_principal=Rota_Crime_Tempo,
+
+        mapa_html_secundario=mapa_html_secundario,
+        distancia_secundario=Rota_length_distancia,
+        tempo_estimado_secundario=Rota_length_tempo,
+                
+    )
 
