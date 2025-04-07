@@ -164,7 +164,7 @@ fetch(`/mapa`)
 .then(response => response.json())
 .then(data => {
     // document.getElementById("map-container").innerHTML = data.mapa;
-    loadMap(data.mapa_html_principal, "0 Km", "0 min");
+    loadMap(data.mapa, "0 Km", "0 min");
 })
 .catch(error => console.error("Erro ao carregar o mapa:", error));
 
