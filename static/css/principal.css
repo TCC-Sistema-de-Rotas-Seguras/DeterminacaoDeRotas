@@ -88,12 +88,13 @@
 .input-container {
     height: 50px;
     border-radius: 16px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     background-color: white;
     display: flex;
     align-items: center;
     padding-left: 20px;
     margin: 0 20px 0 20px;
+    border: 2px #000000 solid;
+    margin-bottom: 10px;
 }
 
 input.input-address {
