@@ -69,6 +69,8 @@ function requestMap() {
     var origin_coords = document.getElementById('origin_coords').value;
     var destination_coords = document.getElementById('destination_coords').value;
 
+    mostrarLoader();
+
     fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
         .then(response => response.json())
         .then(data => {
@@ -82,7 +84,10 @@ function requestMap() {
 
             loadMap(data.mapa_html_principal, distancia_principal, tempo_principal);
         })
-        .catch(error => console.error("Erro ao carregar o mapa:", error));
+        .catch(error => console.error("Erro ao carregar o mapa:", error))
+        .finally(() => {
+            esconderLoader();
+        });
 
 }
 
@@ -178,3 +183,11 @@ fetch(`/mapa`)
 // }, 100);
 }
 
+function mostrarLoader() {
+    document.getElementById('loader').style.display = 'flex';
+}
+
+function esconderLoader() {
+    document.getElementById('loader').style.display = 'none';
+}
+  
