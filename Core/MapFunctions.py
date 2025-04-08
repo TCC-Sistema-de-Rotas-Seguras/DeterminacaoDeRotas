@@ -65,6 +65,8 @@ def PlotPontoDePerigo(mapa,data, Graph, u, v):
             icon=folium.Icon(color=cor, icon="info-sign")
         ).add_to(mapa)
 
+        return (cor)
+
 
 def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime, RouteLenght=None):
     """
@@ -104,6 +106,9 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
         icon=folium.Icon(color="blue", icon="flag")
     ).add_to(m)
 
+    lista_crimes_1 = [0,0,0]
+    lista_crimes_2 = [0,0,0]
+
     # ____ Rota 1 ____
     # Adicionar a rota calculada (seguindo as ruas corretamente)
     route_points = []  # Para calcular o bounding box
@@ -115,7 +120,14 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
 
             # Definir a cor da rota
             color = "blue"
-            PlotPontoDePerigo(m, data, Graph, u, v)
+            tipo_crime = PlotPontoDePerigo(m, data, Graph, u, v)
+
+            if tipo_crime == "black":
+                lista_crimes_1[2] += 1
+            elif tipo_crime == "red":
+                lista_crimes_1[1] += 1
+            elif tipo_crime == "orange":
+                lista_crimes_1[0] += 1
 
             if "geometry" in data:
                 line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
@@ -138,7 +150,14 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
 
                 # Definir a cor da rota
                 color = "red"
-                PlotPontoDePerigo(m, data, Graph, u, v)
+                tipo_crime = PlotPontoDePerigo(m, data, Graph, u, v)
+
+                if tipo_crime == "black":
+                    lista_crimes_2[2] += 1
+                elif tipo_crime == "red":
+                    lista_crimes_2[1] += 1
+                elif tipo_crime == "orange":
+                    lista_crimes_2[0] += 1
 
                 if "geometry" in data:
                     line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
@@ -170,7 +189,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
     figure.add_child(m)
     figure.html.add_child(folium.Element("<style>.leaflet-control-attribution { display: none !important; }</style>"))
 
-    return m._repr_html_()  # Retorna o HTML do mapa
+    return [m._repr_html_(), lista_crimes_1, lista_crimes_2]  # Retorna o HTML do mapa
 
 def gerarMapaPadrao(location):
     # Criar um mapa sem os controles de zoom e sem atribuição de copyright
