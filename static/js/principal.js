@@ -185,9 +185,16 @@ fetch(`/mapa`)
 
 function mostrarLoader() {
     document.getElementById('loader').style.display = 'flex';
+    document.getElementById('map-blur').style.display = 'flex';
+    document.getElementById('map-blur').style.background = 'rgba(0, 0, 0, 0.6)';
+
+    
 }
 
 function esconderLoader() {
     document.getElementById('loader').style.display = 'none';
+    document.getElementById('map-blur').style.display = 'none';
+    document.getElementById('map-blur').style.background = 'rgba(0, 0, 0, 0.0)';
+
 }
   
