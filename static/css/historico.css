@@ -21,6 +21,11 @@
 /*________ PC _________*/
 @media(min-width: 451px) {
 
+    .base {
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
     /*________ Popup _________*/
     .popup-section {
         position: fixed;
@@ -30,15 +35,209 @@
         height: 100%;
         background-color: white;
         box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
-        
-        transform: translateX(100%); /* Começa fora da tela */
-        transition: transform 0.3s ease-in-out; /* Animação suave */
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        overflow-y: auto;
+        padding: 20px;
+        border-left: 2px solid #ccc;
+        z-index: 10;
     }
 
     .popup-section.active {
-        transform: translateX(0); /* Move para dentro da tela */
+        transform: translateX(0);
+    }
+
+    /* _____ Título ____ */
+    .trajeto-info {
+        font-family: 'Inter', sans-serif;
+        padding-left: 10px;
+        padding-bottom: 10px;
+    }
+
+    .trajeto-titulo {
+        font-size: 28px;
+        color: #111827;
+        margin: 20px 0 10px 0;
+    }
+
+    /* ____ Section Visualizar Rota _____ */
+    .Section-Visualizar-Rota {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .trajeto-data {
+        font-size: 16px;
+        color: #6b7280;
+    }
+
+    .visualizar-rota-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .visualizar-rota-btn img {
+        width: 16px;
+        height: 16px;
+        margin-left: 6px;
+    }
+
+    /* ____ Mapa _____ */
+    .Section-Mapa {
+        padding: 20px 0;
+    }
+
+    .Container-Mapa-Resumo {
+        width: 100%;
+        height: 190px;
+        border-radius: 10px;
+    }
+
+    /* _____ Areas Evitadas _____ */
+    .Section-Areas-Evitadas {
+        background-color: #f8f8f8;
+        border-radius: 12px;
+        margin-top: 20px;
+        padding: 15px;
+    }
+
+    .areas-evitadas-btn {
+        font-family: 'Inter', sans-serif;
+        background-color: #dcdcdc;
+        border: none;
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 10px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .legenda-riscos {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .legenda-riscos div {
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        padding-left: 10px;
+    }
+
+    .bolinha {
+        width: 25px;
+        height: 25px;
+        border-radius: 7px;
+        margin-right: 10px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bolinha.red {
+        background-color: red;
+    }
+
+    .bolinha.yellow {
+        background-color: orange;
+    }
+
+    .bolinha.green {
+        background-color: yellowgreen;
+    }
+
+    /* ____ Endereços ___ */
+    .Section-Enderecos {
+        background-color: #f8f8f8;
+        border-radius: 12px;
+        margin-top: 20px;
+        padding: 15px;
+    }
+
+    .enderecos {
+        font-family: 'Inter', sans-serif;
+        font-weight: bold;
+        list-style: none;
+        font-size: 14px;
+        color: #1f2937;
+    }
+
+    .enderecos li {
+        margin-bottom: 6px;
+        padding-left: 22px;
+        position: relative;
+        line-height: 1.6;
+    }
+
+    .enderecos li:nth-child(1)::before {
+        content: "⬤";
+        position: absolute;
+        left: 3px;
+        color: #2563eb;
+        font-size: 14px;
+    }
+
+    .enderecos li:nth-child(2)::before {
+        content: "📍";
+        position: absolute;
+        left: 0;
+        color: #000;
+        font-size: 14px;
+    }
+
+    /* _____ Comparativo _____ */
+    .Section-Comparativo {
+        font-family: 'Inter', sans-serif;
+        font-weight: bold;
+        margin-top: 30px;
+    }
+
+    .comparativo-box {
+        display: flex;
+        flex-direction: column;
+        min-height: 150px;
+        gap: 15px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .rota-box {
+        background-color: #f7f7f7;
+        border-radius: 10px;
+        padding: 10px;
+        color: black;
+    }
+
+    .info-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tag {
+        background-color: #e1e1e1;
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        color: #333;
     }
 }
+
 
 
 
@@ -86,12 +285,13 @@
 
     .trajeto-info {
         font-family: 'Inter', sans-serif;
-        padding-left: 20px;
+        
         padding-bottom: 5px;
     }
     
     .trajeto-titulo {
-        font-size: 22px;
+        font-size: 28px;
+        padding-left: 26px;
         color: #111827; 
         margin: 20px 0 0 0;;
     }
