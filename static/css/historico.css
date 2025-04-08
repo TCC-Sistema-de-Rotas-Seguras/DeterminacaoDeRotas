@@ -264,18 +264,48 @@
 
 
     /* _____ Comparativo _____ */
- 
-    .comparativo-box {
-        background-color: #e8e8e8;
-        height: 80px;
-        border-radius: 12px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #888;
-        font-size: 14px;
-        margin-top: 12px;
+    
+    .Section-Comparativo {
+        font-family: 'Inter', sans-serif;
+        font-weight: bold;
+        margin-top: 45px;
+        position: relative;
+        z-index: 1; 
     }
+      
+    .comparativo-box {
+        display: flex;
+        flex-direction: column;
+        min-height: 150px;         
+        gap: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+    }
+      
+    .rota-box {
+        background-color: #f7f7f7;
+        border-radius: 10px;
+        color: black;
+    }
+      
+    .info-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+      
+    .tag {
+        background-color: #e1e1e1;
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        color: #333;
+    }
+       
+      
   
   
    
