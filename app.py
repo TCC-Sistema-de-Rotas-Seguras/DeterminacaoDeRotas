@@ -8,6 +8,7 @@ import time
 from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap, gerarMapaPadrao
 from Core.AStar import RotaAStar
 from Core.AStar_NMF import RotaAStar_NMF
+from Core.AStar_NMF_Hibrido import RotaAStar_NMF_Hibrida
 from Core.Djikstra import RotaDijkstra
 from Core.Route import calcular_distancia_total, calcular_tempo_estimado
 
@@ -76,73 +77,68 @@ def mapa():
 @app.route('/return_map', methods=['GET'])
 def return_map():
     print("Iniciando a execução do endpoint /return_map")
-    start_fulltime = time.time()
+    tempos = {}
+    start_full = time.time()
 
     origin = request.args.get("origin")
     destination = request.args.get("destination")
-    # parameter = request.args.get("route_parameter")
-    # algorithm = request.args.get("algorithm")
 
     if not origin or not destination:
         return jsonify(error="Erro: Parâmetros 'origin' e 'destination' são obrigatórios."), 400
-    
 
+    t0 = time.time()
     try:
         Origin_point = tuple(map(float, origin.split(',')))
         Destination_point = tuple(map(float, destination.split(',')))
     except (ValueError, TypeError):
         return jsonify(error="Erro: Formato inválido. Use LAT,LON para origem e destino."), 400
+    tempos["Parsing dos parâmetros"] = time.time() - t0
 
-        
-    # if algorithm == "Dijkstra":
-    #     Route = RotaDijkstra(Graph, Origin_point, Destination_point)
-    # elif algorithm == "AStar":
-    #     Route = RotaAStar(Graph, Origin_point, Destination_point, parameter)
-    # else:
-    #     return jsonify(error="Erro: Algoritmo inválido. Use 'Dijkstra' ou 'AStar'."), 400
+    t0 = time.time()
+    Rota_Crime = RotaAStar_NMF_Hibrida(Graph, Origin_point, Destination_point, 0, "weight_manha")
+    tempos["RotaAStar_NMF (Rota_Crime)"] = time.time() - t0
 
-
-    # Rota_Crime = RotaAStar(Graph, Origin_point, Destination_point, "weight")
-    Rota_Crime = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
-    
+    t0 = time.time()
     Rota_Crime_Tempo = calcular_tempo_estimado(Graph, Rota_Crime)
-    print("Rota_Crime_Tempo:", Rota_Crime_Tempo)
+    tempos["Tempo estimado (Rota_Crime)"] = time.time() - t0
 
+    t0 = time.time()
     Rota_Crime_Distancia = calcular_distancia_total(Graph, Rota_Crime)
-    print("Rota_Crime_Distancia:", Rota_Crime_Distancia)
+    tempos["Distância total (Rota_Crime)"] = time.time() - t0
 
+    t0 = time.time()
     Rota_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
+    tempos["RotaDijkstra (Rota_length)"] = time.time() - t0
 
+    t0 = time.time()
     Rota_length_tempo = calcular_tempo_estimado(Graph, Rota_length)
-    print("Rota_length_tempo:", Rota_length_tempo)
+    tempos["Tempo estimado (Rota_length)"] = time.time() - t0
 
+    t0 = time.time()
     Rota_length_distancia = calcular_distancia_total(Graph, Rota_length)
-    print("Rota_length_distancia:", Rota_length_distancia)
+    tempos["Distância total (Rota_length)"] = time.time() - t0
 
-    # Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
-
+    t0 = time.time()
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
+    tempos["Centro e raio do mapa"] = time.time() - t0
 
-    start_time = time.time()
-
+    t0 = time.time()
     mapa_html_principal = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime)
     mapa_html_secundario = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
+    tempos["FoliumMap (mapas)"] = time.time() - t0
 
-    end_time = time.time()
-    print("Tempo de execução FoliumMap:", end_time - start_time)
+    tempos["Tempo total"] = time.time() - start_full
 
-    end_fulltime = time.time()
-    print("Tempo de execução Total:", end_fulltime - start_fulltime)
+    print("\n--- TEMPOS DE EXECUÇÃO ---")
+    for etapa, duracao in tempos.items():
+        print(f"{etapa:<35}: {duracao:.4f} segundos")
+    print("--------------------------\n")
 
     return jsonify(
-
         mapa_html_principal=mapa_html_principal,
         distancia_principal=Rota_Crime_Distancia,
         tempo_estimado_principal=Rota_Crime_Tempo,
-
         mapa_html_secundario=mapa_html_secundario,
         distancia_secundario=Rota_length_distancia,
         tempo_estimado_secundario=Rota_length_tempo,
-                
     )
-

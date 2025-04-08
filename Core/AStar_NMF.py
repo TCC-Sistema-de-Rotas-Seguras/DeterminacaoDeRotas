@@ -1,7 +1,6 @@
 import osmnx as ox
 import networkx as nx
 import math
-import time
 import numpy as np
 
 # Função heurística para o algoritmo A* considerando os componentes do NMF na penalização
@@ -30,9 +29,7 @@ def RotaAStar_NMF(graph, origin_point, destination_point, periodo, parameter):
     orig_node = ox.distance.nearest_nodes(graph, origin_point[1], origin_point[0])
     dest_node = ox.distance.nearest_nodes(graph, destination_point[1], destination_point[0])
 
-    start_time = time.time()
     route = nx.astar_path(graph, orig_node, dest_node, weight=parameter, heuristic=lambda u, v: heuristic(u, v, graph, periodo))
-    end_time = time.time()
-    print("Tempo de execução do A*: ", end_time - start_time)
+
 
     return route
