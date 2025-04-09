@@ -151,6 +151,7 @@ function togglePopup(pagina) {
             .then(response => response.text())
             .then(data => {
                 document.getElementById("popup-container").innerHTML = data;
+                preencherPopup(banco.historico[banco.historico.length - 1]);
             })
             .catch(error => console.error('Erro ao carregar o HTML:', error));
         }
