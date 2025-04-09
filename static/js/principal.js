@@ -120,9 +120,10 @@ function loadMap(mapa, distancia, tempo) {
     }, 100);
 }
 
-function togglePopup() {
+function togglePopup(pagina) {
     var popup = document.querySelector(".popup-section");
 
+    // Desativar
     if (popup.classList.contains("active")) {
 
         popup.classList.remove("active");
@@ -133,6 +134,9 @@ function togglePopup() {
 
         }
 
+        
+
+    // Ativar
     } else {
         popup.classList.add("active");
 
@@ -140,6 +144,15 @@ function togglePopup() {
             anticlick = document.querySelector("#map-anti-click");
             anticlick.style.zIndex = "0";
 
+        }
+
+        if (pagina == "historico") {
+            fetch('/templates/Histórico.html')
+            .then(response => response.text())
+            .then(data => {
+            document.getElementById("popup-container").innerHTML = data;
+            })
+            .catch(error => console.error('Erro ao carregar o HTML:', error));
         }
     }
 }
