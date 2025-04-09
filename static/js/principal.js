@@ -147,10 +147,10 @@ function togglePopup(pagina) {
         }
 
         if (pagina == "historico") {
-            fetch('/templates/Histórico.html')
+            fetch(`/return_historico`)
             .then(response => response.text())
             .then(data => {
-            document.getElementById("popup-container").innerHTML = data;
+                document.getElementById("popup-container").innerHTML = data;
             })
             .catch(error => console.error('Erro ao carregar o HTML:', error));
         }

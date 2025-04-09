@@ -167,3 +167,9 @@ def return_map():
         qtnd_medio_risco_secundario=qtnd_medio_risco_secundario,
         qtnd_alto_risco_secundario=qtnd_alto_risco_secundario
     )
+
+@app.route('/return_historico')
+def return_historico():
+    with open('./templates/Histórico.html', 'r', encoding='utf-8') as file:
+        html_content = file.read()
+    return html_content
