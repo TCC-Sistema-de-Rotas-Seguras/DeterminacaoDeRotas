@@ -42,3 +42,53 @@ function preencherPopup(item) {
     document.getElementById("span-crimes").innerText = "Cruza " + rota.rota_safast.crimes.qntd_crimes + " áreas de risco";
     document.getElementById("span-crimes-rt").innerText = "Cruza " + rota.rota_tradicional.crimes.qntd_crimes + " áreas de risco";
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+    const historicoLista = document.getElementById("historico-lista");
+
+    function getIndiceSeguranca(rota) {
+        const crimes = rota.rota_safast.crimes;
+        const total = crimes.qntd_risco + crimes.qntd_medio_risco + crimes.qntd_alto_risco;
+        const maxScore = 10;
+
+        if (total <= 3) return 8 + Math.random();      // Muito seguro
+        if (total <= 10) return 5 + Math.random() * 2;  // Médio
+        return 3 + Math.random() * 2;                   // Inseguro
+    }
+
+    function getColor(score) {
+        if (score >= 7) return "#4CAF50";   // Verde
+        if (score >= 5) return "#2196F3";   // Azul
+        return "#757575";                   // Cinza escuro
+    }
+
+    function carregarHistorico() {
+        banco.historico.forEach(item => {
+            const score = parseFloat(getIndiceSeguranca(item.rota)).toFixed(1);
+            const cor = getColor(score);
+
+            const card = document.createElement("div");
+            card.className = "card-historico";
+
+            const info = document.createElement("div");
+            info.className = "info-rota";
+
+            info.innerHTML = `
+                <div><strong>${item.rota.origem.endereco}</strong></div>
+                <div>${item.rota.destino.endereco}</div>
+                <div style="font-size: 12px; color: gray;">${item.data} ${item.hora}</div>
+            `;
+
+            const indicador = document.createElement("div");
+            indicador.className = "indice-seguranca";
+            indicador.style.backgroundColor = cor;
+            indicador.textContent = score;
+
+            card.appendChild(info);
+            card.appendChild(indicador);
+            historicoLista.appendChild(card);
+        });
+    }
+
+    carregarHistorico();
+});
