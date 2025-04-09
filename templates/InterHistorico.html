@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/interhistorico.css">
+    <script src="/static/js/historico.js"></script>
+    <script src="/static/js/banco.js"></script>
+</head>
+<body>
+    <section class="base">
+        <section id="inter-historico" class="popup-section active">
+          <div class="historico-info">
+            <h2 class="historico-titulo">Histórico</h2>
+            <p class="historico-subtitulo">Histórico de Trajetos e Índice de Segurança</p>
+          </div>
+          <div id="historico-lista" class="lista-historico"></div>
+        </section>
+      </section>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initAutocomplete" async defer>
+    </script>
+</body>
+</html>
