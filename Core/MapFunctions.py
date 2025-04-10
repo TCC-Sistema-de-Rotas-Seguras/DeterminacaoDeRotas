@@ -38,51 +38,105 @@ def centro_e_raio(p1, p2):
     
     return centro, raio
 
-def PlotPontoDePerigo(mapa,data, Graph, u, v):
-    parametro = "danger_manha"
-    QntdCrimes = int(data.get(parametro, 0))
+def PlotRota(rota, grafo, mapa, cor="blue"):
+    # Itera sobre as arestas da rota e adiciona linhas ao mapa
+    for i in range(len(rota) - 1):
+        # Pega os nós u e v da rota
+        u, v = rota[i], rota[i + 1]
 
-    if 5 <= QntdCrimes <= 12:
-        cor = "orange"
-    elif 13 <= QntdCrimes <= 20:
-        cor = "red"
-    else:
-        cor = "black"
+        # Pega os dados da aresta entre os nós u e v
+        edge_data = grafo.get_edge_data(u, v)
+
+        # Itera sobre os dados da aresta
+        for data in edge_data.values():
+
+            # verifica se a aresta tem geometria
+            if "geometry" in data:
+                # Pega os pontos da linha
+                line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
+            else:
+                # Se não houver geometria, usa os nós u e v
+                line_coords = [(grafo.nodes[u]["y"], grafo.nodes[u]["x"]),
+                               (grafo.nodes[v]["y"], grafo.nodes[v]["x"])]
+            
+            # Adiciona a linha ao mapa
+            folium.PolyLine(line_coords, color=cor, weight=5, opacity=0.7).add_to(mapa)
+
+def PlotPontosCrimes(mapa, rota, grafo):
+    lista_crimes = {
+        "baixo_risco" : [],
+        "medio_risco" : [],
+        "alto_risco" : []
+    }
+
+    cores = ["orange", "red", "black"]
+    parametro = "danger"
     
-    # Adicionar ponto de perigo (marcador preto)
-    if QntdCrimes > 5:
-        if "geometry" in data:
-            # Pega o primeiro ponto da linha
-            lon, lat = list(data["geometry"].coords)[0]
-        else:
-            # Usa o ponto inicial da aresta (nó u)
-            lat = Graph.nodes[u]["y"]
-            lon = Graph.nodes[u]["x"]
+    # Itera sobre os pontos da rota e adiciona marcadores de perigo
+    for i in range(len(rota) - 1):
 
-        folium.Marker(
-            location=(lat, lon),
-            popup=f"Perigo: {data.get(parametro)}",
-            icon=folium.Icon(color=cor, icon="info-sign")
-        ).add_to(mapa)
+        # Pega os nós u e v da rota
+        u, v = rota[i], rota[i + 1]
 
-        return (cor)
+        #  Pega os dados da aresta entre os nós u e v
+        edge_data = grafo.get_edge_data(u, v)
 
+        # Itera sobre os dados da aresta
+        for data in edge_data.values():
+            QntdCrimes = int(data.get(parametro, 0))
+            
+            # Adicionar ponto de perigo (marcador preto)
+            if QntdCrimes >= 5:
+                if "geometry" in data:
+                    # Pega o primeiro ponto da linha
+                    lon, lat = list(data["geometry"].coords)[0]
+                else:
+                    # Usa o ponto inicial da aresta (nó u)
+                    lat = grafo.nodes[u]["y"]
+                    lon = grafo.nodes[u]["x"]
 
-def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime, RouteLenght=None):
-    """
-    Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
-    
-    Retorna:
-    - O HTML do mapa gerado
-    """
-    
+                if 5 <= QntdCrimes <= 12:
+                    cor = cores[0]
+                    lista_crimes["baixo_risco"].append(
+                        {
+                            "lat": lat,
+                            "lon": lon,
+                        }
+                    )
+                elif 13 <= QntdCrimes <= 20:
+                    cor = cores[1]
+                    lista_crimes["medio_risco"].append(
+                        {
+                            "lat": lat,
+                            "lon": lon,
+                        }
+                    )
+                elif QntdCrimes > 20:
+                    cor = cores[2]
+                    lista_crimes["alto_risco"].append(
+                        {
+                            "lat": lat,
+                            "lon": lon,
+                        }
+                    )
+
+                folium.Marker(
+                    location=(lat, lon),
+                    popup=f"Crimes: {data.get(parametro)}",
+                    icon=folium.Icon(color=cor, icon="info-sign")
+                ).add_to(mapa)
+
+    return lista_crimes;
+
+def CriarMapa(Graph_Location, Origin_point, Destination_point):
+
     # Criar um mapa sem os controles de zoom e sem atribuição de copyright
-    m = folium.Map(
+    mapa = folium.Map(
         location=Graph_Location, 
         zoom_start=15, 
         zoom_control=False, 
         control_scale=False,
-        tiles=None  # Remove o mapa padrão que contém a atribuição
+        tiles=None  # Remove o mapa padrão que contém a atribuição de copyright
     )
 
     # Remover o logo @foliummap
@@ -90,106 +144,56 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
         tiles="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         attr=" ",  # Define um espaço em branco para evitar o erro
         name="Mapa Limpo"
-    ).add_to(m)
+    ).add_to(mapa)
 
-    # Adicionar ponto de origem (marcador verde)
+    # Adicionar ponto de origem
     folium.Marker(
         location=Origin_point,
         popup="Origem",
         icon=folium.Icon(color="green", icon="play")
-    ).add_to(m)
-
-    # Adicionar ponto de destino (marcador azul)
+    ).add_to(mapa)
+    
+    # Adicionar ponto de destino
     folium.Marker(
         location=Destination_point,
         popup="Destino",
         icon=folium.Icon(color="blue", icon="flag")
-    ).add_to(m)
-
-    lista_crimes_1 = [0,0,0]
-    lista_crimes_2 = [0,0,0]
-
-    # ____ Rota 1 ____
-    # Adicionar a rota calculada (seguindo as ruas corretamente)
-    route_points = []  # Para calcular o bounding box
-    for i in range(len(RouteCrime) - 1):
-        u, v = RouteCrime[i], RouteCrime[i + 1]
-        edge_data = Graph.get_edge_data(u, v)
-
-        for data in edge_data.values():
-
-            # Definir a cor da rota
-            color = "blue"
-            tipo_crime = PlotPontoDePerigo(m, data, Graph, u, v)
-
-            if tipo_crime == "black":
-                lista_crimes_1[2] += 1
-            elif tipo_crime == "red":
-                lista_crimes_1[1] += 1
-            elif tipo_crime == "orange":
-                lista_crimes_1[0] += 1
-
-            if "geometry" in data:
-                line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
-            else:
-                line_coords = [(Graph.nodes[u]["y"], Graph.nodes[u]["x"]),
-                               (Graph.nodes[v]["y"], Graph.nodes[v]["x"])]
-
-            route_points.extend(line_coords)
-            folium.PolyLine(line_coords, color=color, weight=5, opacity=0.7).add_to(m)
-
-    # ____ Rota 2 ____
-    if RouteLenght is not None:
-        # Adicionar a rota calculada (seguindo as ruas corretamente)
-        route_points = []  # Para calcular o bounding box
-        for i in range(len(RouteLenght) - 1):
-            u, v = RouteLenght[i], RouteLenght[i + 1]
-            edge_data = Graph.get_edge_data(u, v)
-
-            for data in edge_data.values():
-
-                # Definir a cor da rota
-                color = "red"
-                tipo_crime = PlotPontoDePerigo(m, data, Graph, u, v)
-
-                if tipo_crime == "black":
-                    lista_crimes_2[2] += 1
-                elif tipo_crime == "red":
-                    lista_crimes_2[1] += 1
-                elif tipo_crime == "orange":
-                    lista_crimes_2[0] += 1
-
-                if "geometry" in data:
-                    line_coords = [(lat, lon) for lon, lat in data["geometry"].coords]
-                else:
-                    line_coords = [(Graph.nodes[u]["y"], Graph.nodes[u]["x"]),
-                                (Graph.nodes[v]["y"], Graph.nodes[v]["x"])]
-
-                route_points.extend(line_coords)
-                folium.PolyLine(line_coords, color=color, weight=5, opacity=0.7).add_to(m)
-
-    # Calcular o bounding box para ajustar o zoom
-    points = MultiPoint(route_points)
-    min_lat, min_lon, max_lat, max_lon = points.bounds
-
-    buffer = 0.002  # Ajuste esse valor conforme necessário
-    min_lat -= buffer
-    max_lat += buffer
-    min_lon -= buffer
-    max_lon += buffer
-
-    # Centralizar o mapa e ajustar o zoom
-    map_center = [(min_lat + max_lat) / 2, (min_lon + max_lon) / 2]
-    m.location = map_center
-    m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
+    ).add_to(mapa)
 
     # Remover o logo @foliummap
-    m.get_root().header.render()
+    mapa.get_root().header.render()
     figure = Figure()
-    figure.add_child(m)
+    figure.add_child(mapa)
     figure.html.add_child(folium.Element("<style>.leaflet-control-attribution { display: none !important; }</style>"))
 
-    return [m._repr_html_(), lista_crimes_1, lista_crimes_2]  # Retorna o HTML do mapa
+    return mapa
+
+
+def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime, RouteLenght):
+    """
+    Gera um mapa interativo usando Folium com a rota corretamente alinhada às ruas.
+    
+    Retorna:
+    - O HTML do mapa gerado
+    """
+
+    # Criar um mapa sem os controles de zoom e sem atribuição de copyright
+    mapa_principal = CriarMapa(Graph_Location, Origin_point, Destination_point)
+    mapa_secundario = CriarMapa(Graph_Location, Origin_point, Destination_point)
+    
+    
+    # Adicionar a rota ao mapa
+    PlotRota(RouteCrime, Graph, mapa_principal, "blue")
+    PlotRota(RouteCrime, Graph, mapa_secundario, "blue")
+    PlotRota(RouteLenght, Graph, mapa_secundario, "red")
+
+    # Adicionar pontos de perigo ao mapa
+    PlotPontosCrimes(mapa_principal, RouteCrime, Graph)
+    lista_crimes_1 = PlotPontosCrimes(mapa_secundario, RouteCrime, Graph)
+    lista_crimes_2 = PlotPontosCrimes(mapa_secundario, RouteLenght, Graph)
+
+
+    return mapa_principal._repr_html_(), mapa_secundario._repr_html_(), lista_crimes_1, lista_crimes_2
 
 def gerarMapaPadrao(location):
     # Criar um mapa sem os controles de zoom e sem atribuição de copyright

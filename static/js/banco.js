@@ -19,17 +19,17 @@ function criarLocalizacao(nome, endereco, geo_localizacao) {
     
 }
 
-function criarRota(distancia, tempo, mapa, qntd_evitados, qntd_crimes, qntd_risco, qntd_medio_risco, qntd_alto_risco) {
+function criarRota(distancia, tempo, mapa, qntd_crimes, qntd_evitados, qtnd_evitados_baixo_risco, qtnd_evitados_medio_risco, qtnd_evitados_alto_risco) {
     return {
         distancia,
         tempo,
         mapa,
         crimes: {
-            qntd_evitados,
             qntd_crimes,
-            qntd_risco,
-            qntd_medio_risco,
-            qntd_alto_risco
+            qntd_evitados,
+            qtnd_evitados_baixo_risco,
+            qtnd_evitados_medio_risco,
+            qtnd_evitados_alto_risco
         }
     };
 }

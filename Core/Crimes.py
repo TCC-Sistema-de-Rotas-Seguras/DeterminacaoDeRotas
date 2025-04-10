@@ -133,3 +133,18 @@ def CrimeColorsPlot(Graph):
             ax.plot(*line.xy, color=color, linewidth=2)
 
     return fig, ax
+
+
+def DiferencaListaCrimes(dic1, dic2):
+    resultado = {
+        "baixo_risco": [],
+        "medio_risco": [],
+        "alto_risco": []
+    }
+
+    for risco in resultado.keys():
+        for ponto in dic2[risco]:
+            if ponto not in dic1[risco]:
+                resultado[risco].append(ponto)
+    
+    return resultado
