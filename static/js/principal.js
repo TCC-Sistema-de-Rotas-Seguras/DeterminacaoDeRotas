@@ -36,6 +36,12 @@ function initAutocomplete() {
     
         if(document.getElementById('destination_coords').value != "") {
             requestRoute();
+            togglePopup("off");
+            const btnOn = document.getElementById("Secondary-route-btn-on");
+            const isOnVisible = btnOn.style.display !== "none";
+            if (isOnVisible) {
+                toggleSecondaryRoute()
+            }
         }
 
     });
@@ -51,6 +57,12 @@ function initAutocomplete() {
     
         if(document.getElementById('origin_coords').value != "") {
             requestRoute();
+            togglePopup("off");
+            const btnOn = document.getElementById("Secondary-route-btn-on");
+            const isOnVisible = btnOn.style.display !== "none";
+            if (isOnVisible) {
+                toggleSecondaryRoute()
+            }
         }
     });
 }
@@ -105,7 +117,7 @@ function requestRoute() {
 
 }
 
-function loadMap(mapa, distancia, tempo) {
+function loadMap(mapa, distancia, tempo) {    
     document.getElementById("map-container").innerHTML = mapa;
     document.getElementById("span-distancia").innerHTML = distancia;
     document.getElementById("span-tempo").innerHTML = tempo;
@@ -118,13 +130,15 @@ function loadMap(mapa, distancia, tempo) {
             mapDiv.style.paddingBottom = ""; // Se quiser remover a altura baseada em padding
         }
     }, 100);
+
+    
 }
 
 function togglePopup(pagina) {
     var popup = document.querySelector(".popup-section");
 
     // Desativar
-    if (popup.classList.contains("active")) {
+    if (popup.classList.contains("active") || pagina == "off") {
 
         popup.classList.remove("active");
 
@@ -151,6 +165,7 @@ function togglePopup(pagina) {
             .then(response => response.text())
             .then(data => {
                 document.getElementById("popup-container").innerHTML = data;
+                preencherPopup(banco.historico[banco.historico.length - 1]);
             })
             .catch(error => console.error('Erro ao carregar o HTML:', error));
         }
