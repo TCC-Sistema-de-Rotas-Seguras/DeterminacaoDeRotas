@@ -1,29 +1,20 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const botaoHistorico = document.getElementById("btn-historico");
-
-    if (botaoHistorico) {
-        botaoHistorico.addEventListener("click", () => {
-            if (banco.historico.length > 0) {
-                const ultimo = banco.historico[banco.historico.length - 1];
-                preencherPopup(ultimo);
-            }
-        });
-    }
-});
-
 function preencherPopup(item) {
     const { data, hora, rota } = item;
 
     // Data e hora
     document.getElementById("span-data").innerText = `${data} ${hora}`;
 
+    // Mapa
+    document.getElementById("Container-Mapa-Resumo").innerHTML = rota.rota_safast.mapa;
+
+
     // Endereços
     document.getElementById("span-origem").innerText = rota.origem.endereco;
     document.getElementById("span-destino").innerText = rota.destino.endereco;
 
     // Safast
-    document.getElementById("span-dist").innerText = rota.rota_safast.distancia;
-    document.getElementById("span-tempo").innerText = rota.rota_safast.tempo;
+    document.getElementById("span-dist-historico").innerText = rota.rota_safast.distancia;
+    document.getElementById("span-tempo-historico").innerText = rota.rota_safast.tempo;
 
     // Tradicional
     document.getElementById("span-dist-rt").innerText = rota.rota_tradicional.distancia;
@@ -38,57 +29,20 @@ function preencherPopup(item) {
     document.getElementById("span-medio-risco").innerText = rota.rota_safast.crimes.qntd_medio_risco;
     document.getElementById("span-baixo-risco").innerText = rota.rota_safast.crimes.qntd_risco;
 
-    //Areas evitadas
-    document.getElementById("span-crimes").innerText = "Cruza " + rota.rota_safast.crimes.qntd_crimes + " áreas de risco";
+    //Areas Cruzadas
+    document.getElementById("span-crimes-historico").innerText = "Cruza " + rota.rota_safast.crimes.qntd_crimes + " áreas de risco";
     document.getElementById("span-crimes-rt").innerText = "Cruza " + rota.rota_tradicional.crimes.qntd_crimes + " áreas de risco";
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    const historicoLista = document.getElementById("historico-lista");
+function visualizarRotaHistorico(){
+    banco.rota = banco.historico[banco.historico.length - 1].rota;
+    loadMap(banco.rota.rota_safast.mapa, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
+    
+    togglePopup("off");
 
-    function getIndiceSeguranca(rota) {
-        const crimes = rota.rota_safast.crimes;
-        const total = crimes.qntd_risco + crimes.qntd_medio_risco + crimes.qntd_alto_risco;
-        const maxScore = 10;
-
-        if (total <= 3) return 8 + Math.random();      // Muito seguro
-        if (total <= 10) return 5 + Math.random() * 2;  // Médio
-        return 3 + Math.random() * 2;                   // Inseguro
+    const btnOn = document.getElementById("Secondary-route-btn-on");
+    const isOnVisible = btnOn.style.display !== "none";
+    if (isOnVisible) {
+        toggleSecondaryRoute()
     }
-
-    function getColor(score) {
-        if (score >= 7) return "#4CAF50";   // Verde
-        if (score >= 5) return "#2196F3";   // Azul
-        return "#757575";                   // Cinza escuro
-    }
-
-    function carregarHistorico() {
-        banco.historico.forEach(item => {
-            const score = parseFloat(getIndiceSeguranca(item.rota)).toFixed(1);
-            const cor = getColor(score);
-
-            const card = document.createElement("div");
-            card.className = "card-historico";
-
-            const info = document.createElement("div");
-            info.className = "info-rota";
-
-            info.innerHTML = `
-                <div><strong>${item.rota.origem.endereco}</strong></div>
-                <div>${item.rota.destino.endereco}</div>
-                <div style="font-size: 12px; color: gray;">${item.data} ${item.hora}</div>
-            `;
-
-            const indicador = document.createElement("div");
-            indicador.className = "indice-seguranca";
-            indicador.style.backgroundColor = cor;
-            indicador.textContent = score;
-
-            card.appendChild(info);
-            card.appendChild(indicador);
-            historicoLista.appendChild(card);
-        });
-    }
-
-    carregarHistorico();
-});
+}
