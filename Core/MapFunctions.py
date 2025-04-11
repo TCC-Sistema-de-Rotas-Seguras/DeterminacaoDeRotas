@@ -198,12 +198,20 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
     # Criar um mapa sem os controles de zoom e sem atribuição de copyright
     mapa_principal = CriarMapa(Graph_Location, Origin_point, Destination_point)
     mapa_secundario = CriarMapa(Graph_Location, Origin_point, Destination_point)
+    mapa_principal_semcrimes = CriarMapa(Graph_Location, Origin_point, Destination_point)
+    mapa_secundario_semcrimes = CriarMapa(Graph_Location, Origin_point, Destination_point)
+
     
     
     # Adicionar a rota ao mapa
     PlotRota(RouteCrime, Graph, mapa_principal, "blue")
     PlotRota(RouteCrime, Graph, mapa_secundario, "blue")
     PlotRota(RouteLenght, Graph, mapa_secundario, "red")
+
+    PlotRota(RouteCrime, Graph, mapa_principal_semcrimes, "blue")
+    PlotRota(RouteCrime, Graph, mapa_secundario_semcrimes, "blue")
+    PlotRota(RouteLenght, Graph, mapa_secundario_semcrimes, "red")
+
 
     # Adicionar pontos de perigo ao mapa
     PlotPontosCrimes(mapa_principal, RouteCrime, Graph)
@@ -212,7 +220,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
 
     
 
-    return mapa_principal._repr_html_(), mapa_secundario._repr_html_(), lista_crimes_1, lista_crimes_2
+    return mapa_principal._repr_html_(), mapa_principal_semcrimes._repr_html_(), mapa_secundario._repr_html_(), mapa_secundario_semcrimes._repr_html_(), lista_crimes_1, lista_crimes_2
 
 def gerarMapaPadrao(location):
     # Criar um mapa sem os controles de zoom e sem atribuição de copyright

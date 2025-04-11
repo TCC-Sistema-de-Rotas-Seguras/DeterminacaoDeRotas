@@ -5,7 +5,7 @@ function preencherPopup(item) {
     document.getElementById("span-data").innerText = `${data} ${hora}`;
 
     // Mapa
-    document.getElementById("Container-Mapa-Resumo").innerHTML = rota.rota_safast.mapa;
+    document.getElementById("Container-Mapa-Resumo").innerHTML = rota.rota_safast.mapa_semcrimes;
 
 
     // Endereços
@@ -40,9 +40,15 @@ function visualizarRotaHistorico(){
     
     togglePopup("off");
 
-    const btnOn = document.getElementById("Secondary-route-btn-on");
-    const isOnVisible = btnOn.style.display !== "none";
+    var btnOn = document.getElementById("Secondary-route-btn-on");
+    var isOnVisible = btnOn.style.display !== "none";
     if (isOnVisible) {
         toggleSecondaryRoute()
+    }
+
+    btnOn = document.getElementById("Crime-visualization-btn-off");
+    isOnVisible = btnOn.style.display !== "none";
+    if (isOnVisible) {
+        toggleCrimeVisualization()
     }
 }

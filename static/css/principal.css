@@ -222,11 +222,14 @@ input.input-address {
         height: 254px;
     }
 
-    .menu-container-switch{
+    .menu-container-bottom{
         display: flex;
-        align-items: center;
+        flex-direction: column;
         margin-bottom: 13px;
+    }
 
+    .Crime-toggle-container{
+        margin-bottom: 10px;
     }
 
 
@@ -377,14 +380,30 @@ input.input-address {
         width: 100%;
     }
 
-    .menu-container-switch{
+    .Route-toggle-container{
         display: flex;
         align-items: center;
         justify-content: center;
 
         position: absolute;
         bottom: 150px;
-        right: 10px;
+        right: -18px;
+        width: fit-content;
+        padding: 5px;
+        background-color: white;
+        border: 1px solid black;
+        border-radius: 35px;
+        
+    }
+
+    .Crime-toggle-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        position: absolute;
+        bottom: 213px;
+        right: -18px;
         width: fit-content;
         padding: 5px;
         background-color: white;

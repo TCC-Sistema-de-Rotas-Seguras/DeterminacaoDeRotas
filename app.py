@@ -124,8 +124,8 @@ def return_map():
     tempos["Centro e raio do mapa"] = time.time() - t0
 
     t0 = time.time()
-    mapa_html_principal, mapa_html_secundario, lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght  = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
-
+    mapa_html_principal, mapa_html_principal_semcrimes, mapa_html_secundario, mapa_html_secundario_semcrimes, lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght  = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
+    lista_crimes_Diferenca = DiferencaListaCrimes(lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght)
     tempos["FoliumMap (mapas)"] = time.time() - t0
 
     tempos["Tempo total"] = time.time() - start_full
@@ -135,20 +135,6 @@ def return_map():
         print(f"{etapa:<35}: {duracao:.4f} segundos")
     print("--------------------------\n")
 
-    lista_crimes_Diferenca = DiferencaListaCrimes(lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght)
-    
-    print("_____Lista de Crimes Rota Principal:_____")
-    print(len(lista_crimes_Rota_Crime["baixo_risco"]))
-    print(len(lista_crimes_Rota_Crime["medio_risco"]))
-    print(len(lista_crimes_Rota_Crime["alto_risco"]))
-    print("_____Lista de Crimes Rota Secundaria:_____")
-    print(len(lista_crimes_Rota_Lenght["baixo_risco"]))
-    print(len(lista_crimes_Rota_Lenght["medio_risco"]))
-    print(len(lista_crimes_Rota_Lenght["alto_risco"]))
-    print("_____Lista de Crimes Rota Diferenca:_____")
-    print(len(lista_crimes_Diferenca["baixo_risco"]))
-    print(len(lista_crimes_Diferenca["medio_risco"]))
-    print(len(lista_crimes_Diferenca["alto_risco"]))
 
     qntd_evitados_principal = len(lista_crimes_Diferenca["baixo_risco"]) + len(lista_crimes_Diferenca["medio_risco"]) +len(lista_crimes_Diferenca["alto_risco"])
     qntd_crimes_principal = len(lista_crimes_Rota_Crime["baixo_risco"]) + len(lista_crimes_Rota_Crime["medio_risco"]) + len(lista_crimes_Rota_Crime["alto_risco"])
@@ -159,7 +145,9 @@ def return_map():
     qntd_crimes_secundario = len(lista_crimes_Rota_Lenght["baixo_risco"]) + len(lista_crimes_Rota_Lenght["medio_risco"]) + len(lista_crimes_Rota_Lenght["alto_risco"])
 
     return jsonify(
+        # Mapa Principal
         mapa_html_principal=mapa_html_principal,
+        mapa_html_principal_semcrimes=mapa_html_principal_semcrimes, # Implementando
         distancia_principal=Rota_Crime_Distancia,
         tempo_estimado_principal=Rota_Crime_Tempo,
         qntd_evitados_principal=qntd_evitados_principal,
@@ -169,7 +157,9 @@ def return_map():
         qtnd_evitados_medio_risco_principal=qtnd_evitados_medio_risco_principal,
         qtnd_evitados_alto_risco_principal=qtnd_evitados_alto_risco_principal,
 
+        # Mapa Secundário
         mapa_html_secundario=mapa_html_secundario,
+        mapa_html_secundario_semcrimes=mapa_html_secundario_semcrimes, # Implementando
         distancia_secundario=Rota_length_distancia,
         tempo_estimado_secundario=Rota_length_tempo,
         qntd_crimes_secundario=qntd_crimes_secundario,

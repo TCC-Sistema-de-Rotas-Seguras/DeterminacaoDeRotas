@@ -53,14 +53,26 @@
                     </button>
                 </section>
 
-                <section class="menu-container-switch">
-                    <button id="Secondary-route-btn-off" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer;">
-                        <img id="Secondary-route-svg-off" width="36" height="36" src="../static/images/1_Placa.png" alt="">
-                    </button>
-                
-                    <button id="Secondary-route-btn-on" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer; display: none;">
-                        <img id="Secondary-route-svg-on" width="36" height="36" src="../static/images/2_Placas.png" alt="">
-                    </button>
+                <section class="menu-container-bottom">
+                    <section class="Crime-toggle-container">
+                        <button id="Crime-visualization-btn-off" onclick="toggleCrimeVisualization()" style="background: none; border: none; cursor: pointer; display: none;">
+                            <img id="Crime-visualization-img-off" width="36" height="36" src="../static/images/Visualizar Perigo OFF.png" alt="">
+                        </button>
+    
+                        <button id="Crime-visualization-btn-on" onclick="toggleCrimeVisualization()" style="background: none; border: none; cursor: pointer; ">
+                            <img id="Crime-visualization-img-on" width="36" height="36" src="../static/images/Visualizar Perigo ON.png" alt="">
+                        </button>
+                    </section>
+
+                    <section class="Route-toggle-container">
+                        <button id="Secondary-route-btn-off" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer;">
+                            <img id="Secondary-route-svg-off" width="36" height="36" src="../static/images/1_Placa.png" alt="">
+                        </button>
+                    
+                        <button id="Secondary-route-btn-on" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer; display: none;">
+                            <img id="Secondary-route-svg-on" width="36" height="36" src="../static/images/2_Placas.png" alt="">
+                        </button>
+                    </section>
                 </section>
                 
             </div>

@@ -3,10 +3,14 @@ function criarBanco() {
         rota: {
             origem: criarLocalizacao("", "", ""),
             destino: criarLocalizacao("", "", ""),
-            rota_safast: criarRota(null, null, "", null, null, null, null, null),
-            rota_tradicional: criarRota(null, null, "", null, null, null, null, null)
+            rota_safast: criarRota(null, null, "", "", null, null, null, null, null),
+            rota_tradicional: criarRota(null, null, "", "", null, null, null, null, null)
         },
-        historico: []
+        historico: [],
+        tipo_mapa_atual: {
+            rota: "simples",
+            crime: "ligado",
+        },
     };
 }
 
@@ -19,11 +23,12 @@ function criarLocalizacao(nome, endereco, geo_localizacao) {
     
 }
 
-function criarRota(distancia, tempo, mapa, qntd_crimes, qntd_evitados, qtnd_evitados_baixo_risco, qtnd_evitados_medio_risco, qtnd_evitados_alto_risco) {
+function criarRota(distancia, tempo, mapa, mapa_semcrimes, qntd_crimes, qntd_evitados, qtnd_evitados_baixo_risco, qtnd_evitados_medio_risco, qtnd_evitados_alto_risco) {
     return {
         distancia,
         tempo,
         mapa,
+        mapa_semcrimes,
         crimes: {
             qntd_crimes,
             qntd_evitados,

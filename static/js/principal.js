@@ -78,42 +78,51 @@ function requestRoute() {
     fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
         .then(response => response.json())
         .then(data => {
+            // Principal
             mapa_html_principal = data.mapa_html_principal;
+            mapa_html_principal_semcrimes = data.mapa_html_principal_semcrimes; // Implementando
             distancia_principal = data.distancia_principal;
             tempo_principal = data.tempo_estimado_principal;
 
-            mapa_html_secundario = data.mapa_html_secundario;
-            distancia_secundario = data.distancia_secundario;
-            tempo_secundario = data.tempo_estimado_secundario;
-
+            // Crimes Principal
             qntd_crimes_principal = data.qntd_crimes_principal;
             qntd_evitados_principal = data.qntd_evitados_principal;
             qtnd_evitados_baixo_risco_principal = data.qtnd_evitados_baixo_risco_principal;
             qtnd_evitados_medio_risco_principal = data.qtnd_evitados_medio_risco_principal;
             qtnd_evitados_alto_risco_principal = data.qtnd_evitados_alto_risco_principal;
 
-            
+            // Secundario
+            mapa_html_secundario = data.mapa_html_secundario;
+            mapa_html_secundario_semcrimes = data.mapa_html_secundario_semcrimes; // Implementando
+            distancia_secundario = data.distancia_secundario;
+            tempo_secundario = data.tempo_estimado_secundario;
 
-
+            // Crimes Secundario
             qntd_crimes_secundario = data.qntd_crimes_secundario;
-
+            
+            // Atualizar Banco
             atualizarRotaBanco(banco, 
                 criarLocalizacao(document.getElementById('origin').value, document.getElementById('origin').value, document.getElementById('origin_coords').value),
                 criarLocalizacao(document.getElementById('destination').value, document.getElementById('destination').value, document.getElementById('destination_coords').value),
-                criarRota(distancia_principal, tempo_principal, mapa_html_principal, qntd_crimes_principal, qntd_evitados_principal,  qtnd_evitados_baixo_risco_principal, qtnd_evitados_medio_risco_principal, qtnd_evitados_alto_risco_principal),
-                criarRota(distancia_secundario, tempo_secundario, mapa_html_secundario, qntd_crimes_secundario, null,  null, null, null)
+                criarRota(distancia_principal, tempo_principal, mapa_html_principal,mapa_html_principal_semcrimes, qntd_crimes_principal, qntd_evitados_principal,  qtnd_evitados_baixo_risco_principal, qtnd_evitados_medio_risco_principal, qtnd_evitados_alto_risco_principal),
+                criarRota(distancia_secundario, tempo_secundario, mapa_html_secundario,mapa_html_secundario_semcrimes, qntd_crimes_secundario, null,  null, null, null)
             );
-
+    
+            // Adicionar ao historico
             adicionarHistorico(banco, new Date().toLocaleDateString(), new Date().toLocaleTimeString(), banco.rota);
+    
+            // Carregar Mapa
+            loadMap(banco.rota.rota_safast.mapa, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
             
 
-            loadMap(banco.rota.rota_safast.mapa, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
         })
         .catch(error => console.error("Erro ao carregar o mapa:", error))
         .finally(() => {
             esconderLoader();
         });
-    
+
+        
+
     
 
 }
@@ -189,7 +198,15 @@ function toggleSecondaryRoute() {
         btnOff.style.display = "";
         svgOff.style.display = "";
         
-        loadMap(banco.rota.rota_safast.mapa, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
+        var mapa_carregado;
+        if (banco.tipo_mapa_atual.crime == "ligado") {
+            mapa_carregado = banco.rota.rota_safast.mapa
+        }else if (banco.tipo_mapa_atual.crime == "desligado") {
+            mapa_carregado = banco.rota.rota_safast.mapa_semcrimes
+        }
+        
+        loadMap(mapa_carregado, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
+        banco.tipo_mapa_atual.rota = "simples";
     // ON
     } else {
         // Esconde o OFF, mostra o ON
@@ -198,13 +215,69 @@ function toggleSecondaryRoute() {
         btnOn.style.display = "";
         svgOn.style.display = "";
 
-        loadMap(banco.rota.rota_tradicional.mapa, banco.rota.rota_tradicional.distancia, banco.rota.rota_tradicional.tempo);
-    }
-  }
+        var mapa_carregado;
+        if (banco.tipo_mapa_atual.crime == "ligado") {
+            mapa_carregado = banco.rota.rota_tradicional.mapa
+        }else if (banco.tipo_mapa_atual.crime == "desligado") {
+            mapa_carregado = banco.rota.rota_tradicional.mapa_semcrimes
+        }
 
-window.onload = function() {
-    carregarMapa();
-};
+        loadMap(mapa_carregado, banco.rota.rota_tradicional.distancia, banco.rota.rota_tradicional.tempo);
+        banco.tipo_mapa_atual.rota = "dupla";
+
+    }
+}
+
+function toggleCrimeVisualization() {
+    const btnOn = document.getElementById("Crime-visualization-btn-on");
+    const imgOn = document.getElementById("Crime-visualization-img-on");
+    const btnOff = document.getElementById("Crime-visualization-btn-off");
+    const imgOff = document.getElementById("Crime-visualization-img-off");
+
+    const isOnVisible = btnOn.style.display !== "none";
+
+    // OFF
+    if (isOnVisible) {
+        // Esconde o ON, mostra o OFF
+        btnOn.style.display = "none";
+        imgOn.style.display = "none";
+        btnOff.style.display = "";
+        imgOff.style.display = "";
+        
+        var mapa_carregado;
+        if (banco.tipo_mapa_atual.rota == "simples") {
+            mapa_carregado = banco.rota.rota_safast.mapa_semcrimes
+            loadMap(mapa_carregado, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
+
+        }else if (banco.tipo_mapa_atual.rota == "dupla") {
+            mapa_carregado = banco.rota.rota_tradicional.mapa_semcrimes
+            loadMap(mapa_carregado, banco.rota.rota_tradicional.distancia, banco.rota.rota_tradicional.tempo);
+
+        }
+
+        banco.tipo_mapa_atual.crime = "desligado";
+    // ON
+    } else {
+        // Esconde o OFF, mostra o ON
+        btnOff.style.display = "none";
+        imgOff.style.display = "none";
+        btnOn.style.display = "";
+        imgOn.style.display = "";
+
+        var mapa_carregado;
+        if (banco.tipo_mapa_atual.rota == "simples") {
+            mapa_carregado = banco.rota.rota_safast.mapa
+            loadMap(mapa_carregado, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
+        }else if (banco.tipo_mapa_atual.rota == "dupla") {
+            mapa_carregado = banco.rota.rota_tradicional.mapa
+            loadMap(mapa_carregado, banco.rota.rota_tradicional.distancia, banco.rota.rota_tradicional.tempo);
+        }
+
+        banco.tipo_mapa_atual.crime = "ligado";
+    }
+}
+
+
 
 function carregarMapa() {
     fetch(`/mapa`)
@@ -229,5 +302,9 @@ function esconderLoader() {
     document.getElementById('map-blur').style.background = 'rgba(0, 0, 0, 0.0)';
 
 }
-  
+
+window.onload = function() {
+    carregarMapa();
+};
+
 var banco = criarBanco();
