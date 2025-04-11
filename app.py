@@ -11,6 +11,7 @@ from Core.AStar_NMF import RotaAStar_NMF
 from Core.AStar_NMF_Hibrido import RotaAStar_NMF_Hibrida
 from Core.Djikstra import RotaDijkstra
 from Core.Route import calcular_distancia_total, calcular_tempo_estimado
+from Core.Crimes import DiferencaListaCrimes
 
 # ___ Bibliotecas AWS ____
 import io
@@ -123,12 +124,7 @@ def return_map():
     tempos["Centro e raio do mapa"] = time.time() - t0
 
     t0 = time.time()
-    lista = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime)
-    mapa_html_principal = lista[0]
-    lista_crimes_1 = lista[1]
-    lista = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
-    mapa_html_secundario = lista[0]
-    lista_crimes_2 = lista[2]
+    mapa_html_principal, mapa_html_secundario, lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght  = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
 
     tempos["FoliumMap (mapas)"] = time.time() - t0
 
@@ -139,19 +135,28 @@ def return_map():
         print(f"{etapa:<35}: {duracao:.4f} segundos")
     print("--------------------------\n")
 
-    print(lista_crimes_1)
-    print(lista_crimes_2)
+    lista_crimes_Diferenca = DiferencaListaCrimes(lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght)
+    
+    print("_____Lista de Crimes Rota Principal:_____")
+    print(len(lista_crimes_Rota_Crime["baixo_risco"]))
+    print(len(lista_crimes_Rota_Crime["medio_risco"]))
+    print(len(lista_crimes_Rota_Crime["alto_risco"]))
+    print("_____Lista de Crimes Rota Secundaria:_____")
+    print(len(lista_crimes_Rota_Lenght["baixo_risco"]))
+    print(len(lista_crimes_Rota_Lenght["medio_risco"]))
+    print(len(lista_crimes_Rota_Lenght["alto_risco"]))
+    print("_____Lista de Crimes Rota Diferenca:_____")
+    print(len(lista_crimes_Diferenca["baixo_risco"]))
+    print(len(lista_crimes_Diferenca["medio_risco"]))
+    print(len(lista_crimes_Diferenca["alto_risco"]))
 
-    qntd_evitados_principal = lista_crimes_2[0] + lista_crimes_2[1] + lista_crimes_2[2] - lista_crimes_1[0] - lista_crimes_1[1] - lista_crimes_1[2]
-    qntd_crimes_principal = lista_crimes_1[0] + lista_crimes_1[1] + lista_crimes_1[2]
-    qtnd_baixo_risco_principal = lista_crimes_2[0] - lista_crimes_1[0]
-    qtnd_medio_risco_principal = lista_crimes_2[1] - lista_crimes_1[1]
-    qtnd_alto_risco_principal = lista_crimes_2[2] - lista_crimes_1[2]
+    qntd_evitados_principal = len(lista_crimes_Diferenca["baixo_risco"]) + len(lista_crimes_Diferenca["medio_risco"]) +len(lista_crimes_Diferenca["alto_risco"])
+    qntd_crimes_principal = len(lista_crimes_Rota_Crime["baixo_risco"]) + len(lista_crimes_Rota_Crime["medio_risco"]) + len(lista_crimes_Rota_Crime["alto_risco"])
+    qtnd_evitados_baixo_risco_principal = len(lista_crimes_Diferenca["baixo_risco"])
+    qtnd_evitados_medio_risco_principal = len(lista_crimes_Diferenca["medio_risco"])
+    qtnd_evitados_alto_risco_principal = len(lista_crimes_Diferenca["alto_risco"])
 
-    qntd_crimes_secundario = lista_crimes_2[0] + lista_crimes_2[1] + lista_crimes_2[2]
-    # qtnd_risco_secundario = lista_crimes_2[0]
-    # qtnd_medio_risco_secundario = lista_crimes_2[1]
-    # qtnd_alto_risco_secundario = lista_crimes_2[2]
+    qntd_crimes_secundario = len(lista_crimes_Rota_Lenght["baixo_risco"]) + len(lista_crimes_Rota_Lenght["medio_risco"]) + len(lista_crimes_Rota_Lenght["alto_risco"])
 
     return jsonify(
         mapa_html_principal=mapa_html_principal,
@@ -159,17 +164,15 @@ def return_map():
         tempo_estimado_principal=Rota_Crime_Tempo,
         qntd_evitados_principal=qntd_evitados_principal,
         qntd_crimes_principal=qntd_crimes_principal,
-        qtnd_risco_principal=qtnd_baixo_risco_principal,
-        qtnd_medio_risco_principal=qtnd_medio_risco_principal,
-        qtnd_alto_risco_principal=qtnd_alto_risco_principal,
+
+        qtnd_evitados_baixo_risco_principal=qtnd_evitados_baixo_risco_principal,
+        qtnd_evitados_medio_risco_principal=qtnd_evitados_medio_risco_principal,
+        qtnd_evitados_alto_risco_principal=qtnd_evitados_alto_risco_principal,
 
         mapa_html_secundario=mapa_html_secundario,
         distancia_secundario=Rota_length_distancia,
         tempo_estimado_secundario=Rota_length_tempo,
         qntd_crimes_secundario=qntd_crimes_secundario,
-        # qtnd_risco_secundario=qtnd_risco_secundario,
-        # qtnd_medio_risco_secundario=qtnd_medio_risco_secundario,
-        # qtnd_alto_risco_secundario=qtnd_alto_risco_secundario
     )
 
 @app.route('/return_historico')

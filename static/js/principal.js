@@ -81,26 +81,27 @@ function requestRoute() {
             mapa_html_principal = data.mapa_html_principal;
             distancia_principal = data.distancia_principal;
             tempo_principal = data.tempo_estimado_principal;
-            qntd_evitados_principal = data.qntd_evitados_principal;
-            qntd_crimes_principal = data.qntd_crimes_principal;
-            qtnd_risco_principal = data.qtnd_risco_principal;
-            qtnd_medio_risco_principal = data.qtnd_medio_risco_principal;
-            qtnd_alto_risco_principal = data.qtnd_alto_risco_principal;
 
             mapa_html_secundario = data.mapa_html_secundario;
             distancia_secundario = data.distancia_secundario;
             tempo_secundario = data.tempo_estimado_secundario;
-            qntd_evitados_secundario = data.qntd_evitados_secundario;
+
+            qntd_crimes_principal = data.qntd_crimes_principal;
+            qntd_evitados_principal = data.qntd_evitados_principal;
+            qtnd_evitados_baixo_risco_principal = data.qtnd_evitados_baixo_risco_principal;
+            qtnd_evitados_medio_risco_principal = data.qtnd_evitados_medio_risco_principal;
+            qtnd_evitados_alto_risco_principal = data.qtnd_evitados_alto_risco_principal;
+
+            
+
+
             qntd_crimes_secundario = data.qntd_crimes_secundario;
-            qtnd_risco_secundario = data.qtnd_risco_secundario;
-            qtnd_medio_risco_secundario = data.qtnd_medio_risco_secundario;
-            qtnd_alto_risco_secundario = data.qtnd_alto_risco_secundario;
 
             atualizarRotaBanco(banco, 
                 criarLocalizacao(document.getElementById('origin').value, document.getElementById('origin').value, document.getElementById('origin_coords').value),
                 criarLocalizacao(document.getElementById('destination').value, document.getElementById('destination').value, document.getElementById('destination_coords').value),
-                criarRota(distancia_principal, tempo_principal, mapa_html_principal, qntd_evitados_principal, qntd_crimes_principal, qtnd_risco_principal, qtnd_medio_risco_principal, qtnd_alto_risco_principal),
-                criarRota(distancia_secundario, tempo_secundario, mapa_html_secundario, qntd_evitados_secundario, qntd_crimes_secundario, qtnd_risco_secundario, qtnd_medio_risco_secundario, qtnd_alto_risco_secundario)
+                criarRota(distancia_principal, tempo_principal, mapa_html_principal, qntd_crimes_principal, qntd_evitados_principal,  qtnd_evitados_baixo_risco_principal, qtnd_evitados_medio_risco_principal, qtnd_evitados_alto_risco_principal),
+                criarRota(distancia_secundario, tempo_secundario, mapa_html_secundario, qntd_crimes_secundario, null,  null, null, null)
             );
 
             adicionarHistorico(banco, new Date().toLocaleDateString(), new Date().toLocaleTimeString(), banco.rota);

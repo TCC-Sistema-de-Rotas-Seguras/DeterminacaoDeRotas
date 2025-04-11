@@ -25,9 +25,9 @@ function preencherPopup(item) {
     btnEvitadas.innerText = `${rota.rota_safast.crimes.qntd_evitados} ÁREAS DE RISCO EVITADAS`;
 
     // Bolinhas de risco
-    document.getElementById("span-alto-risco").innerText = rota.rota_safast.crimes.qntd_alto_risco;
-    document.getElementById("span-medio-risco").innerText = rota.rota_safast.crimes.qntd_medio_risco;
-    document.getElementById("span-baixo-risco").innerText = rota.rota_safast.crimes.qntd_risco;
+    document.getElementById("span-alto-risco").innerText = rota.rota_safast.crimes.qtnd_evitados_alto_risco;
+    document.getElementById("span-medio-risco").innerText = rota.rota_safast.crimes.qtnd_evitados_medio_risco;
+    document.getElementById("span-baixo-risco").innerText = rota.rota_safast.crimes.qtnd_evitados_baixo_risco;
 
     //Areas Cruzadas
     document.getElementById("span-crimes-historico").innerText = "Cruza " + rota.rota_safast.crimes.qntd_crimes + " áreas de risco";
