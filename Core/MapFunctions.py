@@ -39,6 +39,8 @@ def centro_e_raio(p1, p2):
     return centro, raio
 
 def PlotRota(rota, grafo, mapa, cor="blue"):
+    route_points = []  # Para calcular o bounding box
+
     # Itera sobre as arestas da rota e adiciona linhas ao mapa
     for i in range(len(rota) - 1):
         # Pega os nós u e v da rota
@@ -59,8 +61,24 @@ def PlotRota(rota, grafo, mapa, cor="blue"):
                 line_coords = [(grafo.nodes[u]["y"], grafo.nodes[u]["x"]),
                                (grafo.nodes[v]["y"], grafo.nodes[v]["x"])]
             
+            route_points.extend(line_coords)
             # Adiciona a linha ao mapa
             folium.PolyLine(line_coords, color=cor, weight=5, opacity=0.7).add_to(mapa)
+    
+    # Calcular o bounding box para ajustar o zoom
+    points = MultiPoint(route_points)
+    min_lat, min_lon, max_lat, max_lon = points.bounds
+
+    buffer = 0.002  # Ajuste esse valor conforme necessário
+    min_lat -= buffer
+    max_lat += buffer
+    min_lon -= buffer
+    max_lon += buffer
+
+    # Centralizar o mapa e ajustar o zoom
+    map_center = [(min_lat + max_lat) / 2, (min_lon + max_lon) / 2]
+    mapa.location = map_center
+    mapa.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
 def PlotPontosCrimes(mapa, rota, grafo):
     lista_crimes = {
@@ -192,6 +210,7 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
     lista_crimes_1 = PlotPontosCrimes(mapa_secundario, RouteCrime, Graph)
     lista_crimes_2 = PlotPontosCrimes(mapa_secundario, RouteLenght, Graph)
 
+    
 
     return mapa_principal._repr_html_(), mapa_secundario._repr_html_(), lista_crimes_1, lista_crimes_2
 
