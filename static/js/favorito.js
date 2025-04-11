@@ -1,3 +1,5 @@
+
+// mostrar botões de origem/destino no favorito
 document.querySelectorAll('.route-container').forEach(container => {
   const clicavel = container.querySelector('.route-content');
   const botoes = container.querySelector('.botao-duplo');
@@ -7,6 +9,8 @@ document.querySelectorAll('.route-container').forEach(container => {
   });
 });
 
+// mostrar formulário de adicionar favorito
+// e esconder botão de adicionar
 document.addEventListener('DOMContentLoaded', () => {
   const botaoAdicionar = document.getElementById('adicionar-wrapper');
   const formWrapper = document.getElementById('form-favorito-wrapper');
@@ -24,7 +28,75 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+// Mostra pop up de editar e excluir
+document.addEventListener('click', function (e) {
+  const isButton = e.target.closest('.menu-button');
+  const isPopup = e.target.closest('.menu-popup');
+  const isItem = e.target.closest('.menu-item');
 
+  // Se clicou em item do menu (Editar ou Excluir)
+  if (isItem) {
+    const action = isItem.dataset.action;
+    const container = isItem.closest('.route-container'); // Pega o favorito todo
+
+    if (action === 'editar') {
+      console.log("Editar clicado");
+      const nome = container.querySelector('.form-title')?.textContent.trim();
+      const endereco = container.querySelector('.endereco')?.textContent.trim();
+
+      // Remove o favorito da tela
+      if (container) container.remove();
+
+      // Preenche o formulário
+      document.getElementById('nome').value = nome;
+      document.getElementById('endereco').value = endereco;
+
+      // Mostra o formulário
+      document.getElementById('form-favorito-wrapper').style.display = 'flex';
+
+      // Esconde o botão de adicionar
+      document.getElementById('adicionar-wrapper').style.display = 'none';
+    } else if (action === 'excluir') {
+      console.log("Excluindo...");
+      if (container) container.remove(); // Remove o favorito da tela
+    }
+
+    // Esconde o menu após a ação
+    isItem.closest('.menu-popup').classList.add('hidden');
+    return;
+  }
+
+  // Fecha todos os menus
+  document.querySelectorAll('.menu-popup').forEach(popup => {
+    popup.classList.add('hidden');
+  });
+
+  // Se clicou no botão de 3 pontos
+  if (isButton) {
+    const menuWrapper = isButton.closest('.menu-wrapper');
+    const popup = menuWrapper.querySelector('.menu-popup');
+    popup.classList.toggle('hidden');
+  }
+});
+
+// Evento para todos os botões de origem e destino
+document.addEventListener('click', function (e) {
+  // Se clicou no botão "Origem"
+  if (e.target.classList.contains('origem')) {
+    const container = e.target.closest('.route-container');
+    const endereco = container.querySelector('.endereco')?.textContent;
+    document.getElementById('origin').value = endereco;
+  }
+
+  // Se clicou no botão "Destino"
+  if (e.target.classList.contains('destino')) {
+    const container = e.target.closest('.route-container');
+    const endereco = container.querySelector('.endereco')?.textContent;
+    document.getElementById('destination').value = endereco;
+  }
+});
+
+// Adicionar novo favorito dinamico
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('form-favorito');
   const nomeInput = document.getElementById('nome');
@@ -53,10 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </div>
-        <div>
+        <div class="menu-wrapper">
           <button class="menu-button">
             <img width="36" height="36" src="../static/images/tres-pontos.png" alt="">
           </button>
+          <div class="menu-popup hidden">
+            <div class="menu-item" data-action="editar">Editar</div>
+            <div class="menu-item" data-action="excluir">Excluir</div>
+          </div>
         </div>
       </div>
       <div class="botao-duplo">
