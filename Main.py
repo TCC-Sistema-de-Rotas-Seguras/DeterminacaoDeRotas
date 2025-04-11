@@ -18,8 +18,8 @@ import tempfile
 from botocore.exceptions import NoCredentialsError
 
 # ____ Variaveis Configuraveis ____
-Graph_filename = "Merged_Graph_Aplicado.graphml" # Seleciona o grafo que vai ser utilizado
-Graph_AWS = "Merged_Graph_Aplicado.graphml" # Seleciona o grafo que vai ser puxado da AWS (Obs: Caso os dois forem iguais ele já baixa da AWS e usa o Grafo)
+Graph_filename = "Merged_Graph_NMF.graphml" # Seleciona o grafo que vai ser utilizado
+Graph_AWS = "Merged_Graph_NMF.graphml" # Seleciona o grafo que vai ser puxado da AWS (Obs: Caso os dois forem iguais ele já baixa da AWS e usa o Grafo)
 
 # ____ Localização de Origem e Destino ____
 Origin_point = (-23.72405007639595, -46.57949541445861)
@@ -38,6 +38,7 @@ Graph_folder = "./Data/Graphs/"
 
 # _____________ Baixar Merged Graph da AWS ___________________
 if (not os.path.exists(Graph_folder + "/" + Graph_AWS)) and Graph_filename == Graph_AWS:
+    print("Baixando o grafo da AWS...")
 
     # Configuração do cliente S3
     if os.path.exists(".env"):
@@ -78,26 +79,43 @@ if not os.path.exists(Graph_folder + Graph_filename):
 
     ox.save_graphml(Graph, Graph_folder + Graph_filename)
 else:
+    print("Carregando o grafo existente...")
     Graph = ox.load_graphml(Graph_folder + Graph_filename)
 
+    # Erro gerado ainda nao compreendido, mas nao funciona sem isso
+    for u, v, data in Graph.edges(data=True):
+        if "weight" in data:
+            data["weight"] = float(data["weight"])
+    for u, v, data in Graph.edges(data=True):
+        if "weight_manha" in data:
+            data["weight_manha"] = float(data["weight_manha"])
+    for u, v, data in Graph.edges(data=True):
+        if "weight_manha" in data:
+            data["weight_tarde"] = float(data["weight_manha"])
+    for u, v, data in Graph.edges(data=True):
+        if "weight_manha" in data:
+            data["weight_noite"] = float(data["weight_manha"])
 
+print("Grafo carregado com sucesso!")
+
+print("Carregando rotas...")
 # ____ Determinação de Rota ____
-Route_AStar_comCrimes = RotaAStar(Graph, Origin_point, Destination_point, 2, "weight")
+Route_AStar = RotaAStar(Graph, Origin_point, Destination_point, "weight")
+Route_Djikstra = RotaDijkstra(Graph, Origin_point, Destination_point, "lenght")
 # Route_AStar_semCrimes  = RotaAStar(Graph, Origin_point, Destination_point, "lenght")
-# Route_Djikstra = RotaDijkstra(Graph, Origin_point, Destination_point)
 
 # ____ Plotar Grafo ____
-fig, ax = CrimeColorsPlot(Graph)
+# fig, ax = CrimeColorsPlot(Graph)
 
 # ____ Plotar Rota ____
-RoutePlot(ax, Graph, Route_AStar_comCrimes)
+# RoutePlot(ax, Graph, Route_AStar_comCrimes)
 
 # ____ Follium Map ____
-map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar_comCrimes)
+map_principal, map_secundario, lista_crimes_Route_AStar ,lista_crimes_Route_Djikstra = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar, Route_Djikstra)
 # map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_AStar_semCrimes)
     
-plt.title("Rota com A*")
-plt.show()
+# plt.title("Rota com A*")
+# plt.show()
 
 
 # # ____ Plotar Rota com Djikstra ____
@@ -108,4 +126,7 @@ plt.show()
 # plt.show()
 
 # map = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Route_Djikstra)
-# map.save("Mapa.html")
+map_principal.save("Mapa_Principal.html")
+map_secundario.save("Mapa_Secundario.html")
+print(lista_crimes_Route_AStar)
+print(lista_crimes_Route_Djikstra)

@@ -8,8 +8,10 @@ import time
 from Core.MapFunctions import centro_e_raio, RoutePlot, FoliumMap, gerarMapaPadrao
 from Core.AStar import RotaAStar
 from Core.AStar_NMF import RotaAStar_NMF
+from Core.AStar_NMF_Hibrido import RotaAStar_NMF_Hibrida
 from Core.Djikstra import RotaDijkstra
 from Core.Route import calcular_distancia_total, calcular_tempo_estimado
+from Core.Crimes import DiferencaListaCrimes
 
 # ___ Bibliotecas AWS ____
 import io
@@ -76,73 +78,95 @@ def mapa():
 @app.route('/return_map', methods=['GET'])
 def return_map():
     print("Iniciando a execução do endpoint /return_map")
-    start_fulltime = time.time()
+    tempos = {}
+    start_full = time.time()
 
     origin = request.args.get("origin")
     destination = request.args.get("destination")
-    # parameter = request.args.get("route_parameter")
-    # algorithm = request.args.get("algorithm")
 
     if not origin or not destination:
         return jsonify(error="Erro: Parâmetros 'origin' e 'destination' são obrigatórios."), 400
-    
 
+    t0 = time.time()
     try:
         Origin_point = tuple(map(float, origin.split(',')))
         Destination_point = tuple(map(float, destination.split(',')))
     except (ValueError, TypeError):
         return jsonify(error="Erro: Formato inválido. Use LAT,LON para origem e destino."), 400
+    tempos["Parsing dos parâmetros"] = time.time() - t0
 
-        
-    # if algorithm == "Dijkstra":
-    #     Route = RotaDijkstra(Graph, Origin_point, Destination_point)
-    # elif algorithm == "AStar":
-    #     Route = RotaAStar(Graph, Origin_point, Destination_point, parameter)
-    # else:
-    #     return jsonify(error="Erro: Algoritmo inválido. Use 'Dijkstra' ou 'AStar'."), 400
+    t0 = time.time()
+    Rota_Crime = RotaAStar(Graph, Origin_point, Destination_point, "weight_manha")
+    tempos["RotaAStar_NMF (Rota_Crime)"] = time.time() - t0
 
-
-    # Rota_Crime = RotaAStar(Graph, Origin_point, Destination_point, "weight")
-    Rota_Crime = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
-    
+    t0 = time.time()
     Rota_Crime_Tempo = calcular_tempo_estimado(Graph, Rota_Crime)
-    print("Rota_Crime_Tempo:", Rota_Crime_Tempo)
+    tempos["Tempo estimado (Rota_Crime)"] = time.time() - t0
 
+    t0 = time.time()
     Rota_Crime_Distancia = calcular_distancia_total(Graph, Rota_Crime)
-    print("Rota_Crime_Distancia:", Rota_Crime_Distancia)
+    tempos["Distância total (Rota_Crime)"] = time.time() - t0
 
+    t0 = time.time()
     Rota_length = RotaDijkstra(Graph, Origin_point, Destination_point, "length")
+    tempos["RotaDijkstra (Rota_length)"] = time.time() - t0
 
+    t0 = time.time()
     Rota_length_tempo = calcular_tempo_estimado(Graph, Rota_length)
-    print("Rota_length_tempo:", Rota_length_tempo)
+    tempos["Tempo estimado (Rota_length)"] = time.time() - t0
 
+    t0 = time.time()
     Rota_length_distancia = calcular_distancia_total(Graph, Rota_length)
-    print("Rota_length_distancia:", Rota_length_distancia)
+    tempos["Distância total (Rota_length)"] = time.time() - t0
 
-    # Rota_AStar_manha = RotaAStar_NMF(Graph, Origin_point, Destination_point, 0, "weight_manha")
-
+    t0 = time.time()
     Graph_Location, Graph_radio = centro_e_raio(Origin_point, Destination_point)
+    tempos["Centro e raio do mapa"] = time.time() - t0
 
-    start_time = time.time()
+    t0 = time.time()
+    mapa_html_principal, mapa_html_principal_semcrimes, mapa_html_secundario, mapa_html_secundario_semcrimes, lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght  = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
+    lista_crimes_Diferenca = DiferencaListaCrimes(lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght)
+    tempos["FoliumMap (mapas)"] = time.time() - t0
 
-    mapa_html_principal = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime)
-    mapa_html_secundario = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
+    tempos["Tempo total"] = time.time() - start_full
 
-    end_time = time.time()
-    print("Tempo de execução FoliumMap:", end_time - start_time)
+    print("\n--- TEMPOS DE EXECUÇÃO ---")
+    for etapa, duracao in tempos.items():
+        print(f"{etapa:<35}: {duracao:.4f} segundos")
+    print("--------------------------\n")
 
-    end_fulltime = time.time()
-    print("Tempo de execução Total:", end_fulltime - start_fulltime)
+
+    qntd_evitados_principal = len(lista_crimes_Diferenca["baixo_risco"]) + len(lista_crimes_Diferenca["medio_risco"]) +len(lista_crimes_Diferenca["alto_risco"])
+    qntd_crimes_principal = len(lista_crimes_Rota_Crime["baixo_risco"]) + len(lista_crimes_Rota_Crime["medio_risco"]) + len(lista_crimes_Rota_Crime["alto_risco"])
+    qtnd_evitados_baixo_risco_principal = len(lista_crimes_Diferenca["baixo_risco"])
+    qtnd_evitados_medio_risco_principal = len(lista_crimes_Diferenca["medio_risco"])
+    qtnd_evitados_alto_risco_principal = len(lista_crimes_Diferenca["alto_risco"])
+
+    qntd_crimes_secundario = len(lista_crimes_Rota_Lenght["baixo_risco"]) + len(lista_crimes_Rota_Lenght["medio_risco"]) + len(lista_crimes_Rota_Lenght["alto_risco"])
 
     return jsonify(
-
+        # Mapa Principal
         mapa_html_principal=mapa_html_principal,
+        mapa_html_principal_semcrimes=mapa_html_principal_semcrimes, # Implementando
         distancia_principal=Rota_Crime_Distancia,
         tempo_estimado_principal=Rota_Crime_Tempo,
+        qntd_evitados_principal=qntd_evitados_principal,
+        qntd_crimes_principal=qntd_crimes_principal,
 
+        qtnd_evitados_baixo_risco_principal=qtnd_evitados_baixo_risco_principal,
+        qtnd_evitados_medio_risco_principal=qtnd_evitados_medio_risco_principal,
+        qtnd_evitados_alto_risco_principal=qtnd_evitados_alto_risco_principal,
+
+        # Mapa Secundário
         mapa_html_secundario=mapa_html_secundario,
+        mapa_html_secundario_semcrimes=mapa_html_secundario_semcrimes, # Implementando
         distancia_secundario=Rota_length_distancia,
         tempo_estimado_secundario=Rota_length_tempo,
-                
+        qntd_crimes_secundario=qntd_crimes_secundario,
     )
 
+@app.route('/return_historico')
+def return_historico():
+    with open('./templates/Histórico.html', 'r', encoding='utf-8') as file:
+        html_content = file.read()
+    return html_content

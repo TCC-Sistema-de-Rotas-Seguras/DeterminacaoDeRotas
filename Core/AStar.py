@@ -28,6 +28,5 @@ def RotaAStar(graph, origin_point, destination_point, parameter):
     # Encontrar a rota mais curta usando A* com heurística
     route = nx.astar_path(graph, orig_node, dest_node, weight=parameter, heuristic=lambda u, v: heuristic(u, v, graph))
     end_time = time.time()
-    print("Tempo de execução do A*: ", end_time - start_time)
 
     return route

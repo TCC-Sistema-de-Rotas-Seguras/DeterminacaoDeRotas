@@ -1,0 +1,245 @@
+/* ---------- Estilos Compartilhados ---------- */
+
+.Section-Enderecos-Origem,
+.Section-Enderecos-Destino {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#Icone-Origem-Historico,
+#Icone-Destino-Historico {
+    margin-right: 15px;
+    position: static;
+}
+
+.Section-Mapa-Historico{
+    margin-top: 9px;
+}
+
+.bolinha {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 7px;
+    color: white;
+    font-size: 21px;
+    line-height: 24px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.bolinha.red { background-color: red; }
+.bolinha.yellow { background-color: orange; }
+.bolinha.green { background-color: yellowgreen; }
+
+.trajeto-info {
+    font-family: 'Inter', sans-serif;
+}
+
+.trajeto-info p{
+    color: #6B7280
+}
+
+.trajeto-titulo {
+    font-size: 28px;
+    color: #111827;
+    margin: 20px 0 10px 0;
+}
+
+.Section-Visualizar-Rota {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.trajeto-data {
+    font-size: 16px;
+}
+
+.visualizar-rota-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.visualizar-rota-btn img {
+    width: 16px;
+    height: 16px;
+    margin-left: 6px;
+}
+
+.Section-Areas-Evitadas {
+    display: flex;
+    flex-direction: column;
+
+    background-color: #f8f8f8;
+    border-radius: 12px;
+
+    padding: 0 5px 0 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.span-areas-evitadas {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    background-color: #dcdcdc;
+    border: none;
+    height: 40px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.legenda-riscos {
+    width: 100%;
+    margin-top: 15px;
+    margin-left: 7px;
+}
+
+.legenda-riscos div {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.Section-Enderecos {
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.enderecos {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    list-style: none;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.enderecos li {
+    line-height: 1.6;
+    position: relative;
+}
+
+.enderecos li:nth-child(1)::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    color: #2563eb;
+    font-size: 14px;
+}
+
+.enderecos li:nth-child(2)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    color: #000;
+    font-size: 14px;
+}
+
+.Section-Comparativo {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+}
+
+.comparativo-box {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    min-height: 150px;
+    gap: 15px;
+    background-color: #fff;
+    border-radius: 20px;
+    margin-top: 10px;
+    padding-left: 10px;
+}
+
+.rota-box {
+    background-color: #f7f7f7;
+    border-radius: 10px;
+}
+
+.rota-box h3{
+    margin-bottom: 10px;
+}
+.info-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;;
+}
+
+.tag {
+    background-color: #e1e1e1;
+    padding: 6px 12px;
+    border-radius: 10px;
+    color: #333;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.popup-section {
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+    padding-left: 20px;
+    padding-right: 20px;
+    z-index: 10;
+}
+  
+.seu-section::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
+/* ---------- Estilos para PC (desktop) ---------- */
+@media (min-width: 451px) {
+
+
+}
+
+/* ---------- Estilos para Mobile ---------- */
+@media (max-width: 450px) {
+
+    .comparativo-box {
+        font-family: 'Arial', sans-serif;
+        padding-bottom: 15px;
+    }
+
+    .Section-Visualizar-Rota {
+        text-align: right;
+    }
+
+    .visualizar-rota-btn img {
+        width: 15px;
+        height: 15px;
+        margin-left: 5px;
+    }
+
+    .Section-Mapa {
+        padding: 0 20px;
+    }
+
+    .Container-Mapa-Resumo {
+        width: 100%;
+        height: 100%;
+    }
+
+    .Section-Comparativo {
+        z-index: 1;
+        position: relative;
+    }
+}

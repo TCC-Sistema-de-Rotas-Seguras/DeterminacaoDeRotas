@@ -1,0 +1,74 @@
+<section class="trajeto-info">
+    <h2 class="trajeto-titulo">Informações do Trajeto</h2>
+</section> 
+    
+<section class="Section-Visualizar-Rota">
+    <p class="trajeto-info" id="span-data">30/03/2024 18:30</p>
+
+    <button class="visualizar-rota-btn" onclick="visualizarRotaHistorico()">
+        <span>
+            Visualizar rota
+        </span>
+        <img width="15" height="15" src="../static/images/link.png" alt="">
+    </button>
+</section>
+
+<section class="Section-Mapa-Historico">
+    <div id="Container-Mapa-Resumo" class="Container-Mapa-Resumo">
+        
+    </div>
+</section>
+
+<section class="Section-Enderecos">
+    <ul class="enderecos">
+        <section class="Section-Enderecos-Origem">
+            <div id="Icone-Origem-Historico" class="icon-container">
+                <div class="outer-circle"></div>
+                <div class="inner-circle"></div>
+            </div>
+            <li id="span-origem">Endereço de origem</li>
+        </section>
+        
+        <section class="Section-Enderecos-Destino">
+            <div id="Icone-Destino-Historico" class="icon-container">
+                <svg width="17" height="21" viewBox="0 0 17 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.46061 2.46043C4.03599 0.885043 6.17267 0 8.40061 0C10.6285 0 12.7652 0.885043 14.3406 2.46043C15.916 4.03582 16.801 6.1725 16.801 8.40043C16.801 10.6284 15.916 12.765 14.3406 14.3404L8.40061 20.2804L2.46061 14.3404C1.6805 13.5604 1.06169 12.6344 0.639494 11.6152C0.217301 10.596 0 9.50361 0 8.40043C0 7.29725 0.217301 6.20488 0.639494 5.18569C1.06169 4.1665 1.6805 3.24045 2.46061 2.46043ZM8.40061 10.8004C9.03713 10.8004 9.64758 10.5476 10.0977 10.0975C10.5478 9.6474 10.8006 9.03695 10.8006 8.40043C10.8006 7.76391 10.5478 7.15346 10.0977 6.70337C9.64758 6.25329 9.03713 6.00043 8.40061 6.00043C7.76409 6.00043 7.15364 6.25329 6.70355 6.70337C6.25346 7.15346 6.00061 7.76391 6.00061 8.40043C6.00061 9.03695 6.25346 9.6474 6.70355 10.0975C7.15364 10.5476 7.76409 10.8004 8.40061 10.8004Z" fill="#DC2626" />
+                </svg>
+            </div>
+            <li id="span-destino">Endereço de destino</li>
+        </section>
+        
+    </ul>
+</section>
+    
+<section class="Section-Areas-Evitadas">
+    <span id="span-crimes-evitados" class="span-areas-evitadas">12 ÁREAS DE RISCO EVITADAS</span>
+
+    <div class="legenda-riscos">
+        <div><span id="span-alto-risco" class="bolinha red">2</span> Áreas de alto risco</div>
+        <div><span id="span-medio-risco" class="bolinha yellow">6</span> Áreas de médio risco</div>
+        <div><span id="span-baixo-risco" class="bolinha green">4</span> Áreas de baixo risco</div>
+    </div>
+</section>
+    
+<section class="Section-Comparativo">
+    <div class="comparativo-box">              
+        <div class="rota-box">
+            <h3>Rota Safast</h3>
+            <div class="info-tags">
+            <span class="tag" id="span-dist-historico">2.1 km</span>
+            <span class="tag" id="span-tempo-historico">5 min</span>
+            <span class="tag" id="span-crimes-historico">Cruza 8 áreas de risco</span>
+            </div>
+        </div>
+        
+        <div class="rota-box">
+            <h3>Rota Tradicional</h3>
+            <div class="info-tags">
+            <span class="tag" id="span-dist-rt">2 km</span>
+            <span class="tag" id="span-tempo-rt">4 min</span>
+            <span class="tag" id="span-crimes-rt">Cruza 13 áreas de risco</span>
+            </div>
+        </div>
+    </div>
+</section>

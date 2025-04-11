@@ -6,7 +6,7 @@
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
     font-family: Arial, sans-serif;
     width: 400px !important;
-    max-width: 90%;
+    max-width: 74%;
     font-size: 18px;
 }
 
@@ -72,13 +72,48 @@
     z-index: -1;
 }
 
+/*________ Carregamento _________*/
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 6px solid white;
+    border-top: 6px solid black;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+#map-blur{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+}
+
+  
+
 /*________ Inputs _________*/
 .input-section{
     display: flex;
     flex-direction: column;
     width: fit-content;
     height: fit-content;
-    z-index: 1;
+    z-index: 2;
     padding-left: 20px;
     padding-top: 20px;
 
@@ -143,6 +178,7 @@ input.input-address {
     position: absolute;
     width: 100%;
     height: 100%;
+    background: rgba(0, 0, 0, 0.6);
 }
 
 #map-anti-click {
@@ -166,7 +202,7 @@ input.input-address {
         box-shadow: 0 0 0 1px black;
         border-width: 2px;
         background-color: white;
-        z-index: 1;
+        z-index: 2;
     }
 
     .menu-container {
@@ -177,7 +213,6 @@ input.input-address {
         width: 100%;
         height: 100vh;
         padding: 0px 7px;
-        z-index: 1;
     }
 
     .menu-container-top{
@@ -187,11 +222,14 @@ input.input-address {
         height: 254px;
     }
 
-    .menu-container-switch{
+    .menu-container-bottom{
         display: flex;
-        align-items: center;
+        flex-direction: column;
         margin-bottom: 13px;
+    }
 
+    .Crime-toggle-container{
+        margin-bottom: 10px;
     }
 
 
@@ -342,14 +380,30 @@ input.input-address {
         width: 100%;
     }
 
-    .menu-container-switch{
+    .Route-toggle-container{
         display: flex;
         align-items: center;
         justify-content: center;
 
         position: absolute;
         bottom: 150px;
-        right: 10px;
+        right: -18px;
+        width: fit-content;
+        padding: 5px;
+        background-color: white;
+        border: 1px solid black;
+        border-radius: 35px;
+        
+    }
+
+    .Crime-toggle-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        position: absolute;
+        bottom: 213px;
+        right: -18px;
         width: fit-content;
         padding: 5px;
         background-color: white;

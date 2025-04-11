@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/principal.css">
-    <link rel="stylesheet" href="/static/css/favorito.css">
+    <link rel="stylesheet" href="/static/css/historico.css">
+    <script src="/static/js/banco.js"></script>
+    <script src="/static/js/historico.js"></script>
     <script src="/static/js/principal.js"></script>
-    <script src="/static/js/favorito.js" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initAutocomplete" async defer>
+        window.onload = function() {
+            carregarMapa();
+        };
+    </script>
 </head>
 <body>
     <section class="base">
@@ -15,24 +21,26 @@
             <div id="map-container"></div>
             <div id="map-anti-click"></div>
         </section>
+        <section id="map-blur"></section>
 
         <section class="menu-section">
             <div class="menu-container">
                 
                 <section class="menu-container-top">
-                    <button id="home-btn" style="background: none; border: none; cursor: pointer;">
+                    <button id="home-btn" onclick="togglePopup('off')" style="background: none; border: none; cursor: pointer;">
                         <svg id="home" width="26" height="29" viewBox="0 0 26 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M1.23031 9.7208C0.75 10.7651 0.75 11.9531 0.75 14.3292V21.7499C0.75 25.0497 0.75 26.6996 1.77513 27.7248C2.78723 28.7369 4.40834 28.7497 7.625 28.7499V20C7.625 18.4812 8.85622 17.25 10.375 17.25H15.625C17.1438 17.25 18.375 18.4812 18.375 20V28.7499C21.5917 28.7497 23.2128 28.7369 24.2249 27.7248C25.25 26.6996 25.25 25.0497 25.25 21.7499V14.3292C25.25 11.9531 25.25 10.7651 24.7697 9.7208C24.2894 8.67651 23.3874 7.90334 21.5833 6.35702L19.8333 4.85701C16.5725 2.06204 14.9421 0.664551 13 0.664551C11.0579 0.664551 9.4275 2.06204 6.16669 4.85701L4.41669 6.35701C2.61264 7.90334 1.71061 8.67651 1.23031 9.7208ZM16.375 28.7499V20C16.375 19.5858 16.0392 19.25 15.625 19.25H10.375C9.96079 19.25 9.625 19.5858 9.625 20V28.7499H16.375Z" fill="#222222" />
                         </svg>
                     </button>
 
-                    <button id="favoritos-btn" onclick="togglePopup()" style="background: none; border: none; cursor: pointer;">
+                    <button id="favoritos-btn" onclick="togglePopup('favoritos')" style="background: none; border: none; cursor: pointer;">
                         <svg id="favoritos" width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.3262 6.53731C13.5301 3.53602 14.132 2.03537 15.11 1.82739C15.3671 1.77271 15.6329 1.77271 15.89 1.82739C16.868 2.03537 17.4699 3.53602 18.6738 6.5373C19.3585 8.24408 19.7008 9.09747 20.3413 9.67791C20.521 9.84071 20.716 9.98571 20.9236 10.1109C21.6639 10.5571 22.5881 10.6398 24.4365 10.8054C27.5654 11.0856 29.1299 11.2257 29.6076 12.1177C29.7066 12.3025 29.7738 12.5025 29.8066 12.7095C29.965 13.7089 28.8149 14.7553 26.5147 16.848L25.8759 17.4291C24.8005 18.4075 24.2628 18.8967 23.9518 19.5072C23.7652 19.8734 23.6402 20.2678 23.5815 20.6746C23.4838 21.3528 23.6413 22.0625 23.9562 23.4818L24.0687 23.9889C24.6335 26.5343 24.9158 27.807 24.5633 28.4326C24.2467 28.9945 23.6635 29.3542 23.0193 29.385C22.302 29.4193 21.2914 28.5958 19.2702 26.9488C17.9386 25.8637 17.2728 25.3211 16.5336 25.1092C15.8582 24.9155 15.1419 24.9155 14.4664 25.1092C13.7272 25.3211 13.0614 25.8637 11.7298 26.9488C9.70858 28.5958 8.69798 29.4193 7.98075 29.385C7.3365 29.3542 6.75329 28.9945 6.43667 28.4326C6.08418 27.807 6.36655 26.5343 6.93129 23.989L7.04381 23.4818C7.35872 22.0625 7.51618 21.3528 7.41846 20.6746C7.35985 20.2678 7.23476 19.8734 7.04819 19.5072C6.73718 18.8967 6.19948 18.4075 5.12409 17.4291L4.48533 16.848C2.1851 14.7553 1.03498 13.7089 1.19337 12.7095C1.22617 12.5025 1.29345 12.3025 1.39239 12.1177C1.87014 11.2257 3.43461 11.0856 6.56353 10.8054C8.41188 10.6398 9.33605 10.5571 10.0764 10.1109C10.284 9.98571 10.4791 9.84071 10.6587 9.67791C11.2992 9.09747 11.6415 8.24408 12.3262 6.53731Z" fill="#222222" stroke="#222222" stroke-width="2" />
                         </svg>
                     </button>
 
-                    <button id="historico-btn" style="background: none; border: none; cursor: pointer;">
+                    <button id="historico-btn" onclick="togglePopup('historico')" style="background: none; border: none; cursor: pointer;">
+
                         <svg id="historico" width="26" height="30" viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M1.33579 0.585786C0.75 1.17157 0.75 2.11438 0.75 4V25.75C0.75 27.6356 0.75 28.5784 1.33579 29.1642C1.92157 29.75 2.86438 29.75 4.75 29.75H21.25C23.1356 29.75 24.0784 29.75 24.6642 29.1642C25.25 28.5784 25.25 27.6356 25.25 25.75V4C25.25 2.11438 25.25 1.17157 24.6642 0.585786C24.0784 0 23.1356 0 21.25 0H4.75C2.86438 0 1.92157 0 1.33579 0.585786ZM7.75 7.75C7.19772 7.75 6.75 8.19771 6.75 8.75C6.75 9.30229 7.19772 9.75 7.75 9.75H18.25C18.8023 9.75 19.25 9.30229 19.25 8.75C19.25 8.19771 18.8023 7.75 18.25 7.75H7.75ZM7.75 14.75C7.19772 14.75 6.75 15.1977 6.75 15.75C6.75 16.3023 7.19772 16.75 7.75 16.75H18.25C18.8023 16.75 19.25 16.3023 19.25 15.75C19.25 15.1977 18.8023 14.75 18.25 14.75H7.75ZM7.75 21.75C7.19772 21.75 6.75 22.1977 6.75 22.75C6.75 23.3023 7.19772 23.75 7.75 23.75H14.75C15.3023 23.75 15.75 23.3023 15.75 22.75C15.75 22.1977 15.3023 21.75 14.75 21.75H7.75Z" fill="#222222" />
                         </svg>
@@ -44,38 +52,29 @@
                         </svg>
                     </button>
                 </section>
-                
 
-                
+                <section class="menu-container-bottom">
+                    <section class="Crime-toggle-container">
+                        <button id="Crime-visualization-btn-off" onclick="toggleCrimeVisualization()" style="background: none; border: none; cursor: pointer; display: none;">
+                            <img id="Crime-visualization-img-off" width="36" height="36" src="../static/images/Visualizar Perigo OFF.png" alt="">
+                        </button>
+    
+                        <button id="Crime-visualization-btn-on" onclick="toggleCrimeVisualization()" style="background: none; border: none; cursor: pointer; ">
+                            <img id="Crime-visualization-img-on" width="36" height="36" src="../static/images/Visualizar Perigo ON.png" alt="">
+                        </button>
+                    </section>
 
-                <!-- <section class="menu-container-switch">
-                    <button id="Secondary-route-btn-off" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer;">
-                        <svg id="Secondary-route-svg-off" width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17.5 9H15C13.3431 9 12 10.3431 12 12V16M17.5 9L16 7M17.5 9L16 11" stroke="#33363F" stroke-width="2" stroke-linecap="round" />
-                            <path d="M6.5 9H9.00002C10.6569 9 12 10.3431 12 12V16M6.5 9L8 7M6.5 9L8 11" stroke="#33363F" stroke-width="2" stroke-linecap="round" />
-                            <path d="M3 7.8C3 6.11984 3 5.27976 3.32698 4.63803C3.6146 4.07354 4.07354 3.6146 4.63803 3.32698C5.27976 3 6.11984 3 7.8 3H16.2C17.8802 3 18.7202 3 19.362 3.32698C19.9265 3.6146 20.3854 4.07354 20.673 4.63803C21 5.27976 21 6.11984 21 7.8V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V7.8Z" stroke="#33363F" stroke-width="2" stroke-linecap="round" />
-                        </svg>
-                    </button>
-                
-                    <button id="Secondary-route-btn-on" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer; display: none;">
-                        <svg id="Secondary-route-svg-on" width="30" height="30" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M0.32698 1.63803C0 2.27976 0 3.11984 0 4.8V31.2C0 32.8802 0 33.7202 0.32698 34.362C0.614601 34.9265 1.07354 35.3854 1.63803 35.673C2.27976 36 3.11984 36 4.8 36H31.2C32.8802 36 33.7202 36 34.362 35.673C34.9265 35.3854 35.3854 34.9265 35.673 34.362C36 33.7202 36 32.8802 36 31.2V4.8C36 3.11984 36 2.27976 35.673 1.63803C35.3854 1.07354 34.9265 0.614601 34.362 0.32698C33.7202 0 32.8802 0 31.2 0H4.8C3.11984 0 2.27976 0 1.63803 0.32698C1.07354 0.614601 0.614601 1.07354 0.32698 1.63803ZM10.8 8.59993C11.1314 8.1581 11.0418 7.5313 10.6 7.19993C10.1582 6.86856 9.53136 6.9581 9.19999 7.39993L6.19999 11.3999L5.74999 11.9999L6.19999 12.5999L9.19999 16.5999C9.53136 17.0418 10.1582 17.1313 10.6 16.7999C11.0418 16.4686 11.1314 15.8418 10.8 15.3999L8.99999 12.9999H12C14.7614 12.9999 17 15.2385 17 17.9999V27.9999C17 28.5522 17.4477 28.9999 18 28.9999C18.5522 28.9999 19 28.5522 19 27.9999V17.9999C19 15.2385 21.2385 12.9999 24 12.9999H27L25.2 15.3999C24.8686 15.8418 24.9582 16.4686 25.4 16.7999C25.8418 17.1313 26.4686 17.0418 26.8 16.5999L29.8 12.5999L30.25 11.9999L29.8 11.3999L26.8 7.39993C26.4686 6.9581 25.8418 6.86856 25.4 7.19993C24.9582 7.5313 24.8686 8.1581 25.2 8.59993L27 10.9999H24C21.4536 10.9999 19.2249 12.3595 18 14.3923C16.7751 12.3595 14.5464 10.9999 12 10.9999H8.99999L10.8 8.59993Z" fill="#222222" />
-                        </svg>
-                    </button>
-                </section> -->
-
-                <section class="menu-container-switch">
-                    <button id="Secondary-route-btn-off" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer;">
-                        <img id="Secondary-route-svg-off" width="36" height="36" src="../static/images/1_Placa.png" alt="">
-                    </button>
-                
-                    <button id="Secondary-route-btn-on" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer; display: none;">
-                        <img id="Secondary-route-svg-on" width="36" height="36" src="../static/images/2_Placas.png" alt="">
-                    </button>
+                    <section class="Route-toggle-container">
+                        <button id="Secondary-route-btn-off" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer;">
+                            <img id="Secondary-route-svg-off" width="36" height="36" src="../static/images/1_Placa.png" alt="">
+                        </button>
+                    
+                        <button id="Secondary-route-btn-on" onclick="toggleSecondaryRoute()" style="background: none; border: none; cursor: pointer; display: none;">
+                            <img id="Secondary-route-svg-on" width="36" height="36" src="../static/images/2_Placas.png" alt="">
+                        </button>
+                    </section>
                 </section>
                 
-                
-
             </div>
         </section>
 
@@ -100,7 +99,7 @@
             </div>
         </section>
 
-        <section class="popup-section"></section>
+        <section id="popup-container" class="popup-section"></section>
             
         <section class="route-details-section">
 
@@ -110,7 +109,7 @@
                     <svg width="24" height="27" viewBox="0 0 24 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M12.3966 26.8093C14.438 25.7889 23.6666 20.6954 23.6666 12C23.6666 5.55672 18.4433 0.333374 12 0.333374C5.55666 0.333374 0.333313 5.55672 0.333313 12C0.333313 20.6954 9.56196 25.7889 11.6034 26.8093C11.8582 26.9366 12.1418 26.9366 12.3966 26.8093ZM12 17C14.7614 17 17 14.7615 17 12C17 9.23862 14.7614 7.00004 12 7.00004C9.23856 7.00004 6.99998 9.23862 6.99998 12C6.99998 14.7615 9.23856 17 12 17Z" fill="#222222" />
                     </svg>
-                    <span id="span-distancia">13 Km</span>
+                    <span id="span-distancia">0 Km</span>
                 </div>
 
                 <div class="route-details-time">
@@ -120,7 +119,7 @@
                         <path d="M28.875 21H21.25C21.1119 21 21 20.8881 21 20.75V14.875" stroke="#33363F" stroke-width="2" stroke-linecap="round" />
                     </svg>
 
-                    <span id="span-tempo">10 h 15 min</span>
+                    <span id="span-tempo">0 min</span>
                 </div>
                 
             </div>
@@ -131,10 +130,10 @@
         
 
     </section>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initAutocomplete" async defer>
-        window.onload = function() {
-            carregarMapa();
-        };
-    </script>
+
+    <div id="loader" class="loader-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
 </body>
+
 </html>
