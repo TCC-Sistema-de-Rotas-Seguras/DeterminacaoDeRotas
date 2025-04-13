@@ -170,21 +170,20 @@ function togglePopup(pagina) {
 
         }
 
-        // if (pagina == "historico") {
-        //     fetch(`/return_historico`)
-        //     .then(response => response.text())
-        //     .then(data => {
-        //         document.getElementById("popup-container").innerHTML = data;
-        //         preencherPopup(banco.historico[banco.historico.length - 1]);
-        //     })
-        //     .catch(error => console.error('Erro ao carregar o HTML:', error));
-        // }
         if (pagina == "historico") {
             fetch(`/return_interHistorico`)
             .then(response => response.text())
             .then(data => {
                 document.getElementById("popup-container").innerHTML = data;
                 carregarHistorico()
+            })
+            .catch(error => console.error('Erro ao carregar o HTML:', error));
+        }
+        else if (pagina == "favoritos") {
+            fetch(`/return_favoritos`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("popup-container").innerHTML = data;
             })
             .catch(error => console.error('Erro ao carregar o HTML:', error));
         }

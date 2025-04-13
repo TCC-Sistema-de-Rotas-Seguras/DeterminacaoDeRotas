@@ -176,3 +176,9 @@ def return_interHistorico():
     with open('./templates/InterHistorico.html', 'r', encoding='utf-8') as file:
         html_content = file.read()
     return html_content
+
+@app.route('/return_favoritos')
+def return_favoritos():
+    with open('./templates/Favoritos.html', 'r', encoding='utf-8') as file:
+        html_content = file.read()
+    return html_content
