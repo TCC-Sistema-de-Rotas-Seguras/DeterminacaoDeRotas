@@ -4,7 +4,6 @@
 .Section-Enderecos-Destino {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
 }
 
 #Icone-Origem-Historico,
@@ -31,22 +30,26 @@
     margin-right: 10px;
 }
 
-.bolinha.red { background-color: red; }
-.bolinha.yellow { background-color: orange; }
-.bolinha.green { background-color: yellowgreen; }
+.bolinha.red { background-color: rgb(0, 0, 0); }
+.bolinha.yellow { background-color: red; }
+.bolinha.green { background-color: orange; }
 
 .trajeto-info {
-    font-family: 'Inter', sans-serif;
+    font-family: roboto;
 }
 
 .trajeto-info p{
+    color: #000000
+}
+
+#span-data{
     color: #6B7280
 }
 
 .trajeto-titulo {
     font-size: 28px;
     color: #111827;
-    margin: 20px 0 10px 0;
+    margin: 0 0 10px 0;
 }
 
 .Section-Visualizar-Rota {
@@ -86,6 +89,7 @@
     background-color: #f8f8f8;
     border-radius: 12px;
 
+    margin-top: 10px;
     padding: 0 5px 0 5px;
     font-weight: bold;
     color: #333;
@@ -112,7 +116,7 @@
 }
 
 .legenda-riscos div {
-    font-family: 'Inter', sans-serif;
+    font-family: roboto;
     font-size: 14px;
     display: flex;
     align-items: center;
@@ -123,11 +127,11 @@
     background-color: #f8f8f8;
     border-radius: 12px;
     margin-top: 20px;
+    padding: 10px 15px;
 }
 
 .enderecos {
-    font-family: 'Inter', sans-serif;
-    font-weight: bold;
+    font-family: roboto;
     list-style: none;
     font-size: 14px;
     color: #1f2937;
@@ -155,7 +159,7 @@
 }
 
 .Section-Comparativo {
-    font-family: 'Inter', sans-serif;
+    font-family: roboto;
     font-weight: bold;
 }
 
@@ -172,7 +176,6 @@
 }
 
 .rota-box {
-    background-color: #f7f7f7;
     border-radius: 10px;
 }
 
