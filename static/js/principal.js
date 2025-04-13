@@ -170,12 +170,21 @@ function togglePopup(pagina) {
 
         }
 
+        // if (pagina == "historico") {
+        //     fetch(`/return_historico`)
+        //     .then(response => response.text())
+        //     .then(data => {
+        //         document.getElementById("popup-container").innerHTML = data;
+        //         preencherPopup(banco.historico[banco.historico.length - 1]);
+        //     })
+        //     .catch(error => console.error('Erro ao carregar o HTML:', error));
+        // }
         if (pagina == "historico") {
-            fetch(`/return_historico`)
+            fetch(`/return_interHistorico`)
             .then(response => response.text())
             .then(data => {
                 document.getElementById("popup-container").innerHTML = data;
-                preencherPopup(banco.historico[banco.historico.length - 1]);
+                carregarHistorico()
             })
             .catch(error => console.error('Erro ao carregar o HTML:', error));
         }
@@ -301,6 +310,18 @@ function esconderLoader() {
     document.getElementById('map-blur').style.display = 'none';
     document.getElementById('map-blur').style.background = 'rgba(0, 0, 0, 0.0)';
 
+}
+
+function voltar() {
+    // Se estiver na lista de historico
+    if (document.getElementById("inter-historico")) {
+        togglePopup("off")
+    } 
+    // Se estiver em um resumo
+    else if (document.getElementById("Container-Mapa-Resumo")) {
+        togglePopup('historico')
+        togglePopup('historico')
+    } 
 }
 
 window.onload = function() {

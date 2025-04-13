@@ -11,6 +11,7 @@ function criarBanco() {
             rota: "simples",
             crime: "ligado",
         },
+        historico_carregado: null,
     };
 }
 

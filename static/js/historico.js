@@ -1,4 +1,6 @@
-function preencherPopup(item) {
+function preencherDadosHistorico(index) {
+
+    var item = banco.historico[index]
     const { data, hora, rota } = item;
 
     // Data e hora
@@ -34,8 +36,8 @@ function preencherPopup(item) {
     document.getElementById("span-crimes-rt").innerText = "Cruza " + rota.rota_tradicional.crimes.qntd_crimes + " áreas de risco";
 }
 
-function visualizarRotaHistorico(){
-    banco.rota = banco.historico[banco.historico.length - 1].rota;
+function visualizarRotaHistorico(index){
+    banco.rota = banco.historico[index].rota;
     loadMap(banco.rota.rota_safast.mapa, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
     
     togglePopup("off");
