@@ -9,6 +9,11 @@
     font-size: 18px;
 }
 
+/* Remove a barra de rolagem */
+.pac-container::-webkit-scrollbar {
+    display: none; /* Esconde a barra de rolagem */
+}
+
 /* Itens individuais da lista */
 .pac-item {
     padding: 15px;
@@ -69,6 +74,14 @@
     height: 100vh;
     display: flex;
     z-index: -1;
+}
+
+/* Impede que a tela inteira tenha barras de rolagem */
+html, body {
+    overflow: hidden; /* Remove barras de rolagem horizontais e verticais */
+    margin: 0; /* Remove margens padrão */
+    padding: 0; /* Remove preenchimento padrão */
+    height: 100%; /* Garante que o corpo ocupe toda a altura da tela */
 }
 
 /*________ Carregamento _________*/
@@ -371,6 +384,8 @@ input.input-address {
     /*________ Sujestoes API maps _________*/
     .pac-container {
         width: 270px !important;
+        max-height: 200px; /* Define a altura fixa */
+        overflow-y: auto; /* Permite rolar a lista */
     }
 
     /*________ Input _________*/
@@ -413,7 +428,7 @@ input.input-address {
 
         position: absolute;
         bottom: 150px;
-        right: -18px;
+        right: 0px;
         width: fit-content;
         padding: 5px;
         background-color: white;
@@ -429,7 +444,7 @@ input.input-address {
 
         position: absolute;
         bottom: 213px;
-        right: -18px;
+        right: 0px;
         width: fit-content;
         padding: 5px;
         background-color: white;
