@@ -28,18 +28,17 @@ function getColor(score) {
 
 function carregarHistorico() {
     var historicoLista = document.getElementById("historico-lista");
-    banco.historico.forEach((item,index) => {
-        // const score = parseFloat(getIndiceSeguranca(item.rota)).toFixed(1);
-        // const cor = getColor(score);
-
+    banco.historico.slice().reverse().forEach((item, index) => {
+        // O índice original será baseado na posição do item no array original
+        const realIndex = banco.historico.length - 1 - index;
+    
         const card = document.createElement("div");
         card.className = "card-historico";
-
+    
         const info = document.createElement("div");
         info.className = "info-rota";
-
+    
         info.innerHTML = `
-            
             <section class="card-historico-top">
                 <div class="iniciofim">
                     <div class="iniciofim-bola"></div>
@@ -53,26 +52,22 @@ function carregarHistorico() {
             </section>
             <div style="font-size: 12px; color: gray;">${item.data} ${item.hora}</div>
         `;
-
-        // const indicador = document.createElement("div");
-        // indicador.className = "indice-seguranca";
-        // indicador.style.backgroundColor = cor;
-        // indicador.textContent = score;
-
+    
         card.appendChild(info);
-        // card.appendChild(indicador);
         historicoLista.appendChild(card);
+    
         card.addEventListener("click", () => {
             fetch(`/return_historico`)
             .then(response => response.text())
             .then(data => {
                 document.getElementById("popup-container").innerHTML = data;
-                banco.historico_carregado = index;
-                preencherDadosHistorico(index)
-        })
+                banco.historico_carregado = realIndex;  // Usa o índice real aqui
+                preencherDadosHistorico(realIndex);    // Usa o índice real aqui
+            })
             .catch(error => console.error('Erro ao carregar o HTML:', error));
-        });    
+        });
     });
+    
 
         
 }
