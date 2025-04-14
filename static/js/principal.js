@@ -119,6 +119,13 @@ function requestRoute() {
         .catch(error => console.error("Erro ao carregar o mapa:", error))
         .finally(() => {
             esconderLoader();
+            // Limpa os inputs visuais
+            document.getElementById('origin').value = '';
+            document.getElementById('destination').value = '';
+
+            // Limpa os inputs ocultos de coordenadas
+            document.getElementById('origin_coords').value = '';
+            document.getElementById('destination_coords').value = '';
         });
 
         
@@ -183,7 +190,21 @@ function togglePopup(pagina) {
             fetch(`/return_favoritos`)
             .then(response => response.text())
             .then(data => {
+
                 document.getElementById("popup-container").innerHTML = data;
+                // Configura o autocompletar para o campo de favoritos
+                autocompleteFavoritos = new google.maps.places.Autocomplete(
+                    document.getElementById("endereco"),
+                    {
+                        bounds: new google.maps.LatLngBounds(
+                            new google.maps.LatLng(-23.9, -46.8), // Sudoeste de SP
+                            new google.maps.LatLng(-23.3, -46.3)  // Nordeste de SP
+                        ),
+                        strictBounds: true
+                    }
+                );
+
+                carregarFavorios()
             })
             .catch(error => console.error('Erro ao carregar o HTML:', error));
         }
@@ -314,6 +335,10 @@ function esconderLoader() {
 function voltar() {
     // Se estiver na lista de historico
     if (document.getElementById("inter-historico")) {
+        togglePopup("off")
+    } 
+    // Se estiver na lista de historico
+    if (document.getElementById("form-favorito-wrapper")) {
         togglePopup("off")
     } 
     // Se estiver em um resumo

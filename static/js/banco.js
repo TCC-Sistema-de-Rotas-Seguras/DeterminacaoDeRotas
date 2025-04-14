@@ -7,6 +7,7 @@ function criarBanco() {
             rota_tradicional: criarRota(null, null, "", "", null, null, null, null, null)
         },
         historico: [],
+        favoritos: [],
         tipo_mapa_atual: {
             rota: "simples",
             crime: "ligado",
@@ -62,4 +63,17 @@ function adicionarHistorico(banco, data, hora, rota) {
 
 function removerHistorico(banco, indice) {
     banco.historico.splice(indice, 1);
+}
+
+// _____ Favoritos _____
+function adicionarFavoritos(banco, nome, endereco) {
+    const favorito = {
+        nome,
+        endereco
+    };
+    banco.favoritos.push(favorito);
+}
+
+function removerFavoritos(banco, indice) {
+    banco.favorito.splice(indice, 1);
 }
