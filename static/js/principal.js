@@ -73,6 +73,25 @@ function requestRoute() {
     var origin_coords = document.getElementById('origin_coords').value;
     var destination_coords = document.getElementById('destination_coords').value;
 
+    if (origin_coords == destination_coords) {
+        const alerta = document.getElementById('rotaInvalida');
+        alerta.style.display = 'block';
+
+        setTimeout(() => {
+            alerta.style.display = 'none';
+        }, 2000);
+
+        // Limpa os inputs visuais
+        document.getElementById('origin').value = '';
+        document.getElementById('destination').value = '';
+
+        // Limpa os inputs ocultos de coordenadas
+        document.getElementById('origin_coords').value = '';
+        document.getElementById('destination_coords').value = '';
+        
+        throw new Error("Rota inválida: origem e destino são iguais");
+    }
+
     mostrarLoader();
 
     fetch(`/return_map?origin=${origin_coords}&destination=${destination_coords}`)
@@ -312,6 +331,10 @@ function carregarMapa() {
     fetch(`/mapa`)
     .then(response => response.json())
     .then(data => {
+        banco.rota.rota_safast.mapa = data.mapa
+        banco.rota.rota_tradicional.mapa = data.mapa
+        banco.rota.rota_safast.mapa_semcrimes = data.mapa
+        banco.rota.rota_tradicional.mapa_semcrimes = data.mapa
         loadMap(data.mapa, "0 Km", "0 min");
     })
     .catch(error => console.error("Erro ao carregar o mapa:", error));

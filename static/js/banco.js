@@ -75,5 +75,5 @@ function adicionarFavoritos(banco, nome, endereco) {
 }
 
 function removerFavoritos(banco, indice) {
-    banco.favorito.splice(indice, 1);
+    banco.favoritos.splice(indice, 1);
 }

@@ -5,8 +5,7 @@
     border-radius: 10px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
     font-family: Arial, sans-serif;
-    width: 400px !important;
-    max-width: 74%;
+    max-width: 100%;
     font-size: 18px;
 }
 
@@ -106,6 +105,22 @@
     background: rgba(0, 0, 0, 0);
 }
 
+/*________ Rota Invalida _________*/
+#rotaInvalida {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: black;
+    padding: 20px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    font-size: 18px;
+    z-index: 9999;
+  }
+  
+
   
 
 /*________ Inputs _________*/
@@ -197,6 +212,11 @@ input.input-address {
 
 /*________ PC _________*/
 @media(min-width: 451px) {
+
+    /*________ Sujestoes API maps _________*/
+    .pac-container {
+        width: 350px !important;
+    }
 
     /*________ Menu _________*/
     .menu-section {
@@ -346,6 +366,11 @@ input.input-address {
         display: flex;
         justify-content: center; /* Centraliza horizontalmente */
         align-items: flex-start; /* Posiciona os inputs no topo */
+    }
+
+    /*________ Sujestoes API maps _________*/
+    .pac-container {
+        width: 270px !important;
     }
 
     /*________ Input _________*/

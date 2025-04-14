@@ -51,7 +51,6 @@ function criarFavorito(nome, endereco) {
         <img width="36" height="36" src="../static/images/tres-pontos.png" alt="">
         </button>
         <div class="menu-popup hidden">
-        <div class="menu-item" data-action="editar">Editar</div>
         <div class="menu-item" data-action="excluir">Excluir</div>
         </div>
         </div>
@@ -212,8 +211,19 @@ document.addEventListener('click', function (e) {
       // Esconde o botão de adicionar
       document.getElementById('adicionar-wrapper').style.display = 'none';
     } else if (action === 'excluir') {
-      console.log("Excluindo...");
-      if (container) container.remove(); // Remove o favorito da tela
+
+      // Pega todos os .route-container dentro da lista de favoritos
+      const todosContainers = Array.from(document.querySelectorAll('#favoritos-lista .route-container'));
+
+      // Descobre o índice do container clicado
+      const index = todosContainers.indexOf(container);
+
+      console.log("Índice do favorito:", index);
+
+      removerFavoritos(banco, index);
+
+      if (container) container.remove(); // Remove da tela
+
     }
 
     // Esconde o menu após a ação
