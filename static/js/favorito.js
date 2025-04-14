@@ -113,20 +113,7 @@ function AdicionarFavorito(){
     });
 }
 
-
-
-document.addEventListener('click', function (e) {
-  // Evento para todos os botões de origem e destino
-  document.querySelectorAll('.route-container').forEach(container => {
-    const clicavel = container.querySelector('.route-content');
-    const botoes = container.querySelector('.botao-duplo');
-  
-    clicavel.addEventListener('click', () => {
-      botoes.classList.toggle('mostrar'); // ativa/desativa os botões
-    });
-  });
-  
-  // Evento para mostrar botões de origem e destino
+document.addEventListener('click', function (e) { 
   // Se clicou no botão "Origem"
   if (e.target.classList.contains('origem')) {
     const container = e.target.closest('.route-container');
