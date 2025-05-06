@@ -80,63 +80,49 @@ def PlotRota(rota, grafo, mapa, cor="blue"):
     mapa.location = map_center
     mapa.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
-def PlotPontosCrimes(mapa, rota, grafo):
+from geopy.distance import geodesic
+from collections import deque
+
+def PlotPontosCrimes(mapa, rota, grafo, nivel_vizinhos=5):
     lista_crimes = {
-        "baixo_risco" : [],
-        "medio_risco" : [],
-        "alto_risco" : []
+        "baixo_risco": [],
+        "medio_risco": [],
+        "alto_risco": []
     }
 
     cores = ["orange", "red", "black"]
     parametro = "danger"
-    
-    # Itera sobre os pontos da rota e adiciona marcadores de perigo
+
+    def ja_adicionado(lat, lon, lista):
+        return any(p["lat"] == lat and p["lon"] == lon for p in lista)
+
+    # Parte 1: Adiciona crimes diretamente nas arestas da rota
     for i in range(len(rota) - 1):
-
-        # Pega os nós u e v da rota
         u, v = rota[i], rota[i + 1]
-
-        #  Pega os dados da aresta entre os nós u e v
         edge_data = grafo.get_edge_data(u, v)
 
-        # Itera sobre os dados da aresta
         for data in edge_data.values():
             QntdCrimes = int(data.get(parametro, 0))
-            
-            # Adicionar ponto de perigo (marcador preto)
+
             if QntdCrimes >= 5:
                 if "geometry" in data:
-                    # Pega o primeiro ponto da linha
                     lon, lat = list(data["geometry"].coords)[0]
                 else:
-                    # Usa o ponto inicial da aresta (nó u)
                     lat = grafo.nodes[u]["y"]
                     lon = grafo.nodes[u]["x"]
 
                 if 5 <= QntdCrimes <= 12:
                     cor = cores[0]
-                    lista_crimes["baixo_risco"].append(
-                        {
-                            "lat": lat,
-                            "lon": lon,
-                        }
-                    )
+                    if not ja_adicionado(lat, lon, lista_crimes["baixo_risco"]):
+                        lista_crimes["baixo_risco"].append({"lat": lat, "lon": lon})
                 elif 13 <= QntdCrimes <= 20:
                     cor = cores[1]
-                    lista_crimes["medio_risco"].append(
-                        {
-                            "lat": lat,
-                            "lon": lon,
-                        }
-                    )
+                    if not ja_adicionado(lat, lon, lista_crimes["medio_risco"]):
+                        lista_crimes["medio_risco"].append({"lat": lat, "lon": lon})
                 elif QntdCrimes > 20:
                     cor = cores[2]
-                    lista_crimes["alto_risco"].append(
-                        {
-                            "lat": lat,
-                            "lon": lon,
-                        }
-                    )
+                    if not ja_adicionado(lat, lon, lista_crimes["alto_risco"]):
+                        lista_crimes["alto_risco"].append({"lat": lat, "lon": lon})
 
                 folium.Marker(
                     location=(lat, lon),
@@ -144,7 +130,49 @@ def PlotPontosCrimes(mapa, rota, grafo):
                     icon=folium.Icon(color=cor, icon="info-sign")
                 ).add_to(mapa)
 
-    return lista_crimes;
+    # Parte 2: Adiciona crimes em vizinhos até o nível desejado
+    visitados = set(rota)
+    fila = deque([(n, 0) for n in rota])  # (nó, nível)
+
+    while fila:
+        atual, nivel = fila.popleft()
+
+        if nivel >= nivel_vizinhos:
+            continue
+
+        for vizinho in grafo.neighbors(atual):
+            if vizinho in visitados:
+                continue
+            visitados.add(vizinho)
+
+            lat_viz = grafo.nodes[vizinho]["y"]
+            lon_viz = grafo.nodes[vizinho]["x"]
+
+            # distancia = geodesic((lat_viz, lon_viz), (lat_atual, lon_atual)).meters
+            # if distancia <= raio_metros:
+            edge_data = grafo.get_edge_data(atual, vizinho)
+            for data in edge_data.values():
+                QntdCrimes = int(data.get(parametro, 0))
+                if QntdCrimes >= 5:
+                    if 5 <= QntdCrimes <= 12:
+                        cor = cores[0]
+                    elif 13 <= QntdCrimes <= 20:
+                        cor = cores[1]
+                    elif QntdCrimes > 20:
+                        cor = cores[2]
+
+                    folium.Marker(
+                        location=(lat_viz, lon_viz),
+                        popup=f"Crimes ao redor (nível {nivel+1}): {QntdCrimes}",
+                        icon=folium.Icon(color=cor, icon="warning")
+                    ).add_to(mapa)
+
+            # Enfileira o próximo nível
+            fila.append((vizinho, nivel + 1))
+
+    return lista_crimes
+
+
 
 def CriarMapa(Graph_Location, Origin_point, Destination_point):
 
