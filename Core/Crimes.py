@@ -148,3 +148,69 @@ def DiferencaListaCrimes(dic1, dic2):
                 resultado[risco].append(ponto)
     
     return resultado
+
+def calcular_indice(p_baixo, p_medio, p_alto, qtd_baixo, qtd_medio, qtd_alto):
+    total = qtd_baixo + qtd_medio + qtd_alto
+    if total == 0:
+        return 100.0
+
+    risco = (
+        p_baixo * (qtd_baixo / total) +
+        p_medio * (qtd_medio / total) +
+        p_alto * (qtd_alto / total)
+    )
+    risco_max = p_baixo + p_medio + p_alto
+    return 100 - (risco / risco_max) * 100
+
+def IndiceSeguranca(crimes_Rota_Lenght,crimes_Rota_Crime):
+    
+    print("Lista de Crimes Rota_Crime:")
+    print("Baixo Risco:", len(crimes_Rota_Crime["baixo_risco"]))
+    print("Médio Risco:", len(crimes_Rota_Crime["medio_risco"]))
+    print("Alto Risco:", len(crimes_Rota_Crime["alto_risco"]))
+    print("Lista de Crimes Rota_length:")
+    print("Baixo Risco:", len(crimes_Rota_Lenght["baixo_risco"]))
+    print("Médio Risco:", len(crimes_Rota_Lenght["medio_risco"]))
+    print("Alto Risco:", len(crimes_Rota_Lenght["alto_risco"]))
+
+    pesos_baixo = [5,10, 10, 15, 20]
+    pesos_medio = [20,20 , 30, 35, 40]
+    pesos_alto = [75, 70, 60, 50, 40]
+
+    qtnd_baixo_p = len(crimes_Rota_Crime["baixo_risco"])
+    qtnd_medio_p = len(crimes_Rota_Crime["medio_risco"])
+    qtnd_alto_p = len(crimes_Rota_Crime["alto_risco"])
+
+    qtnd_baixo_s = len(crimes_Rota_Lenght["baixo_risco"])
+    qtnd_medio_s = len(crimes_Rota_Lenght["medio_risco"])
+    qtnd_alto_s = len(crimes_Rota_Lenght["alto_risco"])
+
+    melhores_resultados = []
+
+    for i in range(len(pesos_baixo)):
+        pb = pesos_baixo[i]
+        pm = pesos_medio[i]
+        pa = pesos_alto[i]
+
+        idx_p = calcular_indice(pb, pm, pa, qtnd_baixo_p, qtnd_medio_p, qtnd_alto_p)
+        idx_s = calcular_indice(pb, pm, pa, qtnd_baixo_s, qtnd_medio_s, qtnd_alto_s)
+        diff = idx_p - idx_s
+
+        if idx_p > idx_s:
+            melhores_resultados.append({
+                "pesos": (pb, pm, pa),
+                "indice_crime": round(idx_p, 2),
+                "indice_lenght": round(idx_s, 2),
+                "diferenca": round(diff, 2)
+            })
+
+    if melhores_resultados:
+        melhores_resultados.sort(key=lambda x: x["diferenca"], reverse=True)
+        melhor = melhores_resultados[0]
+        print(f"\n🔍 Melhor configuração encontrada:")
+        print(f"Pesos => Baixo: {melhor['pesos'][0]}, Médio: {melhor['pesos'][1]}, Alto: {melhor['pesos'][2]}")
+        print(f"Índice Rota_Crime  → {melhor['indice_crime']}")
+        print(f"Índice Rota_Length → {melhor['indice_lenght']}")
+        print(f"Diferença          → {melhor['diferenca']}")
+    else:
+        print("\nNenhuma configuração favoreceu a Rota_Crime.")

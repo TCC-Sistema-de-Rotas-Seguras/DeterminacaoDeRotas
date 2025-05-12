@@ -11,7 +11,7 @@ from Core.AStar_NMF import RotaAStar_NMF
 from Core.AStar_NMF_Hibrido import RotaAStar_NMF_Hibrida
 from Core.Djikstra import RotaDijkstra
 from Core.Route import calcular_distancia_total, calcular_tempo_estimado
-from Core.Crimes import DiferencaListaCrimes
+from Core.Crimes import DiferencaListaCrimes, IndiceSeguranca
 
 # ___ Bibliotecas AWS ____
 import io
@@ -127,6 +127,10 @@ def return_map():
     mapa_html_principal, mapa_html_principal_semcrimes, mapa_html_secundario, mapa_html_secundario_semcrimes, lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght  = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
     lista_crimes_Diferenca = DiferencaListaCrimes(lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght)
     tempos["FoliumMap (mapas)"] = time.time() - t0
+
+    t0 = time.time()
+    IndiceSeguranca(lista_crimes_Rota_Lenght, lista_crimes_Rota_Crime)
+    tempos["Indice de segurança"] = time.time() - t0
 
     tempos["Tempo total"] = time.time() - start_full
 
