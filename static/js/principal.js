@@ -109,12 +109,14 @@ function requestRoute() {
             qtnd_evitados_baixo_risco_principal = data.qtnd_evitados_baixo_risco_principal;
             qtnd_evitados_medio_risco_principal = data.qtnd_evitados_medio_risco_principal;
             qtnd_evitados_alto_risco_principal = data.qtnd_evitados_alto_risco_principal;
+            indice_seguranca_principal = data.indice_seguranca_principal;
 
             // Secundario
             mapa_html_secundario = data.mapa_html_secundario;
             mapa_html_secundario_semcrimes = data.mapa_html_secundario_semcrimes; // Implementando
             distancia_secundario = data.distancia_secundario;
             tempo_secundario = data.tempo_estimado_secundario;
+            indice_seguranca_secundario = data.indice_seguranca_secundario;
 
             // Crimes Secundario
             qntd_crimes_secundario = data.qntd_crimes_secundario;
@@ -123,8 +125,8 @@ function requestRoute() {
             atualizarRotaBanco(banco, 
                 criarLocalizacao(document.getElementById('origin').value, document.getElementById('origin').value, document.getElementById('origin_coords').value),
                 criarLocalizacao(document.getElementById('destination').value, document.getElementById('destination').value, document.getElementById('destination_coords').value),
-                criarRota(distancia_principal, tempo_principal, mapa_html_principal,mapa_html_principal_semcrimes, qntd_crimes_principal, qntd_evitados_principal,  qtnd_evitados_baixo_risco_principal, qtnd_evitados_medio_risco_principal, qtnd_evitados_alto_risco_principal),
-                criarRota(distancia_secundario, tempo_secundario, mapa_html_secundario,mapa_html_secundario_semcrimes, qntd_crimes_secundario, null,  null, null, null)
+                criarRota(distancia_principal, tempo_principal, mapa_html_principal,mapa_html_principal_semcrimes, qntd_crimes_principal, qntd_evitados_principal,  qtnd_evitados_baixo_risco_principal, qtnd_evitados_medio_risco_principal, qtnd_evitados_alto_risco_principal, indice_seguranca_principal),
+                criarRota(distancia_secundario, tempo_secundario, mapa_html_secundario,mapa_html_secundario_semcrimes, qntd_crimes_secundario, null,  null, null, null, indice_seguranca_secundario)
             );
     
             // Adicionar ao historico

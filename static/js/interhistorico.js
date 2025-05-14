@@ -37,8 +37,12 @@ function carregarHistorico() {
     
         const info = document.createElement("div");
         info.className = "info-rota";
-    
+        
+        console.log(item.rota);
+        console.log(item.rota.rota_safast);
+        console.log(item.rota.rota_safast.crimes.indice_seguranca);
         info.innerHTML = `
+        
             <section class="card-historico-top">
                 <div class="iniciofim">
                     <div class="iniciofim-bola"></div>
@@ -50,6 +54,9 @@ function carregarHistorico() {
                     <span>${item.rota.destino.endereco}</span>
                 </section>
             </section>
+            <div>
+                <h5>Indice de Segurança Safast: ${item.rota.rota_safast.crimes.indice_seguranca}</h4>
+            </div>
             <div style="font-size: 12px; color: gray;">${item.data} ${item.hora}</div>
         `;
     
