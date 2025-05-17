@@ -3,6 +3,7 @@ import osmnx as ox
 import folium
 from shapely.geometry import MultiPoint
 from branca.element import Figure
+from collections import deque
 
 # _____Função Haversine_____
 def haversine(lat1, lon1, lat2, lon2):
@@ -80,8 +81,6 @@ def PlotRota(rota, grafo, mapa, cor="blue"):
     mapa.location = map_center
     mapa.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
-from geopy.distance import geodesic
-from collections import deque
 
 def PlotPontosCrimes(mapa, rota, grafo, nivel_vizinhos=5):
     lista_crimes = {
@@ -96,7 +95,7 @@ def PlotPontosCrimes(mapa, rota, grafo, nivel_vizinhos=5):
     def ja_adicionado(lat, lon, lista):
         return any(p["lat"] == lat and p["lon"] == lon for p in lista)
 
-    # Parte 1: Adiciona crimes diretamente nas arestas da rota
+    # Adiciona crimes diretamente nas arestas da rota
     for i in range(len(rota) - 1):
         u, v = rota[i], rota[i + 1]
         edge_data = grafo.get_edge_data(u, v)
@@ -130,7 +129,7 @@ def PlotPontosCrimes(mapa, rota, grafo, nivel_vizinhos=5):
                     icon=folium.Icon(color=cor, icon="info-sign")
                 ).add_to(mapa)
 
-    # Parte 2: Adiciona crimes em vizinhos até o nível desejado
+    # Adiciona crimes em vizinhos até o nível máximo
     visitados = set(rota)
     fila = deque([(n, 0) for n in rota])  # (nó, nível)
 
@@ -148,8 +147,6 @@ def PlotPontosCrimes(mapa, rota, grafo, nivel_vizinhos=5):
             lat_viz = grafo.nodes[vizinho]["y"]
             lon_viz = grafo.nodes[vizinho]["x"]
 
-            # distancia = geodesic((lat_viz, lon_viz), (lat_atual, lon_atual)).meters
-            # if distancia <= raio_metros:
             edge_data = grafo.get_edge_data(atual, vizinho)
             for data in edge_data.values():
                 QntdCrimes = int(data.get(parametro, 0))
@@ -164,7 +161,9 @@ def PlotPontosCrimes(mapa, rota, grafo, nivel_vizinhos=5):
                     folium.Marker(
                         location=(lat_viz, lon_viz),
                         popup=f"Crimes ao redor (nível {nivel+1}): {QntdCrimes}",
-                        icon=folium.Icon(color=cor, icon="warning")
+                        icon=folium.Icon(color=cor, icon="warning"),
+                        fill_opacity=0.55,  # controla a opacidade
+                        opacity=0.55         # contorno
                     ).add_to(mapa)
 
             # Enfileira o próximo nível
