@@ -11,7 +11,7 @@ from Core.AStar_NMF import RotaAStar_NMF
 from Core.AStar_NMF_Hibrido import RotaAStar_NMF_Hibrida
 from Core.Djikstra import RotaDijkstra
 from Core.Route import calcular_distancia_total, calcular_tempo_estimado
-from Core.Crimes import DiferencaListaCrimes
+from Core.Crimes import DiferencaListaCrimes, IndiceSeguranca
 
 # ___ Bibliotecas AWS ____
 import io
@@ -128,6 +128,10 @@ def return_map():
     lista_crimes_Diferenca = DiferencaListaCrimes(lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght)
     tempos["FoliumMap (mapas)"] = time.time() - t0
 
+    t0 = time.time()
+    ids_crime, ids_length = IndiceSeguranca(lista_crimes_Rota_Lenght, lista_crimes_Rota_Crime)
+    tempos["Indice de segurança"] = time.time() - t0
+
     tempos["Tempo total"] = time.time() - start_full
 
     print("\n--- TEMPOS DE EXECUÇÃO ---")
@@ -156,6 +160,7 @@ def return_map():
         qtnd_evitados_baixo_risco_principal=qtnd_evitados_baixo_risco_principal,
         qtnd_evitados_medio_risco_principal=qtnd_evitados_medio_risco_principal,
         qtnd_evitados_alto_risco_principal=qtnd_evitados_alto_risco_principal,
+        indice_seguranca_principal=ids_crime,
 
         # Mapa Secundário
         mapa_html_secundario=mapa_html_secundario,
@@ -163,6 +168,7 @@ def return_map():
         distancia_secundario=Rota_length_distancia,
         tempo_estimado_secundario=Rota_length_tempo,
         qntd_crimes_secundario=qntd_crimes_secundario,
+        indice_seguranca_secundario=ids_length,
     )
 
 @app.route('/return_historico')
