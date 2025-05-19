@@ -54,7 +54,7 @@ function carregarHistorico() {
                     <span>${item.rota.destino.endereco}</span>
                 </section>
             </section>
-            <div>
+            <div style="margin-bottom: 5px;>
                 <h5>Indice de Segurança Safast: ${item.rota.rota_safast.crimes.indice_seguranca}</h4>
             </div>
             <div style="font-size: 12px; color: gray;">${item.data} ${item.hora}</div>
