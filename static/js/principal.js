@@ -37,10 +37,25 @@ function initAutocomplete() {
         if(document.getElementById('destination_coords').value != "") {
             requestRoute();
             togglePopup("off");
+
             const btnOn = document.getElementById("Secondary-route-btn-on");
             const isOnVisible = btnOn.style.display !== "none";
+
+            const btnOff = document.getElementById("Crime-visualization-btn-off");
+            const isOffVisible = btnOff.style.display !== "none";
+            const btnDetails = document.getElementById("Crime-visualization-btn-details");
+            const isDetailsVisible = btnDetails.style.display !== "none";
+
             if (isOnVisible) {
                 toggleSecondaryRoute()
+            }
+
+            if(isOffVisible) {
+                toggleCrimeVisualization()
+                toggleCrimeVisualization()
+            }
+            else if(isDetailsVisible) {
+                toggleCrimeVisualization()
             }
         }
 
@@ -58,10 +73,25 @@ function initAutocomplete() {
         if(document.getElementById('origin_coords').value != "") {
             requestRoute();
             togglePopup("off");
+
             const btnOn = document.getElementById("Secondary-route-btn-on");
             const isOnVisible = btnOn.style.display !== "none";
+
+            const btnOff = document.getElementById("Crime-visualization-btn-off");
+            const isOffVisible = btnOff.style.display !== "none";
+            const btnDetails = document.getElementById("Crime-visualization-btn-details");
+            const isDetailsVisible = btnDetails.style.display !== "none";
+
             if (isOnVisible) {
                 toggleSecondaryRoute()
+            }
+
+            if(isOffVisible) {
+                toggleCrimeVisualization()
+                toggleCrimeVisualization()
+            }
+            else if(isDetailsVisible) {
+                toggleCrimeVisualization()
             }
         }
     });
@@ -99,7 +129,8 @@ function requestRoute() {
         .then(data => {
             // Principal
             mapa_html_principal = data.mapa_html_principal;
-            mapa_html_principal_semcrimes = data.mapa_html_principal_semcrimes; // Implementando
+            mapa_html_principal_semcrimes = data.mapa_html_principal_semcrimes; 
+            mapa_html_principal_comsecundarios = data.mapa_html_principal_comsecundarios;
             distancia_principal = data.distancia_principal;
             tempo_principal = data.tempo_estimado_principal;
 
@@ -113,7 +144,8 @@ function requestRoute() {
 
             // Secundario
             mapa_html_secundario = data.mapa_html_secundario;
-            mapa_html_secundario_semcrimes = data.mapa_html_secundario_semcrimes; // Implementando
+            mapa_html_secundario_semcrimes = data.mapa_html_secundario_semcrimes; 
+            mapa_html_secundario_comsecundarios = data.mapa_html_secundario_comsecundarios;
             distancia_secundario = data.distancia_secundario;
             tempo_secundario = data.tempo_estimado_secundario;
             indice_seguranca_secundario = data.indice_seguranca_secundario;
@@ -125,8 +157,8 @@ function requestRoute() {
             atualizarRotaBanco(banco, 
                 criarLocalizacao(document.getElementById('origin').value, document.getElementById('origin').value, document.getElementById('origin_coords').value),
                 criarLocalizacao(document.getElementById('destination').value, document.getElementById('destination').value, document.getElementById('destination_coords').value),
-                criarRota(distancia_principal, tempo_principal, mapa_html_principal,mapa_html_principal_semcrimes, qntd_crimes_principal, qntd_evitados_principal,  qtnd_evitados_baixo_risco_principal, qtnd_evitados_medio_risco_principal, qtnd_evitados_alto_risco_principal, indice_seguranca_principal),
-                criarRota(distancia_secundario, tempo_secundario, mapa_html_secundario,mapa_html_secundario_semcrimes, qntd_crimes_secundario, null,  null, null, null, indice_seguranca_secundario)
+                criarRota(distancia_principal, tempo_principal, mapa_html_principal,mapa_html_principal_semcrimes,mapa_html_principal_comsecundarios, qntd_crimes_principal, qntd_evitados_principal,  qtnd_evitados_baixo_risco_principal, qtnd_evitados_medio_risco_principal, qtnd_evitados_alto_risco_principal, indice_seguranca_principal),
+                criarRota(distancia_secundario, tempo_secundario, mapa_html_secundario,mapa_html_secundario_semcrimes,mapa_html_secundario_comsecundarios, qntd_crimes_secundario,mapa_html_secundario_comsecundarios, null,  null, null, null, indice_seguranca_secundario)
             );
     
             // Adicionar ao historico
@@ -253,6 +285,8 @@ function toggleSecondaryRoute() {
             mapa_carregado = banco.rota.rota_safast.mapa
         }else if (banco.tipo_mapa_atual.crime == "desligado") {
             mapa_carregado = banco.rota.rota_safast.mapa_semcrimes
+        }else if (banco.tipo_mapa_atual.crime == "detalhado") {
+            mapa_carregado = banco.rota.rota_safast.mapa_comsecundarios
         }
         
         loadMap(mapa_carregado, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
@@ -270,6 +304,8 @@ function toggleSecondaryRoute() {
             mapa_carregado = banco.rota.rota_tradicional.mapa
         }else if (banco.tipo_mapa_atual.crime == "desligado") {
             mapa_carregado = banco.rota.rota_tradicional.mapa_semcrimes
+        }else if (banco.tipo_mapa_atual.crime == "detalhado") {
+            mapa_carregado = banco.rota.rota_tradicional.mapa_comsecundarios
         }
 
         loadMap(mapa_carregado, banco.rota.rota_tradicional.distancia, banco.rota.rota_tradicional.tempo);
@@ -283,14 +319,20 @@ function toggleCrimeVisualization() {
     const imgOn = document.getElementById("Crime-visualization-img-on");
     const btnOff = document.getElementById("Crime-visualization-btn-off");
     const imgOff = document.getElementById("Crime-visualization-img-off");
+    const btnDetails = document.getElementById("Crime-visualization-btn-details");
+    const imgDetails = document.getElementById("Crime-visualization-img-details");
 
     const isOnVisible = btnOn.style.display !== "none";
+    const isOffVisible = btnOff.style.display !== "none";
+    const isDetailsVisible = btnDetails.style.display !== "none";
+
 
     // OFF
     if (isOnVisible) {
         // Esconde o ON, mostra o OFF
         btnOn.style.display = "none";
         imgOn.style.display = "none";
+        
         btnOff.style.display = "";
         imgOff.style.display = "";
         
@@ -307,20 +349,41 @@ function toggleCrimeVisualization() {
 
         banco.tipo_mapa_atual.crime = "desligado";
     // ON
-    } else {
-        // Esconde o OFF, mostra o ON
+    } else if(isOffVisible) {
+        // Esconde o OFF, mostra o detalhado
         btnOff.style.display = "none";
         imgOff.style.display = "none";
+
+        btnDetails.style.display = "";
+        imgDetails.style.display = "";
+
+        var mapa_carregado;
+        if (banco.tipo_mapa_atual.rota == "simples") {
+            mapa_carregado = banco.rota.rota_safast.mapa_comsecundarios
+            loadMap(mapa_carregado, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
+        }else if (banco.tipo_mapa_atual.rota == "dupla") {
+            mapa_carregado = banco.rota.rota_tradicional.mapa_comsecundarios
+            loadMap(mapa_carregado, banco.rota.rota_tradicional.distancia, banco.rota.rota_tradicional.tempo);
+        }
+
+        banco.tipo_mapa_atual.crime = "detalhado";
+    }
+    else if(isDetailsVisible) {
+        // Esconde o detalhes, mostra o OFF
+        btnDetails.style.display = "none";
+        imgDetails.style.display = "none";
         btnOn.style.display = "";
         imgOn.style.display = "";
-
+        
         var mapa_carregado;
         if (banco.tipo_mapa_atual.rota == "simples") {
             mapa_carregado = banco.rota.rota_safast.mapa
             loadMap(mapa_carregado, banco.rota.rota_safast.distancia, banco.rota.rota_safast.tempo);
+
         }else if (banco.tipo_mapa_atual.rota == "dupla") {
             mapa_carregado = banco.rota.rota_tradicional.mapa
             loadMap(mapa_carregado, banco.rota.rota_tradicional.distancia, banco.rota.rota_tradicional.tempo);
+
         }
 
         banco.tipo_mapa_atual.crime = "ligado";

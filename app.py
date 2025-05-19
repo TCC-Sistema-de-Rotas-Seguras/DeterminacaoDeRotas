@@ -124,7 +124,7 @@ def return_map():
     tempos["Centro e raio do mapa"] = time.time() - t0
 
     t0 = time.time()
-    mapa_html_principal, mapa_html_principal_semcrimes, mapa_html_secundario, mapa_html_secundario_semcrimes, lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght  = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
+    mapa_html_principal, mapa_html_principal_semcrimes, mapa_html_secundario, mapa_html_secundario_semcrimes,mapa_html_principal_comsecundarios,mapa_html_secundario_comsecundarios, lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght  = FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, Rota_Crime, Rota_length)
     lista_crimes_Diferenca = DiferencaListaCrimes(lista_crimes_Rota_Crime, lista_crimes_Rota_Lenght)
     tempos["FoliumMap (mapas)"] = time.time() - t0
 
@@ -151,7 +151,8 @@ def return_map():
     return jsonify(
         # Mapa Principal
         mapa_html_principal=mapa_html_principal,
-        mapa_html_principal_semcrimes=mapa_html_principal_semcrimes, # Implementando
+        mapa_html_principal_semcrimes=mapa_html_principal_semcrimes,
+        mapa_html_principal_comsecundarios=mapa_html_principal_comsecundarios,
         distancia_principal=Rota_Crime_Distancia,
         tempo_estimado_principal=Rota_Crime_Tempo,
         qntd_evitados_principal=qntd_evitados_principal,
@@ -164,7 +165,8 @@ def return_map():
 
         # Mapa Secundário
         mapa_html_secundario=mapa_html_secundario,
-        mapa_html_secundario_semcrimes=mapa_html_secundario_semcrimes, # Implementando
+        mapa_html_secundario_semcrimes=mapa_html_secundario_semcrimes,
+        mapa_html_secundario_comsecundarios=mapa_html_secundario_comsecundarios,
         distancia_secundario=Rota_length_distancia,
         tempo_estimado_secundario=Rota_length_tempo,
         qntd_crimes_secundario=qntd_crimes_secundario,

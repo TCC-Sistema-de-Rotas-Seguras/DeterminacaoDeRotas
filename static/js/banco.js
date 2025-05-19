@@ -25,12 +25,13 @@ function criarLocalizacao(nome, endereco, geo_localizacao) {
     
 }
 
-function criarRota(distancia, tempo, mapa, mapa_semcrimes, qntd_crimes, qntd_evitados, qtnd_evitados_baixo_risco, qtnd_evitados_medio_risco, qtnd_evitados_alto_risco, indice_seguranca) {
+function criarRota(distancia, tempo, mapa, mapa_semcrimes, mapa_comsecundarios, qntd_crimes, qntd_evitados, qtnd_evitados_baixo_risco, qtnd_evitados_medio_risco, qtnd_evitados_alto_risco, indice_seguranca) {
     return {
         distancia,
         tempo,
         mapa,
         mapa_semcrimes,
+        mapa_comsecundarios,
         crimes: {
             qntd_crimes,
             qntd_evitados,

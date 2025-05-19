@@ -82,7 +82,7 @@ def PlotRota(rota, grafo, mapa, cor="blue"):
     mapa.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]])
 
 
-def PlotPontosCrimes(mapa, rota, grafo, nivel_vizinhos=5):
+def PlotPontosCrimes(mapa, rota, grafo, nivel_vizinhos=0):
     lista_crimes = {
         "baixo_risco": [],
         "medio_risco": [],
@@ -227,7 +227,8 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
     mapa_secundario = CriarMapa(Graph_Location, Origin_point, Destination_point)
     mapa_principal_semcrimes = CriarMapa(Graph_Location, Origin_point, Destination_point)
     mapa_secundario_semcrimes = CriarMapa(Graph_Location, Origin_point, Destination_point)
-
+    mapa_principal_comsecundarios = CriarMapa(Graph_Location, Origin_point, Destination_point)
+    mapa_secundario_comsecundarios = CriarMapa(Graph_Location, Origin_point, Destination_point)
     
     
     # Adicionar a rota ao mapa
@@ -239,15 +240,22 @@ def FoliumMap(Graph, Graph_Location, Origin_point, Destination_point, RouteCrime
     PlotRota(RouteCrime, Graph, mapa_secundario_semcrimes, "blue")
     PlotRota(RouteLenght, Graph, mapa_secundario_semcrimes, "red")
 
+    PlotRota(RouteCrime, Graph, mapa_principal_comsecundarios, "blue")
+    PlotRota(RouteCrime, Graph, mapa_secundario_comsecundarios, "blue")
+    PlotRota(RouteLenght, Graph, mapa_secundario_comsecundarios, "red")
+
 
     # Adicionar pontos de perigo ao mapa
     PlotPontosCrimes(mapa_principal, RouteCrime, Graph)
     lista_crimes_1 = PlotPontosCrimes(mapa_secundario, RouteCrime, Graph)
     lista_crimes_2 = PlotPontosCrimes(mapa_secundario, RouteLenght, Graph)
+    PlotPontosCrimes(mapa_principal_comsecundarios, RouteCrime, Graph,5)
+    PlotPontosCrimes(mapa_secundario_comsecundarios, RouteCrime, Graph,5)
+    PlotPontosCrimes(mapa_secundario_comsecundarios, RouteLenght, Graph,5)
 
     
 
-    return mapa_principal._repr_html_(), mapa_principal_semcrimes._repr_html_(), mapa_secundario._repr_html_(), mapa_secundario_semcrimes._repr_html_(), lista_crimes_1, lista_crimes_2
+    return mapa_principal._repr_html_(), mapa_principal_semcrimes._repr_html_(), mapa_secundario._repr_html_(), mapa_secundario_semcrimes._repr_html_(), mapa_principal_comsecundarios._repr_html_(), mapa_secundario_comsecundarios._repr_html_(), lista_crimes_1, lista_crimes_2
 
 def gerarMapaPadrao(location):
     # Criar um mapa sem os controles de zoom e sem atribuição de copyright
