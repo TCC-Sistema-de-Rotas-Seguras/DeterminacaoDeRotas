@@ -8,7 +8,9 @@
   
   #popup-text {
     align-self: center;
-    margin: 0 0 20px 20px;
+    margin: 0 0 20px 0;
+    font-size: 27px;
+    margin-bottom: 10px;
   }
   
   .route-container {
